@@ -13,7 +13,7 @@ const {BrowserWindow} = electron.remote.require('electron');
 class ButtonRow extends React.Component{
   constructor(props) {
     super(props);
-    
+
     this.state = {isFull: false, showWindowPortal: false};
     this.liveScreenWindow = null;
   }
@@ -27,22 +27,16 @@ class ButtonRow extends React.Component{
   }
 
   createWindow = () => {
-    let win = new BrowserWindow({width: 800, height: 600});
-    const startUrl = process.env.ELECTRON_START_URL || url.format({
-      pathname: path.join(__dirname, '/../build/liveScreenIndex.html'),
-      protocol: 'file:',
-      slashes: true
-    });
-    win.loadURL(startUrl);
-    win.webContents.openDevTools();
-  }
+    console.log("Opening live screen window.");
+    electron.ipcRenderer.send("openLiveScreen");
+  };
 
   render() {
     return (
       <Box direction='row' justify='center'>
         <Button  label='Start Room Sequence' onClick={this.toggleFullscreen} />
         <Button  label='Open Live Screen' onClick={this.createWindow} />
-  
+
       </Box>
 
     );
