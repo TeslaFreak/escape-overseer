@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import ControlScreen from './ControlScreen';
+import ControlView from './ControlView';
 
 class App extends Component {
   render() {
     return (
-      <ControlScreen />
+      <ControlView />
     );
   }
 }
