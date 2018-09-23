@@ -14,7 +14,7 @@ let mainWindow;
 ipcMain.on("openLiveScreen", (event, args) => {
     console.log("Opening live screen.", args);
     const window = new BrowserWindow({width: 800, height: 600});
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?test=123"
+    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?live"
     window.loadURL(startUrl);
     window.webContents.openDevTools();
 });
@@ -25,7 +25,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
 
     // and load the index.html of the app.
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000"
+    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?control"
     mainWindow.loadURL(startUrl);
 
 
