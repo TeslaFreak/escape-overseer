@@ -13,8 +13,7 @@ const electron = window.require('electron');
 class ClueSelectControl extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {clueToSend: '',
-                    clueOnScreen: '',
+    this.state = {clueOnScreen: '',
                     savedClues: ['hello how was your day and do you ever need me to eat a shoe',
                                   'farfignutten as;ldfja ;elaij f;laijewf ;alowiej ;aoleji',
                                   ';lasjk; olfaije;li a;lejk f;lajwief; lajwef ;lajwif;lajwief;lajwief;lawjef;lajewf;lawje;lwijefa']};
@@ -26,7 +25,7 @@ class ClueSelectControl extends React.Component{
   }
 
   selectClue(inputtext) {
-    this.setState({clueToSend: inputtext});
+    document.getElementById("clueInput").value=inputtext;
   }
 
   populateSavedClues() {
@@ -38,9 +37,9 @@ class ClueSelectControl extends React.Component{
   }
 
   sendClue = () => {
-    let clue = this.state.clueToSend;
     this.sendAlertTone();
-    this.setState({clueOnScreen: clue, clueToSend: ''});
+    this.setState({clueOnScreen: document.getElementById("clueInput").value});
+    document.getElementById("clueInput").value='';
   }
 
   clearLiveScreen = () => {
@@ -53,7 +52,7 @@ class ClueSelectControl extends React.Component{
         <Box direction='row' justify='center' align='center'
               pad='small'
               margin='small'>
-        <TextInput placeHolder='Enter a clue...' id='clueInput' value={this.state.clueToSend}/>
+        <TextInput placeHolder='Enter a clue...' id='clueInput'/>
           <Menu  inline={false} dropAlign={{right: 'right', top: 'bottom'}} icon={<CaretDownIcon />}>
             {this.populateSavedClues()}
           </Menu>
