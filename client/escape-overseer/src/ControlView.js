@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-import Timer from './Timer';
-import ClueSelect from './ClueSelect';
-import ClueCounter from './ClueCounter';
-import ButtonRow from './ButtonRow';
+import TimerControl from './TimerControl';
+import ClueSelectControl from './ClueSelectControl';
+import ClueCountControl from './ClueCountControl';
+import LiveViewControl from './LiveViewControl';
 import '../node_modules/grommet-css'
 import App from 'grommet/components/App'
 
@@ -12,10 +12,10 @@ class ControlView extends Component {
   render() {
     return (
       <App className="ControlScreen">
-        <ButtonRow />
-        <Timer />
-        <ClueCounter />
-        <ClueSelect />
+        <LiveViewControl />
+        <TimerControl />
+        <ClueCountControl />
+        <ClueSelectControl />
       </App>
     );
   }

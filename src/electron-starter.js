@@ -9,16 +9,52 @@ const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
+let mainWindow = null;
+let liveWindow = null;
 
-ipcMain.on("openLiveScreen", (event, args) => {
-    console.log("Opening live screen.", args);
-    const window = new BrowserWindow({width: 800, height: 600});
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?live"
-    window.loadURL(startUrl);
-    window.webContents.openDevTools();
+ipcMain.on("toggleLiveViewOpen", (event, args) => {
+    if (liveWindow == null) {
+        liveWindow = new BrowserWindow({width: 800, height: 600});
+        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?live"
+        liveWindow.loadURL(startUrl);
+        liveWindow.webContents.openDevTools();
+        liveWindow.setMenu(null);
+        liveWindow.once('ready-to-show', () => {
+            liveWindow.show()
+        })
+        liveWindow.on('closed', () => {
+            liveWindow = null;
+        });
+    }
+    else {
+        liveWindow.close();
+    }
+    
 });
 
+ipcMain.on("toggleLiveViewFullScreen", (event, args) => {
+    if(liveWindow != null) {
+        liveWindow.setFullScreen(!liveWindow.isFullScreen());
+    }
+});
+
+ipcMain.on('updateLiveViewTimeDisplay', (event, min, sec) => {
+    if (liveWindow != null) {
+        liveWindow.webContents.send('updateLiveViewTimeDisplay', min, sec);
+    }
+});
+
+ipcMain.on('updateLiveViewClueDisplay', (event, clue) => {
+    if (liveWindow != null) {
+        liveWindow.webContents.send('updateLiveViewClueDisplay', clue);
+    }
+});
+
+ipcMain.on('updateLiveViewClueCountDisplay', (event, clue1Used, clue2Used, clue3Used) => {
+    if (liveWindow != null) {
+        liveWindow.webContents.send('updateLiveViewClueCountDisplay', clue1Used, clue2Used, clue3Used);
+    }
+});
 
 function createWindow() {
     // Create the browser window.
@@ -27,7 +63,9 @@ function createWindow() {
     // and load the index.html of the app.
     const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?control"
     mainWindow.loadURL(startUrl);
-
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show()
+      })
 
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
