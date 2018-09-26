@@ -4,6 +4,8 @@ import TimerControl from './TimerControl';
 import ClueSelectControl from './ClueSelectControl';
 import ClueCountControl from './ClueCountControl';
 import LiveViewControl from './LiveViewControl';
+import Tabs from 'grommet/components/Tabs';
+import Tab from 'grommet/components/Tab';
 import '../node_modules/grommet-css'
 import App from 'grommet/components/App'
 
@@ -11,12 +13,17 @@ import App from 'grommet/components/App'
 class ControlView extends Component {
   render() {
     return (
-      <App className="ControlScreen">
-        <LiveViewControl />
-        <TimerControl />
-        <ClueCountControl />
-        <ClueSelectControl />
-      </App>
+        <Tabs activeIndex={0}>
+          <Tab title='Control Screen'>
+              <LiveViewControl />
+              <TimerControl />
+              <ClueCountControl />
+              <ClueSelectControl />
+          </Tab>
+          <Tab title='Report'>
+
+          </Tab>
+        </Tabs>
     );
   }
 }

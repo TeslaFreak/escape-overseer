@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom'
 import LiveView from './LiveView';
 import ControlView from './ControlView';
+import MainOverlay from './MainOverlay';
 
 class ViewManager extends Component {
     static Views() {
@@ -18,7 +19,9 @@ class ViewManager extends Component {
         let view = ViewManager.Views()[name];
         if(view == null) 
             throw new Error("View '" + name + "' is undefined");
-        return view;
+        if(name == 'live')
+            return view;
+        return <MainOverlay>{view}</MainOverlay>;
     }
     
     render() {
