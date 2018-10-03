@@ -7,6 +7,7 @@ import 'grommet/grommet.min.css';
 import LiveView from './views/LiveView';
 import ControlView from './views/ControlView';
 import EventConfigView from './views/EventConfigView';
+import MetricsView from './views/MetricsView';
 import SettingsView from './views/SettingsView';
 import MainOverlay from './MainOverlay';
 
@@ -16,6 +17,7 @@ class ViewManager extends Component {
             control: <ControlView />,
             live: <LiveView />,
             eventconfig: <EventConfigView />,
+            metrics: <MetricsView />,
             settings: <SettingsView />
         }
     }
@@ -26,7 +28,7 @@ class ViewManager extends Component {
             throw new Error("View '" + name + "' is undefined");
         if(name == 'live')
             return view;
-        return <MainOverlay>{view}</MainOverlay>;
+        return <MainOverlay viewName={name}>{view}</MainOverlay>;
     }
     
     render() {

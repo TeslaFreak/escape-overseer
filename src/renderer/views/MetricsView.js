@@ -4,7 +4,7 @@ import Tab from 'grommet/components/Tab';
 import App from 'grommet/components/App';
 
 
-class EventConfigView extends Component {
+class MetricsView extends Component {
   render() {
     return (
         <div>hello world</div>
@@ -12,4 +12,4 @@ class EventConfigView extends Component {
   }
 }
 
-export default EventConfigView;
+export default MetricsView;

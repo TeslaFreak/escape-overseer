@@ -21,6 +21,7 @@ class MainOverlay extends Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return (
       <Split flex='right'>
@@ -37,22 +38,25 @@ class MainOverlay extends Component {
           <Box flex='grow'
             justify='start'>
             <Menu primary={true}>
-              <Anchor href='#'
+              <Anchor href='?control'
                 icon={<RunIcon />}
                 label='Control Screen'
-                className='active'>
+                className={this.props.viewName=='control' ? 'active' : ''}>
               </Anchor>
-              <Anchor href='#'
+              <Anchor href='?eventconfig'
                 icon={<TreeIcon />}
-                label='Configure Events'>
+                label='Configure Events'
+                className={this.props.viewName=='eventconfig' ? 'active' : ''}>
               </Anchor>
               <Anchor href='#'
                 icon={<LineChartIcon />}
-                label='Report Analytics'>
+                label='Report Metrics'
+                className={this.props.viewName=='metrics' ? 'active' : ''}>
               </Anchor>
               <Anchor href='#'
                 icon={<SettingsOptionIcon />}
-                label='Settings'>
+                label='Settings'
+                className={this.props.viewName=='settings' ? 'active' : ''}>
               </Anchor>
             </Menu>
           </Box>
