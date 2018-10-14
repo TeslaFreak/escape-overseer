@@ -1,18 +1,23 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
+const darkBlue = '#263238';
+const babyBlue = '#29b6f6';
+const babyBlue_1HueDarker = '#0086c3';
+const blueGrey = '#546e7a';
+
 export const EOTheme = createMuiTheme({
   palette: {
     primary: {
-      main: '#263238',
-      contrastText: '#29b6f6',
+      main: darkBlue,
+      contrastText: babyBlue,
     },
     secondary: {
-      main:'#29b6f6',
-      contrastText: '#263238',
+      main: babyBlue,
+      contrastText: darkBlue,
     },
     text: {
-      primary: '#263238',
-      secondary: '#29b6f6',
+      primary: darkBlue,
+      secondary: babyBlue,
     },
   },
 });
@@ -21,19 +26,19 @@ export const EODarkTheme = createMuiTheme({
   palette: {
     type: 'dark',
     primary: {
-      main: '#263238',
-      contrastText: '#29b6f6',
+      main: darkBlue,
+      contrastText: babyBlue,
     },
     secondary: {
-      main:'#29b6f6',
-      contrastText: '#263238',
+      main: babyBlue_1HueDarker,
+      contrastText: darkBlue,
     },
     text: {
-      primary: '#29b6f6',
-      secondary: '#263238',
+      primary: babyBlue,
+      secondary: darkBlue,
     },
     action: {
-      active:'#29b6f6'},
+      active: babyBlue_1HueDarker},
   },
   
 });

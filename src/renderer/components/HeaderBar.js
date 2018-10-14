@@ -9,15 +9,11 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './SidebarListItems';
 import Switch from '@material-ui/core/Switch';
 import PropTypes from 'prop-types';
-import HeaderBar from './components/HeaderBar';
 
 const drawerWidth = 240;
 
@@ -35,7 +31,31 @@ const styles = theme => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
-  
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginLeft: 12,
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: 'none',
+  },
+  title: {
+    flexGrow: 1,
+  },
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',
@@ -74,56 +94,42 @@ const styles = theme => ({
   },
 });
 
-class MainOverlay extends Component {
+class HeaderBar extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {open: true, tabValue:1};
   }
-
-  handleDrawerOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleDrawerClose = () => {
-    this.setState({ open: false });
-  };
 
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
-        <CssBaseline />
-      <div className={classes.root}>
-        <HeaderBar open={this.state.open} handleDrawerOpen={this.handleDrawerOpen} toggleTheme={this.props.toggleTheme} headerContent={this.props.headerContent} />
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
-            }}
-            open={this.state.open}
+      <AppBar
+        position="absolute"
+        className={classNames(classes.appBar, this.props.open && classes.appBarShift)}
+      >
+        <Toolbar disableGutters={!this.props.open} className={classes.toolbar}>
+          <IconButton
+            color="inherit"
+            aria-label="Open drawer"
+            onClick={this.props.handleDrawerOpen}
+            className={classNames(
+              classes.menuButton,
+              this.props.open && classes.menuButtonHidden,
+            )}
           >
-            <div className={classes.toolbarIcon}>
-              <IconButton onClick={this.handleDrawerClose}>
-                <ChevronLeftIcon />
-              </IconButton>
-            </div>
-            <Divider />
-            <List>{mainListItems}</List>
-          </Drawer>
-          <main className={classes.content}>
-            <div className={classes.appBarSpacer} />
-            <Typography component="div" className={classes.chartContainer}>
-            {this.props.children} 
-            </Typography>
-          </main>
+            <MenuIcon />
+          </IconButton>
+          <div className={classes.title}>
+            {this.props.headerContent}
           </div>
-        </React.Fragment>
+          <Switch defaultChecked onChange={this.props.toggleTheme}/>
+        </Toolbar>
+      </AppBar>
     );
   }
 }
 
-MainOverlay.propTypes = {
+HeaderBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MainOverlay);
+export default withStyles(styles)(HeaderBar);
