@@ -77,9 +77,9 @@ class ClueSelectControl extends React.Component{
           </Menu>
         </Box>
         <Box direction='row' justify='center'>
-          <Button color='primary'   variant='contained'onClick={this.sendAlertTone}><VolumeIcon /></Button>
-          <Button color='secondary' variant='contained' onClick={this.sendClue}>Send Clue</Button>
-          <Button color='primary'  variant='contained'onClick={this.clearLiveScreen}><ClearIcon /></Button>
+          <Button color='secondary'   variant='contained'onClick={this.sendAlertTone}><VolumeIcon /></Button>
+          <Button color='primary' variant='contained' onClick={this.sendClue}>Send Clue</Button>
+          <Button color='secondary'  variant='contained'onClick={this.clearLiveScreen}><ClearIcon /></Button>
         </Box>
       </Box>
     );

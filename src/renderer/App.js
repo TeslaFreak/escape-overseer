@@ -12,7 +12,7 @@ import {EOTheme, EODarkTheme} from './EscapeOverseerTheme'
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {theme: 'light'};
+    this.state = {theme: 'dark'};
   }
 
   toggleTheme = () => {

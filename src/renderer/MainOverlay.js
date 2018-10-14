@@ -9,7 +9,8 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -99,7 +100,7 @@ const styles = theme => ({
 class MainOverlay extends Component {
   constructor(props) {
     super(props);
-    this.state = {open: true};
+    this.state = {open: true, tabValue:1};
   }
 
   handleDrawerOpen = () => {
@@ -132,16 +133,13 @@ class MainOverlay extends Component {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography
-                component="h1"
-                variant="h6"
-                color="inherit"
-                noWrap
-                className={classes.title}
-              >
-                Dashboard
-              </Typography>
-                  <Switch onChange={this.props.toggleTheme}/>
+              <div className={classes.title}>
+                <Tabs value={this.state.value} onChange={this.handleChange}>
+                  <Tab label="Control Screen" />
+                  <Tab label="Report" />
+                </Tabs>
+              </div>
+              <Switch onChange={this.props.toggleTheme}/>
             </Toolbar>
           </AppBar>
           <Drawer

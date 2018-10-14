@@ -4,22 +4,16 @@ export const EOTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#263238',
+      contrastText: '#29b6f6',
     },
     secondary: {
       main:'#29b6f6',
+      contrastText: '#263238',
     },
-    good: {
-      main: '#7cb342'
+    text: {
+      primary: '#263238',
+      secondary: '#29b6f6',
     },
-    bad: {
-      main: '#e53935'
-    }
-
-  },
-  status: {
-    error: 'red',
-    good: 'green',
-    danger: 'orange',
   },
 });
 
@@ -28,14 +22,18 @@ export const EODarkTheme = createMuiTheme({
     type: 'dark',
     primary: {
       main: '#263238',
+      contrastText: '#29b6f6',
     },
     secondary: {
       main:'#29b6f6',
-    }
+      contrastText: '#263238',
+    },
+    text: {
+      primary: '#29b6f6',
+      secondary: '#263238',
+    },
+    action: {
+      active:'#29b6f6'},
   },
-  status: {
-    error: 'red',
-    good: 'green',
-    danger: 'orange',
-  },
+  
 });
