@@ -1,6 +1,5 @@
 import React from 'react';
-import VideoIcon from 'grommet/components/icons/base/Video';
-import VolumeIcon from 'grommet/components/icons/base/Volume';
+import VideoIcon from '@material-ui/icons/LocalMovies';
 import ImageIcon from 'grommet/components/icons/base/Image';
 import Layer from 'grommet/components/Layer';
 import CreateNodeModal from '../components/CreateNodeModal';
@@ -74,7 +73,7 @@ function Node({ node, events }) {
           }}
         />
       }
-      <VideoIcon />
+      <VideoIcon style={{width:50, height:'100%'}}/>
       <text
         dy={size/20 + "em"}
         fontSize={14}
@@ -116,7 +115,7 @@ class eventMap extends React.Component{
   }
   const data = hierarchy(raw);
   return (
-    <svg width='100%' height='800'>
+    <svg viewBox="5 0 800 800">
       <LinearGradient id="lg" from="#fd9b93" to="#fe6e9e" />
       <Tree
         top={margin.top}

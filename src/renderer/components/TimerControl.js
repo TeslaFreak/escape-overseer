@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import Meter from 'grommet/components/Meter';
 import Value from 'grommet/components/Value';
 import Box from 'grommet/components/Box';
-import PlayFillIcon from 'grommet/components/icons/base/PlayFill';
-import PauseFillIcon from 'grommet/components/icons/base/PauseFill';
-import AddIcon from 'grommet/components/icons/base/Add';
-import SubtractIcon from 'grommet/components/icons/base/Subtract';
-import RefreshIcon from 'grommet/components/icons/base/Refresh';
+import IconButton from '@material-ui/core/IconButton';
+import PlayFillIcon from '@material-ui/icons/PlayArrow';
+import PauseFillIcon from '@material-ui/icons/Pause';
+import AddIcon from '@material-ui/icons/Add';
+import SubtractIcon from '@material-ui/icons/Remove';
+import ReplayIcon from '@material-ui/icons/Replay';
 import TimeDisplay from './TimeDisplay';
-import { RotateLeft } from 'grommet-icons';
-import Button from 'grommet/components/Button';
+import Button from '@material-ui/core/Button';
 const electron = window.require('electron')
 
 class TimerControl extends React.Component{
@@ -100,27 +100,26 @@ class TimerControl extends React.Component{
             align='center'
             pad='small'
             margin='small'>
-          {!this.timeIsUp() && <Button icon={<SubtractIcon size='medium'/>} onClick={this.subtractTime} />}
+          {!this.timeIsUp() && <IconButton onClick={this.subtractTime}><SubtractIcon style={{width:48, height:'100%'}}/></IconButton>}
               <Meter
                 label = {<Box direction="column"
                               justify='center'
                               align='center'
                               pad='small'
                               margin='small'>
-                          <Button icon={<RotateLeft size='large' style={{width:30, height:'100%'}}/>} onClick={this.resetTimer} />
+                          <IconButton onClick={this.resetTimer}><ReplayIcon style={{width:40, height:'100%'}}/></IconButton>
                           <TimeDisplay minutes={this.state.minutes} seconds={this.state.seconds}/>
-                            {this.state.timeToAdjust!=0 &&
-                              <Box margin='small'>
+                              <Box style={{visibility:this.state.timeToAdjust == 0 ? 'hidden' : ''}}>
                                 <Value value={(this.state.timeToAdjust>=0 && '+') + this.state.timeToAdjust + ":00"} size='xsmall' colorIndex='unknown' />
-                                <Button label="Update Time?" onClick={this.makeAdjustmentLive} style={{fontSize:12, padding:0 }}/>
-                              </Box>}
-                            <Box >{!this.timeIsUp() && <Button icon={this.state.paused ? <PlayFillIcon size='medium'/> : <PauseFillIcon size='medium'/>} onClick={this.handlePause} />}</Box>
+                                <Button color="secondary" variant="outlined" onClick={this.makeAdjustmentLive}>Update Time?</Button>
+                              </Box>
+                            <Box >{!this.timeIsUp() && <IconButton onClick={this.handlePause}>{this.state.paused ? <PlayFillIcon style={{width:58, height:'100%'}}/> : <PauseFillIcon style={{width:58, height:'100%'}}/>} </IconButton>}</Box>
                         </Box>}
                 value = {this.state.minutes*60+this.state.seconds}
                 type='circle'
                 max={3600}
                 size='medium' />
-                {!this.timeIsUp() && <Button icon={<AddIcon size='medium'/>} onClick={this.addTime} />}
+                {!this.timeIsUp() && <IconButton onClick={this.addTime}><AddIcon style={{width:48, height:'100%'}}/></IconButton>}
         </Box>
     );
   }

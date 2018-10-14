@@ -6,20 +6,36 @@ import EventConfigView from './views/EventConfigView';
 import MetricsView from './views/MetricsView';
 import SettingsView from './views/SettingsView';
 import MainOverlay from './MainOverlay';
-import './css/App.css';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import {EOTheme, EODarkTheme} from './EscapeOverseerTheme'
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {theme: 'light'};
+  }
+
+  toggleTheme = () => {
+    this.setState({theme: this.state.theme=='dark' ? 'light' : 'dark'});
+  }
+
   render() {
     return (
-      <MainOverlay viewName={'control'}>
+
+      <MuiThemeProvider theme={this.state.theme=='light' ? EOTheme : EODarkTheme}>
         <Switch>
-          <Route exact path='/' component={ControlView}/>
-          <Route path='/control' component={ControlView}/>
-          <Route path='/eventconfig' component={EventConfigView}/>
-          <Route path='/metrics' component={MetricsView}/>
-          <Route path='/settings' component={SettingsView}/>
+          <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>
+          <MainOverlay toggleTheme={this.toggleTheme}>
+            <Switch>
+              <Route exact path='/' component={ControlView}/>
+              <Route path='/control' component={ControlView}/>
+              <Route path='/eventconfig' component={EventConfigView}/>
+              <Route path='/metrics' component={MetricsView}/>
+              <Route path='/settings' component={SettingsView}/>
+            </Switch>
+          </MainOverlay>
         </Switch>
-      </MainOverlay>
+      </MuiThemeProvider>
     );
   }
 }

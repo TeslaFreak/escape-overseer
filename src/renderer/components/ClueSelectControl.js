@@ -5,9 +5,12 @@ import Menu from 'grommet/components/Menu';
 import Anchor from 'grommet/components/Anchor';
 import Box from 'grommet/components/Box';
 import CaretDownIcon from 'grommet/components/icons/base/CaretDown';
-import VolumeIcon from 'grommet/components/icons/base/Volume';
-import ClearIcon from 'grommet/components/icons/base/Clear';
-import Button from 'grommet/components/Button';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import VolumeIcon from '@material-ui/icons/VolumeUp';
+import ClearIcon from '@material-ui/icons/Clear';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 const electron = window.require('electron');
 
 class ClueSelectControl extends React.Component{
@@ -46,21 +49,37 @@ class ClueSelectControl extends React.Component{
     this.setState({clueOnScreen: ''});
   }
 
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
   render() {
     return (
       <Box>
         <Box direction='row' justify='center' align='center'
               pad='small'
               margin='small'>
-        <TextInput placeHolder='Enter a clue...' id='clueInput'/>
-          <Menu  inline={false} dropAlign={{right: 'right', top: 'bottom'}} icon={<CaretDownIcon />}>
+        <TextField
+          id="clueInput"
+          placeholder="Enter a Clue..."
+          multiline
+          rows='2'
+          rowsMax="5"
+          onChange={this.handleChange('multiline')}
+          margin="normal"
+          variant="outlined"
+          style={{width:'40%', height:'auto'}}
+        />
+          <Menu  inline={false} dropAlign={{right: 'right', top: 'bottom'}} icon={<ExpandMoreIcon fontSize='large'/>}>
             {this.populateSavedClues()}
           </Menu>
         </Box>
         <Box direction='row' justify='center'>
-          <Button colorindex='ok' icon={<VolumeIcon />} onClick={this.sendAlertTone} />
-          <Button colorindex='neutral-1' primary={true} label='Send Clue' onClick={this.sendClue} />
-          <Button colorindex='critical' icon={<ClearIcon />} onClick={this.clearLiveScreen} />
+          <Button color='primary'   variant='contained'onClick={this.sendAlertTone}><VolumeIcon /></Button>
+          <Button color='secondary' variant='contained' onClick={this.sendClue}>Send Clue</Button>
+          <Button color='primary'  variant='contained'onClick={this.clearLiveScreen}><ClearIcon /></Button>
         </Box>
       </Box>
     );

@@ -1,22 +1,6 @@
 import React, { Component } from 'react';
-import Sidebar from 'grommet/components/Sidebar';
-import Split from 'grommet/components/Split';
-import Header from 'grommet/components/Header';
-import Title from 'grommet/components/Title';
-import Footer from 'grommet/components/Footer';
-import Box from 'grommet/components/Box';
-import Menu from 'grommet/components/Menu';
-import Anchor from 'grommet/components/Anchor';
-import Button from 'grommet/components/Button';
-import Article from 'grommet/components/Article';
-import Value from 'grommet/components/Value';
-import User from 'grommet/components/icons/base/User';
-import SettingsOptionIcon from 'grommet/components/icons/base/SettingsOption';
-import TreeIcon from 'grommet/components/icons/base/Tree';
-import LineChartIcon from 'grommet/components/icons/base/LineChart';
-import RunIcon from 'grommet/components/icons/base/Run';
 import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, withTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -29,7 +13,8 @@ import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
+import { mainListItems, secondaryListItems } from './SidebarListItems';
+import Switch from '@material-ui/core/Switch';
 import PropTypes from 'prop-types';
 
 const drawerWidth = 240;
@@ -129,7 +114,7 @@ class MainOverlay extends Component {
     const { classes } = this.props;
     return (
       <React.Fragment>
-      <CssBaseline />
+        <CssBaseline />
       <div className={classes.root}>
         <AppBar
             position="absolute"
@@ -156,11 +141,7 @@ class MainOverlay extends Component {
               >
                 Dashboard
               </Typography>
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="secondary">
-                  <NotificationsIcon />
-                </Badge>
-              </IconButton>
+                  <Switch onChange={this.props.toggleTheme}/>
             </Toolbar>
           </AppBar>
           <Drawer
@@ -177,8 +158,6 @@ class MainOverlay extends Component {
             </div>
             <Divider />
             <List>{mainListItems}</List>
-            <Divider />
-            <List>{secondaryListItems}</List>
           </Drawer>
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />

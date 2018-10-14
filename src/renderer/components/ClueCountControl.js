@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Box from 'grommet/components/Box';
-import LockIcon from 'grommet/components/icons/base/Lock';
-import ClearIcon from 'grommet/components/icons/base/Clear';
-import Button from 'grommet/components/Button';
+import LockIcon from '@material-ui/icons/Lock';
+import ClearIcon from '@material-ui/icons/Clear';
+import IconButton from '@material-ui/core/IconButton';
 const electron = window.require('electron');
 
 
@@ -14,7 +14,7 @@ class ClueCountControl extends React.Component{
   }
 
   getIconFromStatus = (isUsed) => {
-    return isUsed? <ClearIcon size='xlarge'/> : <LockIcon size='xlarge'/>;
+    return isUsed? <ClearIcon style={{width:120, height:'100%'}}/> : <LockIcon style={{width:120, height:'100%'}}/>;
   }
 
   componentDidUpdate() {
@@ -38,9 +38,9 @@ class ClueCountControl extends React.Component{
   render() {
     return (
       <Box direction='row' justify='center'>
-        <Button  icon={this.getIconFromStatus(this.state.clue1Used)} onClick={() => this.toggleIcon(1)} />
-        <Button  icon={this.getIconFromStatus(this.state.clue2Used)} onClick={() => this.toggleIcon(2)} />
-        <Button  icon={this.getIconFromStatus(this.state.clue3Used)} onClick={() => this.toggleIcon(3)} />
+        <IconButton  onClick={() => this.toggleIcon(1)}> {this.getIconFromStatus(this.state.clue1Used)} </IconButton>
+        <IconButton  onClick={() => this.toggleIcon(2)}> {this.getIconFromStatus(this.state.clue2Used)} </IconButton>
+        <IconButton  onClick={() => this.toggleIcon(3)}> {this.getIconFromStatus(this.state.clue3Used)} </IconButton>
       </Box>
     );
   }

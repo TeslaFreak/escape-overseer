@@ -15,9 +15,9 @@ let liveWindow = null;
 ipcMain.on("toggleLiveViewOpen", (event, args) => {
     if (liveWindow == null) {
         liveWindow = new BrowserWindow({width: 800, height: 600});
-        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?live"
+        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/live"
         liveWindow.loadURL(startUrl);
-        liveWindow.webContents.openDevTools();
+        //liveWindow.webContents.openDevTools();
         liveWindow.setMenu(null);
         liveWindow.once('ready-to-show', () => {
             liveWindow.show()
@@ -61,7 +61,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({width: 800, height: 600});
 
     // and load the index.html of the app.
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?control"
+    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/control"
     mainWindow.loadURL(startUrl);
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
