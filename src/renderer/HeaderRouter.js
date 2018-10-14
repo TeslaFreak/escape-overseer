@@ -17,7 +17,7 @@ import {EOTheme, EODarkTheme} from './EscapeOverseerTheme'
 function ControlViewHeader(props) {
   return (
     <React.Fragment>
-      <Tabs value={this.props.tabValue} onChange={this.props.changeTab}>
+      <Tabs value={props.tabValue} onChange={props.changeTab}>
         <Tab label="Control Screen" />
         <Tab label="Report" />
       </Tabs>
