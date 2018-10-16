@@ -1,74 +1,39 @@
-import React, { Component } from 'react';
-import Map from 'grommet/components/Map';
-import Box from 'grommet/components/Box';
+import React, {Component} from 'react';
+import ReactDOM from 'react-dom';
 
-export default class MetricsView extends Component {
+import { Graph } from './graph';
+
+// These keys are arbitrary (but must match the config)
+// However, GraphView renders text differently for empty types
+// so this has to be passed in if that behavior is desired.
+const EMPTY_TYPE = "empty"; // Empty node type
+const SPECIAL_TYPE = "special";
+const SPECIAL_CHILD_SUBTYPE = "specialChild";
+const EMPTY_EDGE_TYPE = "emptyEdge";
+const SPECIAL_EDGE_TYPE = "specialEdge";
+
+function generateLargeSample() {
+  console.log("generateLargeSample");
+  const sample = {
+    nodes: [],
+    edges: [],
+  };
+  let y = 0;
+  let x = 0;
+  return sample;
+}
+
+class GraphLarge extends Graph {
+
+  constructor(props) {
+    super(props);
+  }
+
+}
+
+// To bootstrap this example into the Document
+export default class App extends Component  {
   render() {
-    return (
-<Map data={{
-  "categories": [
-    {
-      "id": "category-1",
-      "label": "First category",
-      "items": [
-        {
-          "id": "item-1-1",
-          "label": "First item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  First item</Box>
-        },
-        {
-          "id": "item-1-2",
-          "label": "Second item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Second item</Box>
-        },
-        {
-          "id": "item-1-3",
-          "label": "Third item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Third item</Box>
-        }
-      ]
-    },
-    {
-      "id": "category-2",
-      "label": "Second category",
-      "items": [
-        {
-          "id": "item-2-1",
-          "label": "Fourth item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Fourth item</Box>
-        },
-        {
-          "id": "item-2-2",
-          "label": "Fifth item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Fifth item</Box>
-        }
-      ]
-    },
-    {
-      "id": "category-3",
-      "label": "Third category",
-      "items": [
-        {
-          "id": "item-3-1",
-          "label": "Sixth item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Sixth item</Box>
-        },
-        {
-          "id": "item-3-2",
-          "label": "Seventh item",
-          "node": <Box colorIndex='grey-5'  pad='small'>  Seventh item</Box>
-        }
-      ]
-    }
-  ],
-  "links": [
-  {"parentId": "item-1-1", "childId": "item-2-2", "node": <Box colorIndex='grey-5'  pad='small' onClick={console.log('hi')}>  Seventh link</Box>},
-    {"parentId": "item-1-2", "childId": "item-2-2"},
-    {"parentId": "item-1-2", "childId": "item-2-1"},
-    {"parentId": "item-2-2", "childId": "item-3-1"},
-    {"parentId": "item-2-1", "childId": "item-3-2"}
-  ]
-}} />
-);
+    return <GraphLarge/>
   }
 }

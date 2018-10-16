@@ -112,9 +112,7 @@ class MainOverlay extends Component {
           </Drawer>
           <main className={classes.content}>
             <div className={classes.appBarSpacer} />
-            <Typography component="div" className={classes.chartContainer}>
-            {this.props.children} 
-            </Typography>
+            {this.props.children}
           </main>
           </div>
         </React.Fragment>

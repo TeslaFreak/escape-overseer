@@ -34,7 +34,7 @@ function EventConfigViewHeader(props) {
         color="inherit"
         noWrap
       >
-        Dashboard
+        Configure Events
       </Typography>
     </React.Fragment>
   );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import LiveView from './views/LiveView';
 import ControlView from './views/ControlView';
-import EventConfigView from './views/EventConfigView';
+import EventConfigView from './views/EventConfigView2';
 import MetricsView from './views/MetricsView';
 import SettingsView from './views/SettingsView';
 import MainOverlay from './MainOverlay';
