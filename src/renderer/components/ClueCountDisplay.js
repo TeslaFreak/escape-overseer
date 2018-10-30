@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LockIcon from '@material-ui/icons/Lock';
 import ClearIcon from '@material-ui/icons/Clear';
 import Box from 'grommet/components/Box';
+import { Grid } from '@material-ui/core';
 const electron = window.require('electron');
 
 class ClueCountDisplay extends React.Component{
@@ -15,11 +16,11 @@ class ClueCountDisplay extends React.Component{
 
   render() {
     return (
-      <Box margin = 'medium' direction='row' justify='center'>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue1Used)}</Box>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue2Used)}</Box>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue3Used)}</Box>
-      </Box>
+      <Grid container direction='row' justify='center' align='center' alignItems='center'>
+        <Grid item margin = 'small'>{this.getIconFromStatus(this.props.clue1Used)}</Grid>
+        <Grid item margin = 'small'>{this.getIconFromStatus(this.props.clue2Used)}</Grid>
+        <Grid item margin = 'small'>{this.getIconFromStatus(this.props.clue3Used)}</Grid>
+      </Grid>
     );
   }
 }

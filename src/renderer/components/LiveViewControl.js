@@ -9,6 +9,10 @@ class LiveViewControl extends React.Component{
     this.state={liveViewOpen:false}
   }
 
+  startRoomSequence = () => {
+    electron.ipcRenderer.send("roomSequence", 1);
+  }
+
   toggleFullscreen = () => {
     electron.ipcRenderer.send("toggleLiveViewFullScreen");
   }
@@ -20,11 +24,11 @@ class LiveViewControl extends React.Component{
 
   render() {
     return (
-      <Box direction='row' justify='center'>
-        <Button variant="contained" color='secondary' onClick={this.toggleFullscreen} >Start Room Sequence</Button>
-        <Button variant="contained" color='secondary' onClick={this.createWindow} >{this.state.liveViewOpen ? 'Close' : 'Open'} Live Screen</Button>
-        <Button variant="contained" color='secondary' onClick={this.toggleFullscreen} >Make Full Screen</Button>
-      </Box>
+        <Box direction='row' justify='center'>
+          <Button variant="contained" color='secondary' onClick={this.startRoomSequence} >Start Room Sequence</Button>
+          <Button variant="contained" color='secondary' onClick={this.createWindow} >{this.state.liveViewOpen ? 'Close' : 'Open'} Live Screen</Button>
+          <Button variant="contained" color='secondary' onClick={this.toggleFullscreen} >Make Full Screen</Button>
+        </Box>
     );
   }
 }

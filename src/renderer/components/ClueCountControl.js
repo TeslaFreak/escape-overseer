@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Box from 'grommet/components/Box';
 import LockIcon from '@material-ui/icons/Lock';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconButton from '@material-ui/core/IconButton';
+import Grid from '@material-ui/core/Grid';
 const electron = window.require('electron');
 
 
@@ -37,11 +37,11 @@ class ClueCountControl extends React.Component{
 
   render() {
     return (
-      <Box direction='row' justify='center'>
+      <Grid container direction='row' justify='center'>
         <IconButton  onClick={() => this.toggleIcon(1)}> {this.getIconFromStatus(this.state.clue1Used)} </IconButton>
         <IconButton  onClick={() => this.toggleIcon(2)}> {this.getIconFromStatus(this.state.clue2Used)} </IconButton>
         <IconButton  onClick={() => this.toggleIcon(3)}> {this.getIconFromStatus(this.state.clue3Used)} </IconButton>
-      </Box>
+      </Grid>
     );
   }
 }

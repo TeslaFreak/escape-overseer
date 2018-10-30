@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Value from 'grommet/components/Value';
-import Box from 'grommet/components/Box';
+import { Grid } from '@material-ui/core';
 const electron = window.require('electron')
 class Timer extends React.Component{
   constructor(props) {
@@ -9,7 +9,7 @@ class Timer extends React.Component{
 
   render() {
     return (
-      <Box margin='small'><Value value={this.props.clue} size='large'/></Box>
+      <Grid margin='large'><Value value={this.props.clue} size='large'/></Grid>
     );
   }
 }
