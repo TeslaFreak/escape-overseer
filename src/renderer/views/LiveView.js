@@ -40,20 +40,24 @@ class LiveScreen extends React.PureComponent {
                     playVideo: false};
 
     this.db = new PouchDB('kittens');
-    this.db.getAttachment('background', 'background.png').then(function(blob) {
+    this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
       var url = URL.createObjectURL(blob);
       var backgroundDiv = document.getElementById('backgroundDiv');
       backgroundDiv.style.backgroundImage= 'url('+ url +') ';
+    }).catch(function () {
+      //log error
     })
   }
 
   playVideo = () => {
     this.setState({playVideo: true});
-    return this.db.getAttachment('breifVideo', 'breifVideo.mp4').then(function(blob) {
+    return this.db.getAttachment('breifVideo', 'breifVideoFile').then(function(blob) {
         var url = URL.createObjectURL(blob);
         var vidElement = document.getElementById('vid');
         vidElement.src = url;
-    })
+    }).catch(function(err) {
+        this.closeVideo();
+    }.bind(this))
   }
 
   closeVideo = () => {
@@ -76,7 +80,6 @@ class LiveScreen extends React.PureComponent {
       this.setState({clue1Used: clue1Used, clue2Used: clue2Used, clue3Used: clue3Used});
     });
     electron.ipcRenderer.on('roomSequence', (event, sequenceNodeId) => {
-      console.log('complete trip')
       this.playVideo();
     });
 

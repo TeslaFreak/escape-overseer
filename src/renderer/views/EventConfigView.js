@@ -59,23 +59,52 @@ class RoomConfigView extends Component {
   
         var input = document.querySelector('input');
         var file = this.fileInput.current.files[0];
-        this.db.putAttachment('background', 'background.png', file, file.type).catch(function (err) {
-            console.log(err);
-          });
+        var db = this.db;
+
+        db.get('backgroundImg').then(function (doc) {
+            db.remove(doc).then(function () {
+                db.put({
+                    _id: 'backgroundImg',
+                    _attachments: {
+                        'backgroundImgFile': {
+                        type: file.type,
+                        data: file
+                      }
+                    }
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+            });
+        });
+        
     }
 
     saveVideo = () => {
   
         var input = document.querySelector('input');
         var file = this.fileInput.current.files[0];
-        this.db.putAttachment('breifVideo', 'breifVideo.mp4', file, file.type).catch(function (err) {
-            console.log(err);
-          });
+        var db = this.db;
+
+        db.get('breifVideo').then(function (doc) {
+            db.remove(doc).then(function () {
+                db.put({
+                    _id: 'breifVideo',
+                    _attachments: {
+                        'breifVideoFile': {
+                        type: file.type,
+                        data: file
+                      }
+                    }
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+            });
+        });
     }
 
     displayImage = () => {
   
-        return this.db.getAttachment('background', 'background.png').then(function(blob) {
+        return this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
             var url = URL.createObjectURL(blob);
             //var img = document.createElement('img');
             //img.src = url;
@@ -86,7 +115,7 @@ class RoomConfigView extends Component {
     
     playVideo = () => {
         this.setState({playVideo: true});
-        return this.db.getAttachment('breifVideo', 'breifVideo.mp4').then(function(blob) {
+        return this.db.getAttachment('breifVideo', 'breifVideoFile').then(function(blob) {
             var url = URL.createObjectURL(blob);
             var vidElement = document.getElementById('vid');
             vidElement.src = url;

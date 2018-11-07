@@ -20,7 +20,9 @@ import Popper from '@material-ui/core/Popper';
 import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
+import AlertTone from '../../../assets/audio/alert1.wav';
 const electron = window.require('electron');
+const alertTone = new Audio(AlertTone);
 
 class ClueSelectControl extends React.Component{
   constructor(props) {
@@ -30,7 +32,7 @@ class ClueSelectControl extends React.Component{
                     savedClues: ['hello how was your day and do you ever need me to eat a shoe',
                                   'farfignutten as;ldfja ;elaij f;laijewf ;alowiej ;aoleji',
                                   ';lasjk; olfaije;li a;lejk f;lajwief; lajwef ;lajwif;lajwief;lajwief;lawjef;lajewf;lawje;lwijefa']};
-    
+  
   }
 
   componentDidUpdate() {
@@ -47,7 +49,7 @@ class ClueSelectControl extends React.Component{
   }
 
   sendAlertTone() {
-    //bloop
+    var audioPromise = alertTone.play();
   }
 
   sendClue = () => {

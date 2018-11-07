@@ -12,6 +12,7 @@ const url = require('url');
 let mainWindow = null;
 let liveWindow = null;
 let videoWindow = null;
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 ipcMain.on("toggleLiveViewOpen", (event, args) => {
     if (liveWindow == null) {

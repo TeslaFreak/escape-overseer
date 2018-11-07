@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom'
 import LiveView from './views/LiveView';
 import ControlView from './views/ControlView';
-import EventConfigView from './views/EventConfigView';
+import RoomConfigView from './views/RoomConfigView';
 import MetricsView from './views/MetricsView';
 import SettingsView from './views/SettingsView';
 import MainOverlay from './MainOverlay';
 import HeaderRouter from './HeaderRouter';
 import FullscreenVideo from './views/FullscreenVideoView';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import {EOTheme, EODarkTheme} from './EscapeOverseerTheme'
+import {EOTheme, EODarkTheme} from './EscapeOverseerTheme';
 
 class App extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class App extends Component {
             <Switch>
               <Route exact path='/' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
               <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
-              <Route path='/eventconfig' component={EventConfigView}/>
+              <Route path='/eventconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue}/>} />
               <Route path='/metrics' component={MetricsView}/>
               <Route path='/settings' component={SettingsView}/>
             </Switch>
