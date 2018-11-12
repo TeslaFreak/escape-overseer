@@ -5,7 +5,10 @@ import PouchDB from 'pouchdb';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Dialog from '@material-ui/core/Dialog';
+import FontPicker from 'font-picker-react';
 const electron = window.require('electron')
+
+//google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
 
 const styles = theme => ({
     videoPlayer: {
@@ -18,7 +21,7 @@ class RoomConfigView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={showimage: false, playVideo:false};
+        this.state={showimage: false, playVideo:false, activeFont: 'Open Sans'};
         this.db = new PouchDB('kittens');
         this.fileInput = React.createRef();
         
@@ -130,6 +133,27 @@ class RoomConfigView extends Component {
         electron.ipcRenderer.send("playVideoFullscreen");
       }
 
+    updateLiveViewTypeFace = (nextFont) => {
+        this.setState({ activeFont: nextFont.family });
+        var db = this.db;
+
+        db.get('liveViewFont').then(function (doc) {
+            doc.font=nextFont.family;
+            db.put(doc).catch(function (err) {
+                console.log(err);
+            });
+        }).catch(function (err) {
+            if(err.name=="not_found") {
+                db.put({
+                    _id: 'liveViewFont',
+                    font: nextFont.family
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+            }
+        });
+    }
+
     render() {
         const { classes } = this.props;
         return(
@@ -142,6 +166,15 @@ class RoomConfigView extends Component {
             <Button onClick={this.printDoc}>printDoc</Button>
             <Button onClick={this.displayImage}>display image</Button>
             <Button onClick={this.playVideo}>play video</Button>
+            <FontPicker
+                apiKey="AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E"
+                activeFont={this.state.activeFont}
+                options={{limit:100}}
+                onChange={nextFont => this.updateLiveViewTypeFace(nextFont)}
+            />
+            <p className="apply-font">
+                The font will be applied to this text.
+            </p>
 
             <img id='logo' width="100" height="50" />
             <Dialog

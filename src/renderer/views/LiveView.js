@@ -91,7 +91,7 @@ class LiveScreen extends React.PureComponent {
               <Grid className={classNames(classes.alwaysVisible)}>
             <ClueCountDisplay  clue1Used={this.state.clue1Used} clue2Used={this.state.clue2Used} clue3Used={this.state.clue3Used} />
             <Meter
-              label = {<TimeDisplay minutes={this.state.minutes} seconds={this.state.seconds} />}
+              label = {<TimeDisplay useCustomFont={true} minutes={this.state.minutes} seconds={this.state.seconds} />}
               value = {this.state.minutes*60+this.state.seconds}
               type='circle'
               max={3600}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Box from 'grommet/components/Box';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 const electron = window.require('electron')
 
@@ -24,11 +24,11 @@ class LiveViewControl extends React.Component{
 
   render() {
     return (
-        <Box direction='row' justify='center'>
+        <Grid container direction='row' justify='center' alignItems='center' style={{padding:20}}>
           <Button variant="contained" color='secondary' onClick={this.startRoomSequence} >Start Room Sequence</Button>
           <Button variant="contained" color='secondary' onClick={this.createWindow} >{this.state.liveViewOpen ? 'Close' : 'Open'} Live Screen</Button>
           <Button variant="contained" color='secondary' onClick={this.toggleFullscreen} >Make Full Screen</Button>
-        </Box>
+        </Grid>
     );
   }
 }

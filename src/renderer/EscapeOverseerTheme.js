@@ -20,6 +20,11 @@ export const EOTheme = createMuiTheme({
       secondary: babyBlue,
     },
   },
+  typography: {
+    h1: {
+      fontSize: '5.25rem',
+    },
+  },
 });
 
 export const EODarkTheme = createMuiTheme({
@@ -40,5 +45,9 @@ export const EODarkTheme = createMuiTheme({
     action: {
       active: babyBlue_1HueDarker},
   },
-  
+  typography: {
+    h1: {
+      fontSize: '5.25rem',
+    }
+  },
 });

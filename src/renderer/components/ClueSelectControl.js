@@ -80,9 +80,7 @@ class ClueSelectControl extends React.Component{
     const { anchorEl } = this.state;
     return (
       <Grid>
-        <Grid container direction='row' justify='center' alignItems='center'
-              pad='small'
-              margin='small'>
+        <Grid container direction='row' justify='center' alignItems='center' style={{padding:30}}>
         <TextField
           id="clueInput"
           placeholder="Enter a Clue..."
