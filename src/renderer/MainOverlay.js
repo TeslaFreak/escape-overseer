@@ -77,7 +77,7 @@ const styles = theme => ({
 class MainOverlay extends Component {
   constructor(props) {
     super(props);
-    this.state = {open: true, tabValue:1};
+    this.state = {open: false, tabValue:1};
   }
 
   handleDrawerOpen = () => {

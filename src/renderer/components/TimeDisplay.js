@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import PouchDB from 'pouchdb';
 const electron = window.require('electron')
 var WebFont = window.require('webfontloader');
+
 class Timer extends React.Component{
   constructor(props) {
     super(props);
@@ -11,8 +12,10 @@ class Timer extends React.Component{
   }
 
   componentDidMount() {
-    if(this.props.useCustomFont == true)
+    if(this.props.liveScreen == true) {
       this.setFont();
+      this.setTextColor();
+    }
   }
 
   timeIsUp() {
@@ -38,9 +41,17 @@ class Timer extends React.Component{
     })
   }
 
+  setTextColor() {
+    this.db.get('liveViewTextColor').then(function(doc) {
+      document.getElementById('Timedisplay').style.color = doc.color;
+    }).catch(function (err) {
+      console.log(err);
+    })
+  }
+
   render() {
     return (
-      <Grid><Typography id="Timedisplay" variant="h1">{this.getTimeDisplay()}</Typography></Grid>
+      <Grid><Typography id="Timedisplay" style={{color:this.props.fontColor, fontFamily:this.props.font}} variant={this.props.liveScreen?"h1":"h2"}>{this.getTimeDisplay()}</Typography></Grid>
     );
   }
 }

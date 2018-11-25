@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import EventConfigView from '../views/EventConfigView';
-import LiveScreenConfigView from '../views/EventConfigView2';
+import LiveScreenConfigView from '../views/LiveScreenConfigView';
 import Typography from '@material-ui/core/Typography';
+var WebFont = window.require('webfontloader');
 
 function TabContainer(props) {
   return (
@@ -20,10 +21,10 @@ class ControlView extends Component {
     return (
         <React.Fragment>
           <TabContainer tabValue={this.props.tabValue} containerValue={0}>
-            <EventConfigView />
+            <LiveScreenConfigView />
           </TabContainer>
           <TabContainer tabValue={this.props.tabValue} containerValue={1}>
-            <LiveScreenConfigView />
+            <EventConfigView />
           </TabContainer>
         </React.Fragment>
     );

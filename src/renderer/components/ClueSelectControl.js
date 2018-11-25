@@ -1,9 +1,4 @@
 import React, { Component } from 'react';
-import TextInput from 'grommet/components/TextInput';
-import Value from 'grommet/components/Value';
-import Menu from '@material-ui/core/Menu';
-import Box from 'grommet/components/Box';
-import CaretDownIcon from 'grommet/components/icons/base/CaretDown';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import VolumeIcon from '@material-ui/icons/VolumeUp';

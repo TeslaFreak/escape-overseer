@@ -6,6 +6,9 @@ import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Dialog from '@material-ui/core/Dialog';
 import FontPicker from 'font-picker-react';
+import ChromePicker from 'react-color';
+import Grid from '@material-ui/core/Grid';
+import LiveView from './LiveView';
 const electron = window.require('electron')
 
 //google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
@@ -21,7 +24,7 @@ class RoomConfigView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={showimage: false, playVideo:false, activeFont: 'Open Sans'};
+        this.state={showimage: false, playVideo:false, activeFont: 'Open Sans', activeColor: '#fff'};
         this.db = new PouchDB('kittens');
         this.fileInput = React.createRef();
         
@@ -154,10 +157,14 @@ class RoomConfigView extends Component {
         });
     }
 
+    adjustColor = (color) => {
+        this.setState({activeColor: color.hex});
+    }
+
     render() {
         const { classes } = this.props;
         return(
-            <React.Fragment>
+            <Grid container direction='row' justify='center' alignItems='center' style={{padding:30}}>
             <Typography>Select Intro Video File</Typography>
             <input id='input' type="file" ref={this.fileInput} />
             <Button onClick={this.saveImage}>save image</Button>
@@ -172,7 +179,8 @@ class RoomConfigView extends Component {
                 options={{limit:100}}
                 onChange={nextFont => this.updateLiveViewTypeFace(nextFont)}
             />
-            <p className="apply-font">
+            <ChromePicker color={this.state.activeColor} disableAlpha={true} onChange={this.adjustColor}/>
+            <p className="apply-font" style={{color:this.state.activeColor}}>
                 The font will be applied to this text.
             </p>
 
@@ -185,7 +193,7 @@ class RoomConfigView extends Component {
             >
                 <video className={classNames(classes.videoPlayer)} id='vid' aspectRcontrols={false} autoPlay={true} onEnded={this.closeVideo} style={this.state.playVideo ? {} : { display: 'none' }}/>
             </Dialog>
-            </React.Fragment>
+            </Grid>
         );
     }
 }

@@ -21,7 +21,7 @@ const styles = theme => ({
       backgroundSize: 'cover'
   },
   alwaysVisible: {
-    padding: '7%'
+    padding: '3%'
   },
   videoPlayer: {
     objectFit: 'contain',
@@ -86,18 +86,18 @@ class LiveScreen extends React.PureComponent {
     return (
       <div id='backgroundDiv' className={classNames(classes.background)}>
           <Grid  container  direction='column' 
-              justify='center'
-              align='center'>
-              <Grid className={classNames(classes.alwaysVisible)}>
-            <ClueCountDisplay  clue1Used={this.state.clue1Used} clue2Used={this.state.clue2Used} clue3Used={this.state.clue3Used} />
-            <Meter
-              label = {<TimeDisplay useCustomFont={true} minutes={this.state.minutes} seconds={this.state.seconds} />}
-              value = {this.state.minutes*60+this.state.seconds}
-              type='circle'
-              max={3600}
-              size='medium' />
-            </Grid>
-            <ClueDisplay clue={this.state.clue} />
+              justify='flex-start'
+              alignItems='center'>
+              <Grid item className={classNames(classes.alwaysVisible)}>
+                <ClueCountDisplay liveScreen clue1Used={this.state.clue1Used} clue2Used={this.state.clue2Used} clue3Used={this.state.clue3Used} />
+                <Meter
+                  label = {<TimeDisplay liveScreen minutes={this.state.minutes} seconds={this.state.seconds} />}
+                  value = {this.state.minutes*60+this.state.seconds}
+                  type='circle'
+                  max={3600}
+                  size='large' />
+              </Grid>
+              <ClueDisplay liveScreen clue={this.state.clue} />
             </Grid>
             <Dialog
                 id='vidDialogue'

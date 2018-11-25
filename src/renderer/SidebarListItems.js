@@ -19,11 +19,11 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Control Screen" />
     </ListItem>
-    <ListItem button component={Link} to='/eventconfig'>
+    <ListItem button component={Link} to='/roomconfig'>
       <ListItemIcon>
         <MapIcon />
       </ListItemIcon>
-      <ListItemText primary="Configure Events" />
+      <ListItemText primary="Configure Rooms" />
     </ListItem>
     <ListItem button component={Link} to='/metrics'>
       <ListItemIcon>

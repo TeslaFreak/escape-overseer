@@ -36,7 +36,7 @@ class App extends Component {
             <Switch>
               <Route exact path='/' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
               <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
-              <Route path='/eventconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue}/>} />
+              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue}/>} />
               <Route path='/metrics' component={MetricsView}/>
               <Route path='/settings' component={SettingsView}/>
             </Switch>
