@@ -47,10 +47,10 @@ export const EODarkTheme = createMuiTheme({
     },
     text: {
       primary: babyBlue,
-      secondary: darkBlue,
+      secondary: babyBlue_1HueDarker,
     },
     action: {
-      active: babyBlue_1HueDarker
+      active: babyBlue_1HueDarker,
     },
   },
   typography: {

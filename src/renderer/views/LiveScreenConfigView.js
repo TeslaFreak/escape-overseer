@@ -30,9 +30,10 @@ class LiveScreenConfigView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={showimage: false, anchorEl: null, activeFont: 'Open Sans', activeColor: '#fff', savedColor: '#fff'};
+        this.state={showimage: false, anchorEl: null, updateBackground: false, activeFont: 'Open Sans', activeColor: '#fff', savedColor: '#fff'};
         this.db = new PouchDB('kittens');
         this.backgroundInput = React.createRef();
+        this.videoInput = React.createRef();
         
     }
 
@@ -64,11 +65,10 @@ class LiveScreenConfigView extends Component {
 
     saveImage = () => {
         var file = this.backgroundInput.current.files[0];
-        var db = this.db;
-
-        db.get('backgroundImg').then(function (doc) {
-            db.remove(doc).then(function () {
-                db.put({
+        
+        this.db.get('backgroundImg').then(function (doc) {
+            this.db.remove(doc).then(function () {
+                this.db.put({
                     _id: 'backgroundImg',
                     _attachments: {
                         'backgroundImgFile': {
@@ -76,13 +76,15 @@ class LiveScreenConfigView extends Component {
                         data: file
                       }
                     }
-                  }).catch(function (err) {
+                  }).then(function() {
+                      this.toggleBackgroundUpdateState();
+                  }.bind(this)).catch(function (err) {
                     console.log(err);
                   });
-            });
-        }).catch(function(err) {
+            }.bind(this));
+        }.bind(this)).catch(function(err) {
             if(err.name=="not_found") {
-                db.put({
+                this.db.put({
                     _id: 'backgroundImg',
                     _attachments: {
                         'backgroundImgFile': {
@@ -90,15 +92,31 @@ class LiveScreenConfigView extends Component {
                         data: file
                   }
                 }
-              })
+              }).then(function() {
+                this.toggleBackgroundUpdateState();
+            }.bind(this)).catch(function (err) {
+              console.log(err);
+            });
             };
-        });
+        }.bind(this));
         
+    }
+
+    clearImage = () => {
+        this.db.get('backgroundImg').then(function (doc) {
+            this.db.remove(doc).then(function() {
+                this.toggleBackgroundUpdateState();
+            }.bind(this)).catch(function (err) {
+                    console.log(err);
+                  });
+        }.bind(this)).catch(function(err) {
+            console.log(err)
+        });
     }
 
     saveVideo = () => {
   
-        var file = this.fileInput.current.files[0];
+        var file = this.videoInput.current.files[0];
         var db = this.db;
 
         db.get('breifVideo').then(function (doc) {
@@ -115,6 +133,30 @@ class LiveScreenConfigView extends Component {
                     console.log(err);
                   });
             });
+        }).catch(function(err) {
+            if(err.name == 'not_found') {
+                db.put({
+                    _id: 'breifVideo',
+                    _attachments: {
+                        'breifVideoFile': {
+                        type: file.type,
+                        data: file
+                      }
+                    }
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+            }
+        });
+    }
+
+    clearVideo = () => {
+        this.db.get('breifVideo').then(function (doc) {
+            this.db.remove(doc).catch(function (err) {
+                    console.log(err);
+                  });
+        }.bind(this)).catch(function(err) {
+            console.log(err)
         });
     }
     
@@ -203,11 +245,30 @@ class LiveScreenConfigView extends Component {
         this.closeColorPicker();
     }
 
+    toggleBackgroundUpdateState = () => {
+        this.setState({updateBackground: !this.state.updateBackground});
+    }
+
     render() {
         const { anchorEl } = this.state;
         return(
             <Grid container direction='column' justify='flex-start' alignItems='stretch' spacing={16} style={{padding:30}}>
                 <Grid container direction='row' justify='center' alignItems='center' spacing={16} style={{padding:30}}>
+                        <input
+                            accept="video/*"
+                            style={{ display: 'none' }}
+                            id="video-input"
+                            multiple
+                            type="file"
+                            onChange={this.saveVideo}
+                            ref={this.videoInput}
+                        />
+                        <label htmlFor="video-input">
+                        <Button component="span" style={{margin:16}}>
+                            Upload Intro Video
+                        </Button>
+                        </label>
+                        <Button onClick={this.clearVideo} style={{margin:16}}>Clear Intro Video</Button>
                         <input
                             accept="image/*"
                             style={{ display: 'none' }}
@@ -222,7 +283,7 @@ class LiveScreenConfigView extends Component {
                             Set Background Image
                         </Button>
                         </label>
-                        <Button onClick={this.saveVideo} style={{margin:16}}>Clear Background Image</Button>
+                        <Button onClick={this.clearImage} style={{margin:16}}>Clear Background Image</Button>
                         <Button onClick={this.openColorPicker} style={{margin:16}}>Set Font Color</Button>
                         <Popper
                             open={Boolean(anchorEl)} anchorEl={anchorEl}
@@ -252,7 +313,9 @@ class LiveScreenConfigView extends Component {
                         </div>
                 </Grid>
                 <Grid item>
-                    <LiveScreenPreview fontColor={this.state.activeColor} font={this.state.activeFont}/>
+                    <LiveScreenPreview updateBackground={this.state.updateBackground} backgroundUpdated={this.toggleBackgroundUpdateState} fontColor={this.state.activeColor} font={this.state.activeFont}/>
+                    <Typography style={{textAlign: 'flex-start', margin:12}}>*This preview may not match exactly to your actual live view depending on screen size.
+                                                                                We recommend always running a final check from the control screen after editing</Typography>
                 </Grid>
             </Grid>
         );

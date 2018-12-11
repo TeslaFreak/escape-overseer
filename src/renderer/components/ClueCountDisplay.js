@@ -27,8 +27,8 @@ class ClueCountDisplay extends React.Component{
   }
 
   getIconFromStatus = (isUsed) => {
-    return isUsed ? <ClearIcon className='ClueIcon' style={{color:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/> 
-                  : <LockIcon className='ClueIcon' style={{color:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/>;
+    return isUsed ? <ClearIcon className='ClueIcon' style={{color:this.props.preview?this.props.activeColor:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/> 
+                  : <LockIcon className='ClueIcon' style={{color:this.props.preview?this.props.activeColor:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/>;
   }
 
   render() {

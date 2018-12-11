@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import EventConfigView from '../views/EventConfigView';
+import ClueConfigView from '../views/ClueConfigView';
 import LiveScreenConfigView from '../views/LiveScreenConfigView';
 import Typography from '@material-ui/core/Typography';
 var WebFont = window.require('webfontloader');
@@ -24,6 +25,9 @@ class ControlView extends Component {
             <LiveScreenConfigView />
           </TabContainer>
           <TabContainer tabValue={this.props.tabValue} containerValue={1}>
+            <ClueConfigView />
+          </TabContainer>
+          <TabContainer tabValue={this.props.tabValue} containerValue={2}>
             <EventConfigView />
           </TabContainer>
         </React.Fragment>

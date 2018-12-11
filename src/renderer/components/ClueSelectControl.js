@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
-
+import { withStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
 import Paper from '@material-ui/core/Paper';
@@ -16,31 +16,58 @@ import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import AlertTone from '../../../assets/audio/alert1.wav';
+import PouchDB from 'pouchdb';
+import { array } from 'prop-types';
 const electron = window.require('electron');
 const alertTone = new Audio(AlertTone);
+const babyBlue_1HueDarker = '#0086c3';
+
+const styles = theme => ({
+cssLabel: {
+  '&$cssFocused': {
+    color: babyBlue_1HueDarker,
+  },
+},
+cssFocused: {},
+});
 
 class ClueSelectControl extends React.Component{
   constructor(props) {
     super(props);
+    this.db = new PouchDB('kittens');
     this.state = {anchorEl: null,
       clueOnScreen: '',
-                    savedClues: ['hello how was your day and do you ever need me to eat a shoe',
-                                  'farfignutten as;ldfja ;elaij f;laijewf ;alowiej ;aoleji',
-                                  ';lasjk; olfaije;li a;lejk f;lajwief; lajwef ;lajwif;lajwief;lajwief;lawjef;lajewf;lawje;lwijefa']};
+                    savedClues: []};
   
   }
 
+  componentDidMount() {
+    this.getSavedClues();
+  }
   componentDidUpdate() {
     electron.ipcRenderer.send('updateLiveViewClueDisplay', this.state.clueOnScreen);
   }
 
   selectClue(inputtext) {
-    document.getElementById("clueInput").value=inputtext;
+    this.setState({multiline:inputtext});
     this.handleClose();
   }
 
-  populateSavedClues() {
-    return this.state.savedClues.map((clue) => <MenuItem onClick={() => this.selectClue(clue)} align='start' size='small' >{clue}</MenuItem>);
+  getSavedClues() {
+    this.db.get('roomClues').then(function (doc) {
+        doc.clues.map((clue) => {this.setState({ savedClues: [...this.state.savedClues, clue.text] })});
+    }.bind(this)).catch(function (err) {
+        console.log(err);
+    });
+  }
+
+  populateCluesMenu() {
+    if(this.state.savedClues.length==0){
+      return <MenuItem style={{width:'600px'}} onClick={() => this.handleClose()} align='start' size='small' >You have no saved clues for this room</MenuItem>
+    }
+    else {
+      return this.state.savedClues.map((clue) => <MenuItem style={{width:'600px', height:'auto', whiteSpace: 'normal'}} divider onClick={() => this.selectClue(clue)} align='start' size='small' >{clue}</MenuItem>);
+    }
   }
 
   sendAlertTone() {
@@ -73,6 +100,7 @@ class ClueSelectControl extends React.Component{
 
   render() {
     const { anchorEl } = this.state;
+    const { classes } = this.props;
     return (
       <Grid>
         <Grid container direction='row' justify='center' alignItems='center' style={{padding:30}}>
@@ -82,6 +110,11 @@ class ClueSelectControl extends React.Component{
           multiline
           rows='2'
           rowsMax="5"
+          classes={{
+            root: classes.cssLabel,
+            focused: classes.cssFocused,
+          }}
+          value={this.state.multiline}
           onChange={this.handleChange('multiline')}
           margin="normal"
           variant="outlined"
@@ -104,7 +137,7 @@ class ClueSelectControl extends React.Component{
                 <Paper>
                   <ClickAwayListener onClickAway={this.handleClose}>
                     <MenuList>
-                      {this.populateSavedClues()}
+                      {this.populateCluesMenu()}
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>
@@ -120,4 +153,4 @@ class ClueSelectControl extends React.Component{
   }
 }
 
-export default ClueSelectControl;
+export default withStyles(styles)(ClueSelectControl);

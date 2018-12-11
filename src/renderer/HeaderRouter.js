@@ -30,6 +30,7 @@ function RoomConfigViewHeader(props) {
     <React.Fragment>
       <Tabs value={props.tabValue} onChange={props.changeTab}>
         <Tab label="Live Screen Config" />
+        <Tab label="Clue Config" />
         <Tab label="Event Map" />
       </Tabs>
     </React.Fragment>

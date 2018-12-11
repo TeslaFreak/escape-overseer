@@ -21,7 +21,7 @@ const styles = theme => ({
       backgroundSize: 'cover'
   },
   alwaysVisible: {
-    padding: '3%'
+    paddingTop: '3%'
   },
   videoPlayer: {
     objectFit: 'contain',
@@ -39,6 +39,7 @@ class LiveScreen extends React.PureComponent {
                     clue: '',
                     playVideo: false};
 
+    document.documentElement.style.overflow = 'hidden';
     this.db = new PouchDB('kittens');
     this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
       var url = URL.createObjectURL(blob);

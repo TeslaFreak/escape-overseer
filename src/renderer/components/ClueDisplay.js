@@ -41,7 +41,7 @@ class Timer extends React.Component{
 
   render() {
     return (
-      <Grid container item justify='flex-start' alignItems='center'><Typography style={{color:this.props.fontColor, fontFamily:this.props.font, textAlign: 'center', margin:12}} id="ClueDisplay" variant={'h2'}>{this.props.clue}</Typography></Grid>
+      <Grid container item justify='center' alignItems='center'><Typography align='center' style={{color:this.props.fontColor, fontFamily:this.props.font, overflow:'hidden', margin:12}} id="ClueDisplay" variant={this.props.preview?'h3':'h2'}>{this.props.clue}</Typography></Grid>
     );
   }
 }

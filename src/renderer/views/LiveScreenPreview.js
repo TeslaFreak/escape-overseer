@@ -19,10 +19,11 @@ const styles = theme => ({
       height: '56.25%',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
-      backgroundSize: 'cover'
+      backgroundSize: 'cover',
+      backgroundColor: 'white'
   },
   alwaysVisible: {
-    padding: '7%'
+    paddingTop: '3%'
   }
 });
 
@@ -33,12 +34,29 @@ class LiveScreenPreview extends React.PureComponent {
                     clue: 'There seems to be something peculiar about that bench in the corner of the room'};
 
     this.db = new PouchDB('kittens');
+    this.updateBackgroundImage();
+  }
+
+  componentDidUpdate() {
+    if(this.props.updateBackground == true) {
+      this.updateBackgroundImage();
+      this.props.backgroundUpdated();
+    }
+  }
+
+  updateBackgroundImage() {
     this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
       var url = URL.createObjectURL(blob);
       var backgroundDiv = document.getElementById('backgroundDiv');
       backgroundDiv.style.backgroundImage= 'url('+ url +') ';
-    }).catch(function () {
-      //log error
+    }).catch(function (err) {
+      if(err.name == 'not_found') {
+        var backgroundDiv = document.getElementById('backgroundDiv');
+        backgroundDiv.style.backgroundImage= null;
+      }
+      else {
+        console.log(err);
+      }
     })
   }
 
@@ -88,13 +106,7 @@ class LiveScreenPreview extends React.PureComponent {
     )
   }
 
-  componentDidMount() {
-    
-  }
-
-  componentWillUnmount() {
-    
-  }
+  
 }
 
 export default withStyles(styles)(LiveScreenPreview);
