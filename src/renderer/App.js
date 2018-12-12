@@ -34,9 +34,9 @@ class App extends Component {
           <Route path='/fullscreenvideo' component={FullscreenVideo}/>
           <MainOverlay toggleTheme={this.toggleTheme} headerContent={<HeaderRouter tabValue={this.state.tabValue} changeTab={this.changeTab} />} >
             <Switch>
-              <Route exact path='/' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
-              <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue}/>} />
-              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue}/>} />
+              <Route exact path='/' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab}/>} />
+              <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab}/>} />
+              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab}/>} />
               <Route path='/metrics' component={MetricsView}/>
               <Route path='/settings' component={SettingsView}/>
             </Switch>

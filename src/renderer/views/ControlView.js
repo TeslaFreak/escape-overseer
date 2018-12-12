@@ -21,6 +21,10 @@ class ControlView extends Component {
     super(props);
   }
 
+  componentDidMount() {
+    this.props.changeTab(null, 0);
+  }
+
   render() {
     return (
         <React.Fragment>
