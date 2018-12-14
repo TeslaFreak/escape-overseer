@@ -11,7 +11,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import CommentIcon from '@material-ui/icons/Comment';
+import DoneIcon from '@material-ui/icons/Done';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
@@ -42,10 +42,6 @@ class ClueConfigView extends Component {
         this.getClues();
     }
 
-    editClue = () => {
-
-    }
-
     deleteClue = (clueId) => {
         this.setState({clues: this.state.clues.filter(clue => clue.id != clueId)});
         this.updateClueDoc();
@@ -55,10 +51,26 @@ class ClueConfigView extends Component {
         if(e.nativeEvent.keyCode == 13 && document.getElementById('newClueTextField').value != '') {
             e.preventDefault();
             var stateClues = this.state.clues;
-            this.setState({ clues: [...stateClues, {id: stateClues.length > 0 ? stateClues[stateClues.length-1].id+1 : 1, text:document.getElementById('newClueTextField').value}] });
+            this.setState({ clues: [...stateClues, {id: stateClues.length > 0 ? stateClues[stateClues.length-1].id+1 : 1, text:document.getElementById('newClueTextField').value, currentlyEditing:false}] });
             document.getElementById('newClueTextField').value = '';
             this.updateClueDoc();
         }
+    }
+
+    startEditingRow = (rowId) => {
+        let stateClues = this.state.clues;
+        console.log(stateClues);
+        stateClues.find(clue => clue.id == rowId).currentlyEditing = true;
+        console.log(stateClues);
+        this.setState({ clues: stateClues});
+    }
+
+    stopEditingRow = (rowId) => {
+        let stateClues = this.state.clues;
+        stateClues.find(clue => clue.id == rowId).currentlyEditing = false;
+        stateClues.find(clue => clue.id == rowId).text = document.getElementById('edit' + rowId + 'TextField').value;
+        this.setState({ clues: stateClues});
+        this.updateClueDoc();
     }
 
     getClues = () => {
@@ -101,6 +113,7 @@ class ClueConfigView extends Component {
 
     render() {
         const { classes } = this.props;
+        let currentlyEditing;
         return(
             <React.Fragment> 
                 <TextField
@@ -113,15 +126,10 @@ class ClueConfigView extends Component {
                 />
                 <List className={classes.root}>
                     {this.state.clues.map(clue => (
-                    <ListItem key={clue.id} divider button onClick={this.handleToggle(clue.id)}>
-                        {/* <Checkbox
-                        color='secondary'
-                        checked={this.state.checked.indexOf(clue.id) !== -1}
-                        disableRipple
-                        /> */}
-                        <ListItemText primary={clue.text} />
+                    <ListItem key={clue.id} currentlyEditing={clue.currentlyEditing} divider button onClick={this.handleToggle(clue.id)}>
+                        {clue.currentlyEditing ? <TextField id={'edit' + clue.id + 'TextField'} fullWidth defaultValue={clue.text} /> : <ListItemText primary={clue.text} />}
                         <IconButton disableRipple aria-label="Comments">
-                            <EditIcon />
+                            {clue.currentlyEditing ? <DoneIcon onClick={() => this.stopEditingRow(clue.id)}/> : <EditIcon onClick={() => this.startEditingRow(clue.id)}/>}
                         </IconButton>
                         <IconButton onClick={() => this.deleteClue(clue.id)} disableRipple aria-label="Comments">
                             <DeleteIcon />

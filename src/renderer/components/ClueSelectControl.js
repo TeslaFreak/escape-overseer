@@ -36,7 +36,7 @@ class ClueSelectControl extends React.Component{
     super(props);
     this.db = new PouchDB('kittens');
     this.state = {anchorEl: null,
-      clueOnScreen: '',
+                    clueOnScreen: '',
                     savedClues: []};
   
   }
@@ -63,7 +63,7 @@ class ClueSelectControl extends React.Component{
 
   populateCluesMenu() {
     if(this.state.savedClues.length==0){
-      return <MenuItem style={{width:'600px'}} onClick={() => this.handleClose()} align='start' size='small' >You have no saved clues for this room</MenuItem>
+      return <MenuItem onClick={() => this.handleClose()} align='start' size='small' >You have no saved clues for this room</MenuItem>
     }
     else {
       return this.state.savedClues.map((clue) => <MenuItem style={{width:'600px', height:'auto', whiteSpace: 'normal'}} divider onClick={() => this.selectClue(clue)} align='start' size='small' >{clue}</MenuItem>);
@@ -101,6 +101,8 @@ class ClueSelectControl extends React.Component{
   render() {
     const { anchorEl } = this.state;
     const { classes } = this.props;
+    const ITEM_HEIGHT = 45;
+    
     return (
       <Grid>
         <Grid container direction='row' justify='center' alignItems='center' style={{padding:30}}>
@@ -133,6 +135,12 @@ class ClueSelectControl extends React.Component{
               horizontal: 'right',
             }}
             open={Boolean(anchorEl)} anchorEl={anchorEl}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: 600,
+              },
+            }}
           >
                 <Paper>
                   <ClickAwayListener onClickAway={this.handleClose}>
