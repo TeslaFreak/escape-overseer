@@ -14,6 +14,7 @@ import TextField from '@material-ui/core/TextField';
 import DoneIcon from '@material-ui/icons/Done';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import ClearIcon from '@material-ui/icons/Clear';
 import Grid from '@material-ui/core/Grid';
 const electron = window.require('electron')
 
@@ -59,9 +60,7 @@ class ClueConfigView extends Component {
 
     startEditingRow = (rowId) => {
         let stateClues = this.state.clues;
-        console.log(stateClues);
         stateClues.find(clue => clue.id == rowId).currentlyEditing = true;
-        console.log(stateClues);
         this.setState({ clues: stateClues});
     }
 
@@ -71,6 +70,12 @@ class ClueConfigView extends Component {
         stateClues.find(clue => clue.id == rowId).text = document.getElementById('edit' + rowId + 'TextField').value;
         this.setState({ clues: stateClues});
         this.updateClueDoc();
+    }
+
+    cancelEditingRow = (rowId) => {
+        let stateClues = this.state.clues;
+        stateClues.find(clue => clue.id == rowId).currentlyEditing = false;
+        this.setState({ clues: stateClues});
     }
 
     getClues = () => {
@@ -131,8 +136,8 @@ class ClueConfigView extends Component {
                         <IconButton disableRipple aria-label="Comments">
                             {clue.currentlyEditing ? <DoneIcon onClick={() => this.stopEditingRow(clue.id)}/> : <EditIcon onClick={() => this.startEditingRow(clue.id)}/>}
                         </IconButton>
-                        <IconButton onClick={() => this.deleteClue(clue.id)} disableRipple aria-label="Comments">
-                            <DeleteIcon />
+                        <IconButton disableRipple aria-label="Comments">
+                            {clue.currentlyEditing ? <ClearIcon onClick={() => this.cancelEditingRow(clue.id)}/> : <DeleteIcon onClick={() => this.deleteClue(clue.id)}/>}
                         </IconButton>
                     </ListItem>
                     ))}
