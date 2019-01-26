@@ -107,10 +107,8 @@ class HeaderBar extends React.Component{
 
   refreshRoomList = () => {
     this.db.get('rooms').then(function(doc) {
-        console.log(doc.roomList)
         if(doc.roomList) {
             this.setState({rooms:doc.roomList});
-            console.log(this.state.rooms);
         }
     }.bind(this)).catch(function (err) {
         console.log(err);

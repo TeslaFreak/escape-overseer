@@ -26,7 +26,7 @@ class App extends Component {
     this.setState({ tabValue:value });
   }
 
-  changeRoom = (event, roomId) => {
+  changeRoom = (roomId) => {
     console.log(roomId);
     this.setState({ selectedRoom:roomId });
   }
@@ -38,7 +38,7 @@ class App extends Component {
         <Switch>
           <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>
           <Route path='/fullscreenvideo' component={FullscreenVideo}/>
-          <MainOverlay toggleTheme={this.toggleTheme} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} changeTab={this.changeTab}/>} >
+          <MainOverlay toggleTheme={this.toggleTheme} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoom={this.state.selectedRoom} changeTab={this.changeTab}/>} >
             <Switch>
               <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom}/>} />
               <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom}/>} />
