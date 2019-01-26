@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import LiveView from './views/LiveView';
 import ControlView from './views/ControlView';
 import EventConfigView from './views/EventConfigView';
@@ -52,6 +52,21 @@ function EventConfigViewHeader(props) {
   );
 }
 
+function RoomSelectionViewHeader(props) {
+  return (
+    <React.Fragment>
+      <Typography
+        component="h1"
+        variant="h6"
+        color="inherit"
+        noWrap
+      >
+        Room Select
+      </Typography>
+    </React.Fragment>
+  );
+}
+
 class HeaderRouter extends Component {
   constructor(props) {
     super(props);
@@ -61,11 +76,13 @@ class HeaderRouter extends Component {
   render() {
     return (
         <Switch>
-          <Route exact path='/' render={(props) => <ControlViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} />
-          <Route path='/control' render={(props) => <ControlViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} />
+          {this.props.selectedRoom == null ?
+            <Route path='/control' render={(props) => <RoomSelectionViewHeader changeRoom={this.props.changeRoom}/>} /> :                                       
+            <Route path='/control' render={(props) => <ControlViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} /> }
           <Route path='/roomconfig' render={(props) => <RoomConfigViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} />
           <Route path='/metrics' component={EventConfigViewHeader}/>
           <Route path='/settings' component={EventConfigViewHeader}/>
+          <Redirect from='/' to='/control'/>
         </Switch>
     );
   }

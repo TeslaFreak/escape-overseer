@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PouchDB from 'pouchdb';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +14,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Switch from '@material-ui/core/Switch';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 
 const drawerWidth = 240;
@@ -97,6 +100,25 @@ const styles = theme => ({
 class HeaderBar extends React.Component{
   constructor(props) {
     super(props);
+    this.db = new PouchDB('kittens');
+    this.state = {rooms:[]};
+    this.refreshRoomList();
+  }
+
+  refreshRoomList = () => {
+    this.db.get('rooms').then(function(doc) {
+        console.log(doc.roomList)
+        if(doc.roomList) {
+            this.setState({rooms:doc.roomList});
+            console.log(this.state.rooms);
+        }
+    }.bind(this)).catch(function (err) {
+        console.log(err);
+    });
+  }
+
+  handleRoomChange = (event) => {
+    this.props.changeRoom(event.target.value);
   }
 
   render() {
@@ -121,6 +143,20 @@ class HeaderBar extends React.Component{
           <div className={classes.title}>
             {this.props.headerContent}
           </div>
+
+          {this.props.selectedRoom != null &&
+          <Select
+            value={this.props.selectedRoom}
+            onChange={this.handleRoomChange}
+            inputProps={{
+              name: 'room',
+              id: 'room-select',
+            }}
+          >
+          {this.state.rooms.map(room => (
+            <MenuItem value={room._id}>{room.name}</MenuItem>
+            ))}
+          </Select>}
           <Switch defaultChecked onChange={this.props.toggleTheme}/>
         </Toolbar>
       </AppBar>
