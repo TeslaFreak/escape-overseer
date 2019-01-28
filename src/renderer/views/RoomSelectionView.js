@@ -11,6 +11,7 @@ import CreateNewRoomModal from '../components/CreateNewRoomModal.js';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import ReportView from './ReportView';
+import { Switch, Route, Redirect } from 'react-router-dom'
 import { withStyles, withTheme } from '@material-ui/core/styles';
 const uuidv4 = require('uuid/v4');
 
@@ -94,9 +95,10 @@ class RoomSelectionView extends Component {
         <React.Fragment>
         <Grid container direction='column'>
             <Grid>
-                <Typography variant='h6'>
-                    Choose a room to play:
-                </Typography>
+            <Switch>
+                <Route path='/control' render={(props) => <Typography variant='h6'>Choose a room to play:</Typography>} />
+                <Route path='/roomconfig' render={(props) => <Typography variant='h6'>Choose a room to edit:</Typography>} />
+            </Switch>  
             </Grid>
             <Grid container direction='row' spacing={16}>
             {this.state.rooms.map(room => (

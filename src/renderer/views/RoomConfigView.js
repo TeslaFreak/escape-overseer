@@ -3,6 +3,7 @@ import EventConfigView from '../views/EventConfigView';
 import ClueConfigView from '../views/ClueConfigView';
 import LiveScreenConfigView from '../views/LiveScreenConfigView';
 import Typography from '@material-ui/core/Typography';
+import RoomSelectionView from '../views/RoomSelectionView';
 var WebFont = window.require('webfontloader');
 
 function TabContainer(props) {
@@ -24,6 +25,10 @@ class ControlView extends Component {
 
   render() {
     return (
+      this.props.selectedRoom==null ? 
+        <React.Fragment>
+          <RoomSelectionView changeRoom={this.props.changeRoom}/>
+        </React.Fragment> :
         <React.Fragment>
           <TabContainer tabValue={this.props.tabValue} containerValue={0}>
             <LiveScreenConfigView />

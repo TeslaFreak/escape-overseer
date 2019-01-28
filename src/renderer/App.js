@@ -27,7 +27,6 @@ class App extends Component {
   }
 
   changeRoom = (roomId) => {
-    console.log(roomId);
     this.setState({ selectedRoom:roomId });
   }
 
@@ -41,7 +40,7 @@ class App extends Component {
           <MainOverlay toggleTheme={this.toggleTheme} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoom={this.state.selectedRoom} changeTab={this.changeTab}/>} >
             <Switch>
               <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom}/>} />
-              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom}/>} />
+              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} />} />
               <Route path='/metrics' component={MetricsView}/>
               <Route path='/settings' component={SettingsView}/>
               <Redirect from='/' to='/control'/>

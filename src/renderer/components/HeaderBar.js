@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PouchDB from 'pouchdb';
 import classNames from 'classnames';
+import RoomSelectDropDown from './RoomSelectDropDown';
 import { withStyles, withTheme } from '@material-ui/core/styles';
+import { Switch, Route, Redirect } from 'react-router-dom'
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,11 +15,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import Switch from '@material-ui/core/Switch';
+import SwitchInput from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
-
 const drawerWidth = 240;
 
 const styles = theme => ({
@@ -115,10 +116,6 @@ class HeaderBar extends React.Component{
     });
   }
 
-  handleRoomChange = (event) => {
-    this.props.changeRoom(event.target.value);
-  }
-
   render() {
     const { classes } = this.props;
     return (
@@ -143,19 +140,12 @@ class HeaderBar extends React.Component{
           </div>
 
           {this.props.selectedRoom != null &&
-          <Select
-            value={this.props.selectedRoom}
-            onChange={this.handleRoomChange}
-            inputProps={{
-              name: 'room',
-              id: 'room-select',
-            }}
-          >
-          {this.state.rooms.map(room => (
-            <MenuItem value={room._id}>{room.name}</MenuItem>
-            ))}
-          </Select>}
-          <Switch defaultChecked onChange={this.props.toggleTheme}/>
+          <Switch>
+            <Route path='/control' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoom={this.props.selectedRoom} changeRoom={this.props.changeRoom}/>} />
+            <Route path='/roomconfig' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoom={this.props.selectedRoom} changeRoom={this.props.changeRoom}/>} />
+          </Switch>
+          }
+          <SwitchInput defaultChecked onChange={this.props.toggleTheme}/>
         </Toolbar>
       </AppBar>
     );
