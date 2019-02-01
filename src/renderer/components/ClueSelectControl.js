@@ -44,8 +44,13 @@ class ClueSelectControl extends React.Component{
   componentDidMount() {
     this.getSavedClues();
   }
-  componentDidUpdate() {
-    electron.ipcRenderer.send('updateLiveViewClueDisplay', this.state.clueOnScreen);
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.clueOnScreen != this.state.clueOnScreen) {
+      electron.ipcRenderer.send('updateLiveViewClueDisplay', this.state.clueOnScreen);
+    }
+    if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+      this.getSavedClues();
+    }
   }
 
   selectClue(inputtext) {
@@ -54,11 +59,12 @@ class ClueSelectControl extends React.Component{
   }
 
   getSavedClues() {
-    this.db.get('roomClues').then(function (doc) {
+    this.db.get(this.props.selectedRoomId + '\\roomClues').then(function (doc) {
         doc.clues.map((clue) => {this.setState({ savedClues: [...this.state.savedClues, clue.text] })});
     }.bind(this)).catch(function (err) {
+        this.setState({savedClues: []});
         console.log(err);
-    });
+    }.bind(this));
   }
 
   populateCluesMenu() {
@@ -76,8 +82,7 @@ class ClueSelectControl extends React.Component{
 
   sendClue = () => {
     this.sendAlertTone();
-    this.setState({clueOnScreen: document.getElementById("clueInput").value});
-    document.getElementById("clueInput").value='';
+    this.setState({clueOnScreen: document.getElementById("clueInput").value, multiline:''});
   }
 
   clearLiveScreen = () => {
@@ -145,7 +150,10 @@ class ClueSelectControl extends React.Component{
                 <Paper>
                   <ClickAwayListener onClickAway={this.handleClose}>
                     <MenuList>
-                      {this.populateCluesMenu()}
+                    {this.state.savedClues.length==0 &&
+                      <MenuItem onClick={this.handleClose} align='start' size='small' >You have no saved clues for this room</MenuItem>}
+                    {this.state.savedClues.length!=0 &&
+                       this.state.savedClues.map((clue, index) => <MenuItem style={{width:'600px', height:'auto', whiteSpace: 'normal'}} divider={this.state.savedClues[index + 1] !== undefined} onClick={() => this.selectClue(clue)} align='start' size='small' >{clue}</MenuItem>)}
                     </MenuList>
                   </ClickAwayListener>
                 </Paper>

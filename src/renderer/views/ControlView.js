@@ -37,7 +37,7 @@ class ControlView extends Component {
                 <LiveViewControl selectedRoomId={this.props.selectedRoomId}/>
                 <TimerControl />
                 <ClueCountControl />
-                <ClueSelectControl />
+                <ClueSelectControl selectedRoomId={this.props.selectedRoomId}/>
             </TabContainer>
             <TabContainer tabValue={this.props.tabValue} containerValue={1}>
               <ReportView />

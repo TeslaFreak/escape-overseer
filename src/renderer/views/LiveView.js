@@ -112,7 +112,7 @@ class LiveScreen extends React.PureComponent {
                   max={3600}
                   size='large' />
               </Grid>
-              <ClueDisplay liveScreen clue={this.state.clue} />
+              <ClueDisplay liveScreen selectedRoomId={this.state.selectedRoomId} clue={this.state.clue} />
             </Grid>
             <Dialog
                 id='vidDialogue'

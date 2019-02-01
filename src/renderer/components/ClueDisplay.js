@@ -18,8 +18,15 @@ class Timer extends React.Component{
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+        this.setFont();
+        this.setTextColor();
+    }
+  }
+
   setFont() {
-    this.db.get('liveViewFont').then(function(doc) {
+    this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function(doc) {
       WebFont.load({
         google: { 
                families: [doc.font] 
@@ -32,7 +39,7 @@ class Timer extends React.Component{
   }
 
   setTextColor() {
-    this.db.get('liveViewTextColor').then(function(doc) {
+    this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
       document.getElementById('ClueDisplay').style.color = doc.color;
     }).catch(function (err) {
       console.log(err);
