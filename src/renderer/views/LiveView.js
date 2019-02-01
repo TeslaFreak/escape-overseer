@@ -37,11 +37,21 @@ class LiveScreen extends React.PureComponent {
     this.state = { minutes: 60, seconds:0,
                     clue1Used: false, clue2Used: false, clue3Used: false,
                     clue: '',
-                    playVideo: false};
+                    playVideo: false,
+                    selectedRoomId: null};
 
     document.documentElement.style.overflow = 'hidden';
     this.db = new PouchDB('kittens');
-    this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevState.selectedRoomId != this.state.selectedRoomId) {
+        this.setBackground();
+    }
+  }
+
+  setBackground = () => {
+    this.db.getAttachment(this.state.selectedRoomId + '\\backgroundImg', 'backgroundImgFile').then(function(blob) {
       var url = URL.createObjectURL(blob);
       var backgroundDiv = document.getElementById('backgroundDiv');
       backgroundDiv.style.backgroundImage= 'url('+ url +') ';
@@ -52,7 +62,7 @@ class LiveScreen extends React.PureComponent {
 
   playVideo = () => {
     this.setState({playVideo: true});
-    return this.db.getAttachment('breifVideo', 'breifVideoFile').then(function(blob) {
+    return this.db.getAttachment(this.state.selectedRoomId + '\\breifVideo', 'breifVideoFile').then(function(blob) {
         var url = URL.createObjectURL(blob);
         var vidElement = document.getElementById('vid');
         vidElement.src = url;
@@ -83,6 +93,10 @@ class LiveScreen extends React.PureComponent {
     electron.ipcRenderer.on('roomSequence', (event, sequenceNodeId) => {
       this.playVideo();
     });
+    electron.ipcRenderer.on('updateSelectedRoomId', (event, selectedRoomId) => {
+      this.setState({selectedRoomId: selectedRoomId});
+      console.log(selectedRoomId);
+    });
 
     return (
       <div id='backgroundDiv' className={classNames(classes.background)}>
@@ -90,9 +104,9 @@ class LiveScreen extends React.PureComponent {
               justify='flex-start'
               alignItems='center'>
               <Grid item className={classNames(classes.alwaysVisible)}>
-                <ClueCountDisplay liveScreen clue1Used={this.state.clue1Used} clue2Used={this.state.clue2Used} clue3Used={this.state.clue3Used} />
+                <ClueCountDisplay selectedRoomId={this.state.selectedRoomId} liveScreen clue1Used={this.state.clue1Used} clue2Used={this.state.clue2Used} clue3Used={this.state.clue3Used} />
                 <Meter
-                  label = {<TimeDisplay liveScreen minutes={this.state.minutes} seconds={this.state.seconds} />}
+                  label = {<TimeDisplay selectedRoomId={this.state.selectedRoomId} liveScreen minutes={this.state.minutes} seconds={this.state.seconds} />}
                   value = {this.state.minutes*60+this.state.seconds}
                   type='circle'
                   max={3600}

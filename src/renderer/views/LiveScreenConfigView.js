@@ -16,6 +16,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import {EOTheme} from '../EscapeOverseerTheme';
 var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
+const uuidv4 = require('uuid/v4');
 
 //google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
 
@@ -30,11 +31,19 @@ class LiveScreenConfigView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={showimage: false, anchorEl: null, updateBackground: false, activeFont: 'Open Sans', activeColor: '#fff', savedColor: '#fff'};
+        this.state={showimage: false, anchorEl: null, updateBackground: false, activeFont: 'Roboto', activeColor: '#000', savedColor: '#000'};
         this.db = new PouchDB('kittens');
         this.backgroundInput = React.createRef();
         this.videoInput = React.createRef();
         
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+            this.setFont();
+            this.setTextColor();
+            this.beginBackgroundUpdate();
+        }
     }
 
     componentDidMount() {
@@ -43,7 +52,7 @@ class LiveScreenConfigView extends Component {
     }
 
     setFont() {
-        this.db.get('liveViewFont').then(function(doc) {
+        this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function(doc) {
             WebFont.load({
             google: { 
                     families: [doc.font] 
@@ -51,25 +60,27 @@ class LiveScreenConfigView extends Component {
             });
             this.setState({activeFont:doc.font});
         }.bind(this)).catch(function (err) {
+            this.setState({activeFont: 'Roboto'});
             console.log(err);
-        })
+        }.bind(this))
     }
 
     setTextColor() {
-        this.db.get('liveViewTextColor').then(function(doc) {
+        this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
             this.setState({activeColor:doc.color, savedColor:doc.color});
         }.bind(this)).catch(function (err) {
+            this.setState({activeColor: '#000', savedColor: '#000'});
             console.log(err);
-        })
+        }.bind(this))
     }
 
     saveImage = () => {
         var file = this.backgroundInput.current.files[0];
         
-        this.db.get('backgroundImg').then(function (doc) {
+        this.db.get(this.props.selectedRoomId + '\\backgroundImg').then(function (doc) {
             this.db.remove(doc).then(function () {
                 this.db.put({
-                    _id: 'backgroundImg',
+                    _id: this.props.selectedRoomId + '\\backgroundImg',
                     _attachments: {
                         'backgroundImgFile': {
                         type: file.type,
@@ -77,7 +88,7 @@ class LiveScreenConfigView extends Component {
                       }
                     }
                   }).then(function() {
-                      this.toggleBackgroundUpdateState();
+                      this.beginBackgroundUpdate();
                   }.bind(this)).catch(function (err) {
                     console.log(err);
                   });
@@ -85,7 +96,7 @@ class LiveScreenConfigView extends Component {
         }.bind(this)).catch(function(err) {
             if(err.name=="not_found") {
                 this.db.put({
-                    _id: 'backgroundImg',
+                    _id: this.props.selectedRoomId + '\\backgroundImg',
                     _attachments: {
                         'backgroundImgFile': {
                         type: file.type,
@@ -93,7 +104,7 @@ class LiveScreenConfigView extends Component {
                   }
                 }
               }).then(function() {
-                this.toggleBackgroundUpdateState();
+                this.beginBackgroundUpdate();
             }.bind(this)).catch(function (err) {
               console.log(err);
             });
@@ -103,9 +114,9 @@ class LiveScreenConfigView extends Component {
     }
 
     clearImage = () => {
-        this.db.get('backgroundImg').then(function (doc) {
+        this.db.get(this.props.selectedRoomId + '\\backgroundImg').then(function (doc) {
             this.db.remove(doc).then(function() {
-                this.toggleBackgroundUpdateState();
+                this.beginBackgroundUpdate();
             }.bind(this)).catch(function (err) {
                     console.log(err);
                   });
@@ -117,12 +128,11 @@ class LiveScreenConfigView extends Component {
     saveVideo = () => {
   
         var file = this.videoInput.current.files[0];
-        var db = this.db;
 
-        db.get('breifVideo').then(function (doc) {
-            db.remove(doc).then(function () {
-                db.put({
-                    _id: 'breifVideo',
+        this.db.get(this.props.selectedRoomId + '\\breifVideo').then(function (doc) {
+            this.db.remove(doc).then(function () {
+                this.db.put({
+                    _id: this.props.selectedRoomId + '\\breifVideo',
                     _attachments: {
                         'breifVideoFile': {
                         type: file.type,
@@ -132,11 +142,11 @@ class LiveScreenConfigView extends Component {
                   }).catch(function (err) {
                     console.log(err);
                   });
-            });
-        }).catch(function(err) {
+            }.bind(this));
+        }.bind(this)).catch(function(err) {
             if(err.name == 'not_found') {
-                db.put({
-                    _id: 'breifVideo',
+                this.db.put({
+                    _id: this.props.selectedRoomId + '\\breifVideo',
                     _attachments: {
                         'breifVideoFile': {
                         type: file.type,
@@ -147,11 +157,11 @@ class LiveScreenConfigView extends Component {
                     console.log(err);
                   });
             }
-        });
+        }.bind(this));
     }
 
     clearVideo = () => {
-        this.db.get('breifVideo').then(function (doc) {
+        this.db.get(this.props.selectedRoomId + '\\breifVideo').then(function (doc) {
             this.db.remove(doc).catch(function (err) {
                     console.log(err);
                   });
@@ -162,7 +172,7 @@ class LiveScreenConfigView extends Component {
     
     playVideo = () => {
         this.setState({playVideo: true});
-        return this.db.getAttachment('breifVideo', 'breifVideoFile').then(function(blob) {
+        return this.db.getAttachment(this.props.selectedRoomId + '\\breifVideo', 'breifVideoFile').then(function(blob) {
             var url = URL.createObjectURL(blob);
             var vidElement = document.getElementById('vid');
             vidElement.src = url;
@@ -179,23 +189,22 @@ class LiveScreenConfigView extends Component {
 
     updateLiveViewTypeFace = (nextFont) => {
         this.setState({ activeFont: nextFont.family });
-        var db = this.db;
 
-        db.get('liveViewFont').then(function (doc) {
+        this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function (doc) {
             doc.font=nextFont.family;
-            db.put(doc).catch(function (err) {
+            this.db.put(doc).catch(function (err) {
                 console.log(err);
             });
-        }).catch(function (err) {
+        }.bind(this)).catch(function (err) {
             if(err.name=="not_found") {
-                db.put({
-                    _id: 'liveViewFont',
+                this.db.put({
+                    _id: this.props.selectedRoomId + '\\liveViewFont',
                     font: nextFont.family
                   }).catch(function (err) {
                     console.log(err);
                   });
             }
-        });
+        }.bind(this));
     }
 
     openColorPicker = event => {
@@ -219,24 +228,22 @@ class LiveScreenConfigView extends Component {
     saveColor = () => {
         this.setState({savedColor: this.state.activeColor});
         var savedColor = this.state.activeColor;
-        var db = this.db;
-        var state = this.state;
 
-        db.get('liveViewTextColor').then(function (doc) {
+        this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function (doc) {
             doc.color=savedColor;
-            db.put(doc).catch(function (err) {
+            this.db.put(doc).catch(function (err) {
                 console.log(err);
             });
-        }).catch(function (err) {
+        }.bind(this)).catch(function (err) {
             if(err.name=="not_found") {
-                db.put({
-                    _id: 'liveViewTextColor',
+                this.db.put({
+                    _id: this.props.selectedRoomId + '\\liveViewTextColor',
                     color: savedColor,
                   }).catch(function (err) {
                     console.log(err);
                   });
             }
-        });
+        }.bind(this));
         this.closeColorPicker();
     }
 
@@ -245,8 +252,12 @@ class LiveScreenConfigView extends Component {
         this.closeColorPicker();
     }
 
-    toggleBackgroundUpdateState = () => {
-        this.setState({updateBackground: !this.state.updateBackground});
+    beginBackgroundUpdate = () => {
+        this.setState({updateBackground: true});
+    }
+
+    endBackgroundUpdate = () => {
+        this.setState({updateBackground: false});
     }
 
     render() {
@@ -313,7 +324,7 @@ class LiveScreenConfigView extends Component {
                         </div>
                 </Grid>
                 <Grid item>
-                    <LiveScreenPreview updateBackground={this.state.updateBackground} backgroundUpdated={this.toggleBackgroundUpdateState} fontColor={this.state.activeColor} font={this.state.activeFont}/>
+                    <LiveScreenPreview updateBackground={this.state.updateBackground} endBackgroundUpdate={this.endBackgroundUpdate} fontColor={this.state.activeColor} font={this.state.activeFont} selectedRoomId={this.props.selectedRoomId}/>
                     <Typography style={{textAlign: 'flex-start', margin:12}}>*This preview may not match exactly to your actual live view depending on screen size.
                                                                                 We recommend always running a final check from the control screen after editing</Typography>
                 </Grid>

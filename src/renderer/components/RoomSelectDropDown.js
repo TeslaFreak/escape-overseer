@@ -20,7 +20,7 @@ class RoomSelectDropDown extends React.Component{
   render() {
     return (
         <Select
-        value={this.props.selectedRoom}
+        value={this.props.selectedRoomId}
         onChange={this.handleRoomChange}
         inputProps={{
           name: 'room',

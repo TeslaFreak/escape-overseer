@@ -18,9 +18,16 @@ class ClueCountDisplay extends React.Component{
       this.setTextColor();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+        this.setTextColor();
+    }
+  }
+
   setTextColor() {
-    this.db.get('liveViewTextColor').then(function(doc) {
+    this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
       this.setState({activeColor: doc.color});
+      console.log(doc.color);
     }.bind(this)).catch(function (err) {
       console.log(err);
     })

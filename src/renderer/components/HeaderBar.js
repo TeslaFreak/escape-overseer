@@ -139,10 +139,10 @@ class HeaderBar extends React.Component{
             {this.props.headerContent}
           </div>
 
-          {this.props.selectedRoom != null &&
+          {this.props.selectedRoomId != null &&
           <Switch>
-            <Route path='/control' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoom={this.props.selectedRoom} changeRoom={this.props.changeRoom}/>} />
-            <Route path='/roomconfig' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoom={this.props.selectedRoom} changeRoom={this.props.changeRoom}/>} />
+            <Route path='/control' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoomId={this.props.selectedRoomId} changeRoom={this.props.changeRoom}/>} />
+            <Route path='/roomconfig' render={(props) => <RoomSelectDropDown rooms={this.state.rooms} selectedRoomId={this.props.selectedRoomId} changeRoom={this.props.changeRoom}/>} />
           </Switch>
           }
           <SwitchInput defaultChecked onChange={this.props.toggleTheme}/>

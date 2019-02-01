@@ -11,11 +11,12 @@ import FullscreenVideo from './views/FullscreenVideoView';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {EOTheme, EODarkTheme} from './EscapeOverseerTheme';
 import RoomSelectionView from './views/RoomSelectionView';
+const electron = window.require('electron');
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {theme: 'dark', tabValue:0, selectedRoom: null};
+    this.state = {theme: 'dark', tabValue:0, selectedRoomId: null};
   }
 
   toggleTheme = () => {
@@ -27,7 +28,7 @@ class App extends Component {
   }
 
   changeRoom = (roomId) => {
-    this.setState({ selectedRoom:roomId });
+    this.setState({ selectedRoomId:roomId });
   }
 
   render() {
@@ -37,10 +38,10 @@ class App extends Component {
         <Switch>
           <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>
           <Route path='/fullscreenvideo' component={FullscreenVideo}/>
-          <MainOverlay toggleTheme={this.toggleTheme} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoom={this.state.selectedRoom} changeTab={this.changeTab}/>} >
+          <MainOverlay toggleTheme={this.toggleTheme} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoomId={this.state.selectedRoomId} changeTab={this.changeTab}/>} >
             <Switch>
-              <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom}/>} />
-              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoom={this.state.selectedRoom} changeRoom={this.changeRoom} />} />
+              <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom}/>} />
+              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} />} />
               <Route path='/metrics' component={MetricsView}/>
               <Route path='/settings' component={SettingsView}/>
               <Redirect from='/' to='/control'/>

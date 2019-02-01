@@ -14,15 +14,16 @@ let liveWindow = null;
 let videoWindow = null;
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-ipcMain.on("toggleLiveViewOpen", (event, args) => {
+ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
     if (liveWindow == null) {
-        liveWindow = new BrowserWindow({width: 800, height: 600});
+        liveWindow = new BrowserWindow({width: 800, height: 600, show: false});
         const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/live"
         liveWindow.loadURL(startUrl);
         liveWindow.webContents.openDevTools();
         liveWindow.setMenu(null);
         liveWindow.once('ready-to-show', () => {
-            liveWindow.show()
+            liveWindow.webContents.send('updateSelectedRoomId', selectedRoomId);
+            liveWindow.show();
         })
         liveWindow.on('closed', () => {
             liveWindow = null;

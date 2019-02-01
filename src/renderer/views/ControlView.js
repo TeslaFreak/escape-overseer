@@ -28,13 +28,13 @@ class ControlView extends Component {
 
   render() {
     return (
-          this.props.selectedRoom==null ? 
+          this.props.selectedRoomId==null ? 
             <React.Fragment>
               <RoomSelectionView changeRoom={this.props.changeRoom}/>
             </React.Fragment> :
           <React.Fragment>
             <TabContainer tabValue={this.props.tabValue} containerValue={0}>
-                <LiveViewControl />
+                <LiveViewControl selectedRoomId={this.props.selectedRoomId}/>
                 <TimerControl />
                 <ClueCountControl />
                 <ClueSelectControl />

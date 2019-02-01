@@ -18,7 +18,7 @@ class LiveViewControl extends React.Component{
   }
 
   createWindow = () => {
-    electron.ipcRenderer.send("toggleLiveViewOpen");
+    electron.ipcRenderer.send("toggleLiveViewOpen", this.props.selectedRoomId);
     this.setState({liveViewOpen: !this.state.liveViewOpen});
   };
 

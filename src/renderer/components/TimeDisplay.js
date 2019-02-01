@@ -17,6 +17,13 @@ class Timer extends React.Component{
       this.setTextColor();
     }
   }
+  
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+        this.setFont();
+        this.setTextColor();
+    }
+  }
 
   timeIsUp() {
     return (this.props.minutes <=0 && this.props.seconds <= 0);
@@ -29,22 +36,24 @@ class Timer extends React.Component{
   }
 
   setFont() {
-    this.db.get('liveViewFont').then(function(doc) {
+    this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function(doc) {
       WebFont.load({
         google: { 
                families: [doc.font] 
          } 
       });
       document.getElementById('Timedisplay').style.fontFamily = doc.font;
-    }).catch(function (err) {
+    }.bind(this)).catch(function (err) {
       console.log(err);
-    })
+    }.bind(this))
   }
 
   setTextColor() {
-    this.db.get('liveViewTextColor').then(function(doc) {
+    this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
       document.getElementById('Timedisplay').style.color = doc.color;
+      console.log(doc.color);
     }).catch(function (err) {
+      document.getElementById('Timedisplay').style.color = '#000';
       console.log(err);
     })
   }

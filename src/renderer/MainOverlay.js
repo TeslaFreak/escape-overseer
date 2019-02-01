@@ -94,7 +94,7 @@ class MainOverlay extends Component {
       <React.Fragment>
         <CssBaseline />
       <div className={classes.root}>
-        <HeaderBar open={this.state.open} handleDrawerOpen={this.handleDrawerOpen} toggleTheme={this.props.toggleTheme} headerContent={this.props.headerContent} changeRoom={this.props.changeRoom} selectedRoom={this.props.selectedRoom}/>
+        <HeaderBar open={this.state.open} handleDrawerOpen={this.handleDrawerOpen} toggleTheme={this.props.toggleTheme} headerContent={this.props.headerContent} changeRoom={this.props.changeRoom} selectedRoomId={this.props.selectedRoomId}/>
           <Drawer
             variant="permanent"
             classes={{

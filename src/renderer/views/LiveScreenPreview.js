@@ -37,15 +37,15 @@ class LiveScreenPreview extends React.PureComponent {
     this.updateBackgroundImage();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if(this.props.updateBackground == true) {
       this.updateBackgroundImage();
-      this.props.backgroundUpdated();
+      this.props.endBackgroundUpdate();
     }
   }
 
   updateBackgroundImage() {
-    this.db.getAttachment('backgroundImg', 'backgroundImgFile').then(function(blob) {
+    this.db.getAttachment(this.props.selectedRoomId + '\\backgroundImg', 'backgroundImgFile').then(function(blob) {
       var url = URL.createObjectURL(blob);
       var backgroundDiv = document.getElementById('backgroundDiv');
       backgroundDiv.style.backgroundImage= 'url('+ url +') ';
@@ -62,7 +62,7 @@ class LiveScreenPreview extends React.PureComponent {
 
   playVideo = () => {
     this.setState({playVideo: true});
-    return this.db.getAttachment('breifVideo', 'breifVideoFile').then(function(blob) {
+    return this.db.getAttachment(this.props.selectedRoomId + '\\breifVideo', 'breifVideoFile').then(function(blob) {
         var url = URL.createObjectURL(blob);
         var vidElement = document.getElementById('vid');
         vidElement.src = url;
@@ -73,18 +73,6 @@ class LiveScreenPreview extends React.PureComponent {
 
   render() {
     const { classes } = this.props;
-    electron.ipcRenderer.on('updateLiveViewTimeDisplay', (event, min, sec) => {
-      this.setState({minutes: min, seconds: sec});
-    });
-    electron.ipcRenderer.on('updateLiveViewClueDisplay', (event, clue) => {
-      this.setState({clue: clue});
-    });
-    electron.ipcRenderer.on('updateLiveViewClueCountDisplay', (event, clue1Used, clue2Used, clue3Used) => {
-      this.setState({clue1Used: clue1Used, clue2Used: clue2Used, clue3Used: clue3Used});
-    });
-    electron.ipcRenderer.on('roomSequence', (event, sequenceNodeId) => {
-      this.playVideo();
-    });
 
     return (
       <div id='backgroundDiv' className={classNames(classes.background)}>

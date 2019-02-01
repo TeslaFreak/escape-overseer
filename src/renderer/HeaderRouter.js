@@ -76,11 +76,11 @@ class HeaderRouter extends Component {
   render() {
     return (
         <Switch>
-          {this.props.selectedRoom == null ?
-            <Route path='/control' render={(props) => <RoomSelectionViewHeader changeRoom={this.props.changeRoom}/>} /> :                                       
+          {this.props.selectedRoomId == null ?
+            <Route path='/control' render={(props) => <RoomSelectionViewHeader/>} /> :                                       
             <Route path='/control' render={(props) => <ControlViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} /> }
-          {this.props.selectedRoom == null ?
-            <Route path='/roomconfig' render={(props) => <RoomSelectionViewHeader changeRoom={this.props.changeRoom}/>} /> :                                       
+          {this.props.selectedRoomId == null ?
+            <Route path='/roomconfig' render={(props) => <RoomSelectionViewHeader/>} /> :                                       
             <Route path='/roomconfig' render={(props) => <RoomConfigViewHeader {...props} tabValue={this.props.tabValue} changeTab={this.props.changeTab}/>} /> }
           <Route path='/metrics' component={EventConfigViewHeader}/>
           <Route path='/settings' component={EventConfigViewHeader}/>

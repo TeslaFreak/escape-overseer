@@ -39,6 +39,11 @@ class ClueConfigView extends Component {
         this.db = new PouchDB('kittens');
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+            this.getClues();
+        }
+    }
     componentDidMount() {
         this.getClues();
     }
@@ -79,20 +84,21 @@ class ClueConfigView extends Component {
     }
 
     getClues = () => {
-        return this.db.get('roomClues').then(function(doc) {
+        return this.db.get(this.props.selectedRoomId + '\\roomClues').then(function(doc) {
             this.setState({clues: doc.clues});
         }.bind(this)).catch(function(err) {
+            this.setState({clues: []});
             console.log(err);
         }.bind(this))
     }
 
     updateClueDoc = () => {
-        this.db.get('roomClues').then(function(doc) {
+        this.db.get(this.props.selectedRoomId + '\\roomClues').then(function(doc) {
             doc.clues = this.state.clues;
             this.db.put(doc);
         }.bind(this)).catch(function(err) {
             this.db.put({
-                _id: 'roomClues',
+                _id: this.props.selectedRoomId + '\\roomClues',
                 clues: this.state.clues
                 }
             );
