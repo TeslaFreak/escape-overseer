@@ -29,12 +29,15 @@ class RoomSelectionView extends Component {
   constructor(props) {
     super(props);
     this.db = new PouchDB('kittens');
-    this.refreshRoomList();
+    
     this.state = {modalOpen: false,
-                rooms: []}
+                rooms: [],
+                isLoading: true}
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.refreshRoomList();
+    this.setState({isLoading: false})
   }
 
   openNewRoomModal = () => {
@@ -45,15 +48,29 @@ class RoomSelectionView extends Component {
     this.setState({modalOpen: false});
   }
 
-  refreshRoomList = () => {
-    this.db.get('rooms').then(function(doc) {
-        if(doc.roomList) {
-            this.setState({rooms:doc.roomList});
+  refreshRoomList = async () => {
+    const doc = await this.db.get("rooms");
+    if (!doc.roomList) {
+        return;
+    }
+
+    const forEachRoom = async (room) => {
+        try {
+            const blob = await this.db.getAttachment(room._id + "\\backgroundImg", "backgroundImgFile")
+            room.backgroundImage = URL.createObjectURL(blob);
+        } catch (err) {
+            if (err.name == "not_found") {
+                room.backgroundImage = null;
+            } else {
+                console.log(err);
+            }
         }
-    }.bind(this)).catch(function (err) {
-        console.log(err);
-    });
-  }
+        return room;
+    };
+
+    const rooms = await Promise.all(doc.roomList.map(room => forEachRoom(room)));
+    this.setState({ rooms });
+};
 
   saveNewRoom = (name) => {
     let id=uuidv4();
@@ -101,7 +118,7 @@ class RoomSelectionView extends Component {
             </Switch>  
             </Grid>
             <Grid container direction='row' spacing={16}>
-            {this.state.rooms.map(room => (
+            {!this.state.isLoading && this.state.rooms.map(room => (
                 <Grid item>
                     <Card className={classes.card}>
                         <CardActionArea style={{width:'100%'}} onClick={() => this.props.changeRoom(room._id)}>
@@ -115,7 +132,7 @@ class RoomSelectionView extends Component {
                     </Card>
                 </Grid>
             ))}
-            <Grid item>
+            {!this.state.isLoading && <Grid item>
                 <Card className={classes.card}>
                 <CardActionArea style={{width:'100%'}} onClick={this.openNewRoomModal}>
                 <CardMedia className={classes.media}>
@@ -132,7 +149,7 @@ class RoomSelectionView extends Component {
                 </CardContent>
                 </CardActionArea>
                 </Card>
-            </Grid>
+            </Grid>}
             </Grid>
         </Grid>
         <CreateNewRoomModal open={this.state.modalOpen} handleClose={this.closeNewRoomModal} saveNewRoom={this.saveNewRoom}/>
@@ -141,4 +158,4 @@ class RoomSelectionView extends Component {
   }
 }
 
-export default withStyles(styles)(RoomSelectionView);;
+export default withStyles(styles)(RoomSelectionView);

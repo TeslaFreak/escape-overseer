@@ -82,7 +82,8 @@ class ClueSelectControl extends React.Component{
 
   sendClue = () => {
     this.sendAlertTone();
-    this.setState({clueOnScreen: document.getElementById("clueInput").value, multiline:''});
+    let clueToSend = document.getElementById("clueInput").value;
+    this.setState({clueOnScreen: clueToSend, multiline:''});
   }
 
   clearLiveScreen = () => {
