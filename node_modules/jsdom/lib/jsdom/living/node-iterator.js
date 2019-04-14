@@ -1,10 +1,8 @@
 "use strict";
 
-const idlUtils = require("./generated/utils");
 const domSymbolTree = require("./helpers/internal-constants").domSymbolTree;
 const defineGetter = require("../utils").defineGetter;
 const INTERNAL = Symbol("NodeIterator internal");
-const DocumentImpl = require("./nodes/Document-impl").implementation;
 
 module.exports = function (core) {
   // https://dom.spec.whatwg.org/#interface-nodeiterator
@@ -138,7 +136,7 @@ module.exports = function (core) {
                              oldParent;
   };
 
-  DocumentImpl._removingSteps.push((document, oldNode, oldParent, oldPreviousSibling) => {
+  core.Document._removingSteps.push((document, oldNode, oldParent, oldPreviousSibling) => {
     for (let i = 0; i < document._activeNodeIterators.length; ++i) {
       const internal = document._activeNodeIterators[i];
       internal.runRemovingSteps(oldNode, oldParent, oldPreviousSibling);
@@ -149,7 +147,6 @@ module.exports = function (core) {
     if (!root) {
       throw new TypeError("Not enough arguments to Document.createNodeIterator.");
     }
-    root = idlUtils.implForWrapper(root);
 
     if (filter === undefined) {
       filter = null;
@@ -187,13 +184,13 @@ module.exports = function (core) {
   };
 
   defineGetter(core.NodeIterator.prototype, "root", function () {
-    return idlUtils.wrapperForImpl(this[INTERNAL].root);
+    return this[INTERNAL].root;
   });
 
   defineGetter(core.NodeIterator.prototype, "referenceNode", function () {
     const internal = this[INTERNAL];
     internal.throwIfNotActive();
-    return idlUtils.wrapperForImpl(internal.referenceNode);
+    return internal.referenceNode;
   });
 
   defineGetter(core.NodeIterator.prototype, "pointerBeforeReferenceNode", function () {
@@ -213,13 +210,13 @@ module.exports = function (core) {
   core.NodeIterator.prototype.previousNode = function () {
     const internal = this[INTERNAL];
     internal.throwIfNotActive();
-    return idlUtils.wrapperForImpl(internal.traverse(false));
+    return internal.traverse(false);
   };
 
   core.NodeIterator.prototype.nextNode = function () {
     const internal = this[INTERNAL];
     internal.throwIfNotActive();
-    return idlUtils.wrapperForImpl(internal.traverse(true));
+    return internal.traverse(true);
   };
 
   core.NodeIterator.prototype.detach = function () {

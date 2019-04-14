@@ -49,11 +49,9 @@ class RoomSelectionView extends Component {
   }
 
   refreshRoomList = async () => {
-    const doc = await this.db.get("rooms");
-    if (!doc.roomList) {
-        return;
-    }
-
+      try {
+        const doc = await this.db.get("rooms");
+      
     const forEachRoom = async (room) => {
         try {
             const blob = await this.db.getAttachment(room._id + "\\backgroundImg", "backgroundImgFile")
@@ -70,6 +68,11 @@ class RoomSelectionView extends Component {
 
     const rooms = await Promise.all(doc.roomList.map(room => forEachRoom(room)));
     this.setState({ rooms });
+} catch (err) {
+    if (err.name == "not_found") {
+        return;
+    }
+  }
 };
 
   saveNewRoom = (name) => {

@@ -19,7 +19,7 @@ ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
         liveWindow = new BrowserWindow({width: 800, height: 600, show: false});
         const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/live"
         liveWindow.loadURL(startUrl);
-        liveWindow.webContents.openDevTools();
+        //liveWindow.webContents.openDevTools();
         liveWindow.setMenu(null);
         liveWindow.once('ready-to-show', () => {
             liveWindow.webContents.send('updateSelectedRoomId', selectedRoomId);

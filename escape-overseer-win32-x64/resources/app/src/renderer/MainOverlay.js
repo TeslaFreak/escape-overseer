@@ -1,71 +1,127 @@
 import React, { Component } from 'react';
-import Sidebar from 'grommet/components/Sidebar';
-import Split from 'grommet/components/Split';
-import Header from 'grommet/components/Header';
-import Title from 'grommet/components/Title';
-import Footer from 'grommet/components/Footer';
-import Box from 'grommet/components/Box';
-import Menu from 'grommet/components/Menu';
-import Anchor from 'grommet/components/Anchor';
-import Button from 'grommet/components/Button';
-import Article from 'grommet/components/Article';
-import Value from 'grommet/components/Value';
-import User from 'grommet/components/icons/base/User';
-import MenuIcon from 'grommet/components/icons/base/Menu';
-import SettingsOptionIcon from 'grommet/components/icons/base/SettingsOption';
-import TreeIcon from 'grommet/components/icons/base/Tree';
-import LineChartIcon from 'grommet/components/icons/base/LineChart';
-import RunIcon from 'grommet/components/icons/base/Run';
+import classNames from 'classnames';
+import { withStyles, withTheme } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Drawer from '@material-ui/core/Drawer';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import { mainListItems, secondaryListItems } from './SidebarListItems';
+import Switch from '@material-ui/core/Switch';
+import PropTypes from 'prop-types';
+import HeaderBar from './components/HeaderBar';
+
+const drawerWidth = 240;
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+  },
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 9,
+    },
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing.unit * 3,
+    height: '100vh',
+    overflow: 'auto',
+  },
+  chartContainer: {
+    marginLeft: -22,
+  },
+  tableContainer: {
+    height: 320,
+  },
+  h5: {
+    marginBottom: theme.spacing.unit * 2,
+  },
+});
 
 class MainOverlay extends Component {
   constructor(props) {
     super(props);
+    this.state = {open: false, tabValue:1};
   }
+
+  handleDrawerOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleDrawerClose = () => {
+    this.setState({ open: false });
+  };
+
   render() {
+    const { classes } = this.props;
     return (
-      <Split flex='right'>
-        <Sidebar colorIndex='neutral-1'
-          size='small'>
-          <Header pad='small'
-            justify='between'>
-            <Title >
-              <Value icon={<MenuIcon />}
-                  value='Overseer'>
-                </Value>
-            </Title>
-          </Header>
-          <Box flex='grow'
-            justify='start'>
-            <Menu primary={true}>
-              <Anchor href='#'
-                icon={<RunIcon />}
-                label='Control Screen'
-                className='active'>
-              </Anchor>
-              <Anchor href='#'
-                icon={<TreeIcon />}
-                label='Configure Events'>
-              </Anchor>
-              <Anchor href='#'
-                icon={<LineChartIcon />}
-                label='Report Analytics'>
-              </Anchor>
-              <Anchor href='#'
-                icon={<SettingsOptionIcon />}
-                label='Settings'>
-              </Anchor>
-            </Menu>
-          </Box>
-          <Footer pad='small'>
-            <Button icon={<User />} />
-          </Footer>
-        </Sidebar>
-        <Article>
-            {this.props.children} 
-        </Article>
-      </Split>
+      <React.Fragment>
+        <CssBaseline />
+      <div className={classes.root}>
+        <HeaderBar open={this.state.open} handleDrawerOpen={this.handleDrawerOpen} toggleTheme={this.props.toggleTheme} headerContent={this.props.headerContent} changeRoom={this.props.changeRoom} selectedRoomId={this.props.selectedRoomId}/>
+          <Drawer
+            variant="permanent"
+            classes={{
+              paper: classNames(classes.drawerPaper, !this.state.open && classes.drawerPaperClose),
+            }}
+            open={this.state.open}
+          >
+            <div className={classes.toolbarIcon}>
+              <IconButton onClick={this.handleDrawerClose}>
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            <List>{mainListItems}</List>
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.appBarSpacer} />
+            {this.props.children}
+          </main>
+          </div>
+        </React.Fragment>
     );
   }
 }
 
-export default MainOverlay;
+MainOverlay.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(MainOverlay);

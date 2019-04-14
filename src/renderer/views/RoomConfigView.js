@@ -37,7 +37,7 @@ class ControlView extends Component {
             <ClueConfigView selectedRoomId={this.props.selectedRoomId}/>
           </TabContainer>
           <TabContainer tabValue={this.props.tabValue} containerValue={2}>
-            <EventConfigView />
+            <LiveScreenEditorView />
           </TabContainer>
         </React.Fragment>
     );

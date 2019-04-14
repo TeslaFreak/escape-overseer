@@ -15,8 +15,8 @@ const electron = window.require('electron')
 class TimerControl extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {minutes: 0,
-                  seconds: 10,
+    this.state = {minutes: 60,
+                  seconds: 0,
                   paused: true,
                   timeToAdjust: 0};
     

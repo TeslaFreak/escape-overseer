@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-import TextInput from 'grommet/components/TextInput';
-import Value from 'grommet/components/Value';
-import Menu from 'grommet/components/Menu';
-import Anchor from 'grommet/components/Anchor';
-import Box from 'grommet/components/Box';
-import Button from 'grommet/components/Button';
-const path = require('path');
-const url = require('url');
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 const electron = window.require('electron')
-const {BrowserWindow} = electron.remote.require('electron');
 
 class LiveViewControl extends React.Component{
   constructor(props) {
     super(props);
+    this.state={liveViewOpen:false}
+  }
+
+  startRoomSequence = () => {
+    electron.ipcRenderer.send("roomSequence", 1);
   }
 
   toggleFullscreen = () => {
@@ -20,16 +18,17 @@ class LiveViewControl extends React.Component{
   }
 
   createWindow = () => {
-    electron.ipcRenderer.send("toggleLiveViewOpen");
+    electron.ipcRenderer.send("toggleLiveViewOpen", this.props.selectedRoomId);
+    this.setState({liveViewOpen: !this.state.liveViewOpen});
   };
 
   render() {
     return (
-      <Box direction='row' justify='center'>
-        <Button  label='Start Room Sequence' onClick={this.toggleFullscreen} />
-        <Button  label='Open Live Screen' onClick={this.createWindow} />
-        <Button  label='Make Full Screen' onClick={this.toggleFullscreen} />
-      </Box>
+        <Grid container direction='row' justify='center' alignItems='center' style={{padding:20}}>
+          <Button variant="contained" color='secondary' onClick={this.startRoomSequence} >Start Room Sequence</Button>
+          <Button variant="contained" color='secondary' onClick={this.createWindow} >{this.state.liveViewOpen ? 'Close' : 'Open'} Live Screen</Button>
+          <Button variant="contained" color='secondary' onClick={this.toggleFullscreen} >Make Full Screen</Button>
+        </Grid>
     );
   }
 }
