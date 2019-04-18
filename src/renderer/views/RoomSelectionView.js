@@ -23,6 +23,9 @@ const styles = theme => ({
       height: 300,
       backgroundColor: '#4f5b62'
     },
+    contentPadding: {
+        padding: theme.spacing.unit * 3,
+    }
   });
 
 class RoomSelectionView extends Component {  
@@ -113,7 +116,7 @@ class RoomSelectionView extends Component {
     const { classes } = this.props;
     return (
         <React.Fragment>
-        <Grid container direction='column'>
+        <Grid container direction='column' className={classes.contentPadding}>
             <Grid>
             <Switch>
                 <Route path='/control' render={(props) => <Typography variant='h6'>Choose a room to play:</Typography>} />

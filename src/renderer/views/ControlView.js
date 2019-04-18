@@ -8,6 +8,13 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '../components/Tabs';
 import Tab from '../components/Tab'
 import ReportView from './ReportView';
+import { withStyles, withTheme } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  contentPadding: {
+      padding: theme.spacing.unit * 3,
+  }
+});
 
 function TabContainer(props) {
   return (
@@ -27,12 +34,13 @@ class ControlView extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     return (
           this.props.selectedRoomId==null ? 
             <React.Fragment>
               <RoomSelectionView changeRoom={this.props.changeRoom}/>
             </React.Fragment> :
-          <React.Fragment>
+          <div className={classes.contentPadding}>
             <TabContainer tabValue={this.props.tabValue} containerValue={0}>
                 <LiveViewControl selectedRoomId={this.props.selectedRoomId}/>
                 <TimerControl />
@@ -42,9 +50,9 @@ class ControlView extends Component {
             <TabContainer tabValue={this.props.tabValue} containerValue={1}>
               <ReportView />
             </TabContainer>
-          </React.Fragment>
+          </div>
     );
   }
 }
 
-export default ControlView;
+export default withStyles(styles)(ControlView);
