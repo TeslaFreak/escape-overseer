@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
+import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
+import ImageNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
+import IconNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
+import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
+import ColorEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import PouchDB from 'pouchdb';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
@@ -8,6 +14,15 @@ import Dialog from '@material-ui/core/Dialog';
 import FontPicker from 'font-picker-react';
 import ChromePicker from 'react-color';
 import Grid from '@material-ui/core/Grid';
+import AddIcon from '@material-ui/icons/Add';
+import TextFieldIcon from '@material-ui/icons/TextFields';
+import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
+import StarIcon from '@material-ui/icons/Star';
+import TimerIcon from '@material-ui/icons/Timer';
+import TextIcon from '@material-ui/icons/Title';
+import ColorIcon from '@material-ui/icons/ColorLens';
+import ClueIcon from '@material-ui/icons/Lock';
+import AddClueIcon from '@material-ui/icons/EnhancedEncryption';
 import Popper from '@material-ui/core/Popper';
 import Paper from '@material-ui/core/Paper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -52,16 +67,51 @@ const styles = theme => ({
         height: '100%',
         width: `calc(100% - 280px - 80px)`
     },
-    sidePanel: {
+    editPanel: {
         width: '280px',
         height: '100%',
         backgroundColor: '#35414c',
+        padding: '28px 28px 0',
     },
     navigationPanel: {
         width: '80px',
         height: '100%',
         backgroundColor: '#242c33'
-    }
+    },
+    navPanelAddButton: {
+        color: '#fff',
+        backgroundColor: '#9aa6af',
+        borderRadius: '50%',
+        margin: '0',
+        width: '40px',
+        height: '40px',
+        top: 0,
+        left: 0,
+        transition: 'all .15s',
+        '&:hover': {
+            transform: 'rotate(-45deg)',
+        },
+    },
+    navPanelAddRegion: {
+        transition: 'all .15s',
+        width: '100%',
+        margin: '20px 0 0',
+        color: '#fff',
+        opacity: '.8',
+        fontSize: '11px',
+        fontWeight: '400',
+        textTransform: 'uppercase',
+        backgroundSize: '22px 22px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top',
+        boxSizing: 'border-box',
+        borderRadius: '0',
+        '&:hover': {
+            opacity: 1,
+            backgroundColor: 'transparent',
+        },
+    },
+
 });
 
 const defaultCanvasOption = {
@@ -129,19 +179,25 @@ class LiveScreenEditorView extends Component {
                         </canvas>
                     </Grid>
                 </Grid>
-                <Grid item direction='column'>
-                    <div id='sidePanel' className={classes.sidePanel}>
-                    </div>
+                <Grid item direction='column' id='EditPanel' className={classes.editPanel}>
+                    <TypeEditPanel />
                 </Grid>
-                <Grid item direction='column' id="navigationPanel" className={classes.navigationPanel}>
-                    <div id="AddContentRegion" class=" post-component post-panel">
-                        <div id="AddContentButton" class="post-component circle-button post-button post-icon-button">
-                            <label data-i18n="components.buttons.kAdd">ADD</label>
-                        </div>
-                    </div>
-                    <div id="NavPanelTabsWrapper" class=" post-component">
-                        
-                    </div>
+                <Grid item direction='column' id="NavPanel" className={classes.navigationPanel}>
+                        <Grid id="AddContentRegion">
+                            <IconButton id="AddContentButton" disableRipple className={classes.navPanelAddRegion}>
+                                <Grid container direction='column'>
+                                    <Grid item>
+                                        <AddIcon className={classes.navPanelAddButton}/>
+                                    </Grid>
+                                    <Grid item>
+                                        Add
+                                    </Grid>
+                                </Grid>
+                            </IconButton>
+                        </Grid>
+                    <Grid id="NavPanelTabsWrapper">
+                        <TextNavPanel />
+                    </Grid>
                 </Grid>
             </Grid>
         );
