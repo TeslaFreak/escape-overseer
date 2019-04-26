@@ -81,7 +81,7 @@ class TextNavPanel extends Component {
                 <IconButton id="EditTypeButton" disableRipple className={classes.navPanelButton}>
                     <Grid container direction='column'>
                         <Grid item>
-                            <TextFieldIcon/>
+                            <TextIcon/>
                         </Grid>
                         <Grid item>
                             Type

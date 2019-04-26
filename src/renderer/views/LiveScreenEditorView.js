@@ -4,6 +4,7 @@ import ImageNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.j
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
+import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -23,13 +24,17 @@ import TextIcon from '@material-ui/icons/Title';
 import ColorIcon from '@material-ui/icons/ColorLens';
 import ClueIcon from '@material-ui/icons/Lock';
 import AddClueIcon from '@material-ui/icons/EnhancedEncryption';
-import Popper from '@material-ui/core/Popper';
-import Paper from '@material-ui/core/Paper';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 import LiveScreenPreview from './LiveScreenPreview';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {EOTheme} from '../EscapeOverseerTheme';
 import { fabric } from 'fabric';
+import AddNewItemMenu from '../components/LiveViewEditor/AddNewItemMenu.js';
 var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
@@ -85,21 +90,35 @@ const styles = theme => ({
         margin: '0',
         width: '40px',
         height: '40px',
+        opacity: '.8',
         top: 0,
         left: 0,
         transition: 'all .15s',
         '&:hover': {
-            transform: 'rotate(-45deg)',
+            opacity: '1',
         },
+    },
+    navPanelAddButtonActive: {
+        color: '#fff',
+        backgroundColor: '#9aa6af',
+        borderRadius: '50%',
+        margin: '0',
+        width: '40px',
+        height: '40px',
+        top: 0,
+        left: 0,
+        transition: 'all .15s',
+        transform: 'rotate(-45deg)',
+        opacity: '1 !important',
     },
     navPanelAddRegion: {
         transition: 'all .15s',
-        width: '100%',
+        width: '80px',
         margin: '20px 0 0',
         color: '#fff',
-        opacity: '.8',
         fontSize: '11px',
         fontWeight: '400',
+        opacity: '.8',
         textTransform: 'uppercase',
         backgroundSize: '22px 22px',
         backgroundRepeat: 'no-repeat',
@@ -110,6 +129,23 @@ const styles = theme => ({
             opacity: 1,
             backgroundColor: 'transparent',
         },
+        
+    },
+    navPanelAddRegionActive: {
+        transition: 'all .15s',
+        width: '80px',
+        margin: '20px 0 0',
+        color: '#fff',
+        fontSize: '11px',
+        fontWeight: '400',
+        textTransform: 'uppercase',
+        backgroundSize: '22px 22px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top',
+        boxSizing: 'border-box',
+        borderRadius: '0',
+        opacity: 1,
+        backgroundColor: 'transparent',
     },
 
 });
@@ -153,7 +189,7 @@ class LiveScreenEditorView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={anchorEl: null, open: false};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -169,7 +205,23 @@ class LiveScreenEditorView extends Component {
         this.canvas.renderAll();
     }
 
+    handleOpenAddMenu = event => {
+        if(Boolean(this.state.anchorEl)) {
+            this.setState({ anchorEl: null});
+        }
+        else {
+            this.setState({ anchorEl: event.currentTarget});
+        }
+        console.log("plz no");
+      };
+    
+    handleCloseAddMenu = () => {
+        this.setState({anchorEl: null });
+        console.log("hit");
+    };
+
     render() {
+        const { anchorEl } = this.state;
         const { classes } = this.props;
         return(
             <Grid container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
@@ -184,10 +236,24 @@ class LiveScreenEditorView extends Component {
                 </Grid>
                 <Grid item direction='column' id="NavPanel" className={classes.navigationPanel}>
                         <Grid id="AddContentRegion">
-                            <IconButton id="AddContentButton" disableRipple className={classes.navPanelAddRegion}>
+                            <IconButton id="AddContentButton" disableRipple className={Boolean(this.state.anchorEl) ? classes.navPanelAddRegionActive : classes.navPanelAddRegion} onClick={this.handleOpenAddMenu}>
                                 <Grid container direction='column'>
                                     <Grid item>
-                                        <AddIcon className={classes.navPanelAddButton}/>
+                                        <AddIcon className={Boolean(this.state.anchorEl) ? classes.navPanelAddButtonActive : classes.navPanelAddButton}/>
+                                        <Popover 
+                                            id='AddMenuPopover'
+                                            anchorOrigin={{
+                                                vertical: 'center',
+                                                horizontal: 'left',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'center',
+                                                horizontal: 'right',
+                                            }}
+                                            anchorEl={anchorEl}
+                                            open={Boolean(this.state.anchorEl)}>
+                                                <AddNewItemMenu />
+                                        </Popover>
                                     </Grid>
                                     <Grid item>
                                         Add

@@ -124,7 +124,6 @@ class ClueConfigView extends Component {
 
     render() {
         const { classes } = this.props;
-        let currentlyEditing;
         return(
             <React.Fragment> 
                 <TextField
@@ -137,7 +136,7 @@ class ClueConfigView extends Component {
                 />
                 <List className={classes.root}>
                     {this.state.clues.map(clue => (
-                    <ListItem key={clue.id} currentlyEditing={clue.currentlyEditing} divider onClick={this.handleToggle(clue.id)}>
+                    <ListItem key={clue.id} divider onClick={this.handleToggle(clue.id)}>
                         {clue.currentlyEditing ? <TextField id={'edit' + clue.id + 'TextField'} fullWidth defaultValue={clue.text} /> : <ListItemText primary={clue.text} />}
                         <IconButton disableRipple aria-label="Comments">
                             {clue.currentlyEditing ? <DoneIcon onClick={() => this.stopEditingRow(clue.id)}/> : <EditIcon onClick={() => this.startEditingRow(clue.id)}/>}
