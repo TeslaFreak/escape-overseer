@@ -146,4 +146,4 @@ class ColorEditPanel extends Component {
     }
 }
 
-export default  withStyles(styles)(TypeEditPanel)
+export default  withStyles(styles)(ColorEditPanel)

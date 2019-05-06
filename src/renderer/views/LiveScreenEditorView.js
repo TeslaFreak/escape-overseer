@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
-import ImageNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
-import IconNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
+import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
+import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
+import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
-import ColorEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
+import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
+import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
+import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -50,6 +53,31 @@ const aspectWidth = containerWidth * aspectWidthRatio;
 const aspectHeight = containerWidth * aspectHeightRatio;
 
 //google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
+
+const EditPanelTypes = {
+    TYPEFACE: 'typeface',
+    COLOR: 'color',
+    IMAGE: 'image',
+    ASPECTRATIO: 'aspectratio',
+}
+
+const NavPanelTypes = {
+    TEXT: 'text',
+    IMAGE: 'image',
+    SCREEN: 'screen',
+    TIMER: 'timer',
+    COUNTER: 'counter',
+    CLUEDISPLAY: 'cluedisplay',
+}
+
+const CanvasItemTypes = {
+    TEXT: 'text',
+    IMAGE: 'image',
+    SCREEN: 'screen',
+    TIMER: 'timer',
+    COUNTER: 'counter',
+    CLUEDISPLAY: 'cluedisplay',
+}
 
 const styles = theme => ({
     editorContainer: {
@@ -185,14 +213,14 @@ const defaultWorkareaOption = {
     },
 };
 
+
 class LiveScreenEditorView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={anchorEl: null, open: false};
+        this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO};
         this.objects = [];
         this.db = new PouchDB('kittens');
-        
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -200,9 +228,24 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        this.canvas = new fabric.Canvas("main-canvas");
-        this.canvas.setBackgroundColor(defaultCanvasOption.backgroundColor, this.canvas.renderAll.bind(this.canvas));
-        this.canvas.renderAll();
+        var oldCanvas = document.getElementById('mainCanvas');
+
+        fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
+            type: 'cluetextbox',
+             /**
+             * Properties which when set cause object to change dimensions
+             * @type Object
+             * @private
+             */
+            _dimensionAffectingProps: fabric.Text.prototype._dimensionAffectingProps,
+        });
+
+        this.canvas = new fabric.Canvas("mainCanvas", {
+                                            width: oldCanvas.parentNode.clientWidth, 
+                                            height: oldCanvas.parentNode.clientHeight,
+                                            backgroundColor: '#fff',
+                                            preserveObjectStacking: true,
+                                            uniScaleTransform: true, });
     }
 
     handleOpenAddMenu = event => {
@@ -220,19 +263,181 @@ class LiveScreenEditorView extends Component {
         console.log("hit");
     };
 
+    renderEditPanels = (selectedPanel) => {
+        switch(selectedPanel) {
+            case EditPanelTypes.TYPEFACE:
+                return <TypeEditPanel />;
+            case EditPanelTypes.COLOR:
+                return <ColorEditPanel />;
+            case EditPanelTypes.IMAGE:
+                return <ImageEditPanel />;
+            case EditPanelTypes.ASPECTRATIO:
+                return <AspectRatioEditPanel />;
+            default:
+                return <AspectRatioEditPanel />;
+            }
+    }
+
+    renderNavPanels = (selectedPanel) => {
+        switch(selectedPanel) {
+            case NavPanelTypes.SCREEN:
+                return <ScreenNavPanel />;
+            case NavPanelTypes.TEXT:
+                return <TextNavPanel />;
+            case NavPanelTypes.IMAGE:
+                return <ImageNavPanel />;
+            case NavPanelTypes.TIMER:
+                //return <TimerNavPanel />;
+            case NavPanelTypes.COUNTER:
+                //return <CounterNavPanel />;
+            case NavPanelTypes.CLUEDISPLAY:
+                //return <ClueDisplayNavPanel />;
+            default:
+                return <ScreenNavPanel />;
+            }
+    }
+
+    updateSelectedItem = (selectedItem, itemType) => {
+        
+        switch(itemType) {
+            case CanvasItemTypes.TEXT:
+                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                break;
+            case CanvasItemTypes.IMAGE:
+                this.setState({selectedNavPanelType: NavPanelTypes.IMAGE, selectedEditPanelType: EditPanelTypes.IMAGE});
+                break;
+            case CanvasItemTypes.TIMER:
+                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                break;
+            case CanvasItemTypes.COUNTER:
+                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                break;
+            case CanvasItemTypes.CLUEDISPLAY:
+                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                break;
+            case CanvasItemTypes.SCREEN:
+            default:
+                this.setState({selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO});
+                break;
+        }
+    }
+
+    createNewCanvasItem = (itemType, event) => {
+        console.log("hit");
+        console.log(itemType);
+        switch(itemType) {
+            case CanvasItemTypes.TEXT:
+                var newItem = new fabric.IText("Background Text Example", {
+                    fontSize: 40,
+                    lockUniScaling: true,
+                });
+                break;
+            case CanvasItemTypes.IMAGE:
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    var imgObj = new Image();
+                    imgObj.src = event.target.result;
+                    imgObj.onload = function () {
+                        var newItem = new fabric.Image(imgObj, {
+                            lockUniScaling: true,
+                        });
+                        newItem.on('selected', () => { 
+                            this.updateSelectedItem(newItem, itemType);
+                        });
+                        this.canvas.add(newItem);
+                        this.canvas.setActiveObject(newItem);
+                    }.bind(this);
+                }.bind(this);
+                reader.readAsDataURL(event.target.files[0]);
+                break;
+            case CanvasItemTypes.TIMER:
+                var circle = new fabric.Circle({
+                    radius: 200, fill: 'green', left: 50, top: 50
+                });
+                this.canvas.add(circle);
+                var rect = new fabric.Rect({
+                    left: 0,
+                    top: 0,
+                    fill: 'red',
+                    width: 200,
+                    height: 200
+                });
+                this.canvas.add(rect);
+                break;
+            case CanvasItemTypes.COUNTER:
+                break;
+            case CanvasItemTypes.CLUEDISPLAY:
+                var newItem = new fabric.ClueTextbox("Lorim Ipsum", {
+                    fontSize: 40,
+                    editable: false,
+                    lockUniScaling: false,
+                });
+                newItem.setControlsVisibility({
+                    mt: false, // middle top disable
+                    mb: false, // midle bottom
+                    ml: false, // middle left
+                    mr: false, // middle right
+                });
+                newItem.on('scaling', function() { 
+                    var newfontsize = (newItem.fontSize * newItem.scaleX);
+                    newItem.width = newItem.width * newItem.scaleX;
+                    //newItem.fontSize = (parseInt(newfontsize, 10));
+                    newItem.height = newItem.height * newItem.scaleY;
+                    newItem.scaleX = 1;
+                    newItem.scaleY = 1;
+                    //console.log(newItem);
+                    //console.log(newItem._splitTextIntoLines(newItem.text));
+                    var newLinesObject = newItem._splitTextIntoLines(newItem.text);
+                    newItem.textLines = newLinesObject.lines;
+                    newItem._unwrappedTextLines = newLinesObject._unwrappedLines;
+                    newItem._text = newLinesObject.graphemeText;
+                    newItem._textLines = newLinesObject.graphemeLines;
+                    
+                });
+                newItem.on('modified', function() { 
+                    var newfontsize = (newItem.fontSize * newItem.scaleX);
+                    newItem.width = newItem.width * newItem.scaleX;
+                    //newItem.fontSize = (parseInt(newfontsize, 10));
+                    newItem.height = newItem.height * newItem.scaleY;
+                    newItem.scaleX = 1;
+                    newItem.scaleY = 1;
+                    //console.log(newItem);
+                    //console.log(newItem._splitTextIntoLines(newItem.text));
+                    var newLinesObject = newItem._splitTextIntoLines(newItem.text);
+                    newItem.textLines = newLinesObject.lines;
+                    newItem._unwrappedTextLines = newLinesObject._unwrappedLines;
+                    newItem._text = newLinesObject.graphemeText;
+                    newItem._textLines = newLinesObject.graphemeLines;
+                });
+                break;
+            default:
+                break;
+        }
+
+        if(newItem != null) {
+            newItem.on('selected', () => { 
+                this.updateSelectedItem(newItem, itemType);
+            });
+            this.canvas.add(newItem);
+            this.canvas.setActiveObject(newItem);
+        }
+        this.handleOpenAddMenu();
+    }
+
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;
+
         return(
             <Grid container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='flex-end' className={classes.editingBackground}>
-                    <Grid item id='imageWrapper' className={classes.centeredAspectPanel}>
-                        <canvas id= 'mainCanvas' className={classes.editingSurface}>
+                    <Grid item id='aspectPanel' className={classes.centeredAspectPanel}>
+                        <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>
                 </Grid>
                 <Grid item direction='column' id='EditPanel' className={classes.editPanel}>
-                    <TypeEditPanel />
+                    {this.renderEditPanels(this.state.selectedEditPanelType)}
                 </Grid>
                 <Grid item direction='column' id="NavPanel" className={classes.navigationPanel}>
                         <Grid id="AddContentRegion">
@@ -252,7 +457,7 @@ class LiveScreenEditorView extends Component {
                                             }}
                                             anchorEl={anchorEl}
                                             open={Boolean(this.state.anchorEl)}>
-                                                <AddNewItemMenu />
+                                                <AddNewItemMenu createNewCanvasItem={this.createNewCanvasItem} CanvasItemTypes={CanvasItemTypes} fileInputRef={this.state.fileInputRef}/>
                                         </Popover>
                                     </Grid>
                                     <Grid item>
@@ -262,7 +467,7 @@ class LiveScreenEditorView extends Component {
                             </IconButton>
                         </Grid>
                     <Grid id="NavPanelTabsWrapper">
-                        <TextNavPanel />
+                        {this.renderNavPanels(this.state.selectedNavPanelType)}
                     </Grid>
                 </Grid>
             </Grid>

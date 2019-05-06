@@ -136,10 +136,10 @@ class ImageNavPanel extends Component {
                 <IconButton id="EditTypeButton" disableRipple className={classes.navPanelButton}>
                     <Grid container direction='column'>
                         <Grid item>
-                            <TextFieldIcon/>
+                            <InsertPhotoIcon/>
                         </Grid>
                         <Grid item>
-                            Type
+                            Image
                         </Grid>
                     </Grid>
                 </IconButton>

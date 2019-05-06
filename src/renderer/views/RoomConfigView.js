@@ -41,7 +41,7 @@ class RoomConfigView extends Component {
         </React.Fragment> :
         <React.Fragment >
           <TabContainer tabValue={this.props.tabValue} containerValue={0}>
-            <LiveScreenEditorView/>
+            <LiveScreenEditorView selectedRoomId={this.props.selectedRoomId}/>
           </TabContainer>
           <TabContainer tabValue={this.props.tabValue} containerValue={1}>
             <div className={classes.contentPadding}>  

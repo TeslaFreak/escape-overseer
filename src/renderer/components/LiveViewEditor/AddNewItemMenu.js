@@ -100,13 +100,22 @@ class AddNewItemMenu extends Component {
         
     }
 
+
+    //because material popups are fucking stupid and will
+    //fire a background click no matter where you click on screen.
+    stopprop = event => {
+        event.stopPropagation();
+        console.log("props stopped");
+    }
+
     render() {
         const { classes } = this.props;
+        const { CanvasItemTypes } = this.props;
         return(
-            <Grid container className={classes.AddMenu}>
+            <Grid container className={classes.AddMenu} onClick={this.stopprop}>
                 <Grid item >
                     <Button id='AddNewTextItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButtonLeftMost}>
-                        <Grid container direction='column'>
+                        <Grid container direction='column' onClick={() => this.props.createNewCanvasItem(CanvasItemTypes.TEXT)}>
                             <Grid item>
                                 <TextFieldIcon/>
                             </Grid>
@@ -117,20 +126,31 @@ class AddNewItemMenu extends Component {
                     </Button>
                 </Grid>
                 <Grid item >
-                    <Button id='AddNewImageItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButton}>
-                        <Grid container direction='column'>
-                            <Grid item>
-                                <InsertPhotoIcon/>
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="image-input"
+                        multiple
+                        type="file"
+                        onChange={(e) => this.props.createNewCanvasItem(CanvasItemTypes.IMAGE, e)}
+                        ref={(ref) => this.fileInputRef = ref}
+                        />
+                    <label htmlFor="image-input">
+                        <Button id='AddNewImageItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButton}>
+                            <Grid container direction='column'  onClick={(e) => this.fileInputRef.click()}>
+                                <Grid item>
+                                    <InsertPhotoIcon/>
+                                </Grid>
+                                <Grid item>
+                                    Image
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                Image
-                            </Grid>
-                        </Grid>
-                    </Button>
+                        </Button>
+                    </label>
                 </Grid>
                 <Grid item >
                     <Button id='AddNewTimerItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButton}>
-                        <Grid container direction='column'>
+                        <Grid container direction='column' onClick={() => this.props.createNewCanvasItem(CanvasItemTypes.TIMER)}>
                             <Grid item>
                                 <TimerIcon/>
                             </Grid>
@@ -142,7 +162,7 @@ class AddNewItemMenu extends Component {
                 </Grid>
                 <Grid item >
                     <Button id='AddNewClueCounterItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButton}>
-                        <Grid container direction='column'>
+                        <Grid container direction='column' onClick={() => this.props.createNewCanvasItem(CanvasItemTypes.COUNTER)}>
                             <Grid item>
                                 <AddClueIcon/>
                             </Grid>
@@ -154,7 +174,7 @@ class AddNewItemMenu extends Component {
                 </Grid>
                 <Grid item >
                     <Button id='AddNewClueDisplayItemButton' variant="outlined" disableRipple className={classes.AddMenuInnerButton}>
-                        <Grid container direction='column'>
+                        <Grid container direction='column' onClick={() => this.props.createNewCanvasItem(CanvasItemTypes.CLUEDISPLAY)}>
                             <Grid item>
                                 <AddClueTextIcon/>
                             </Grid>

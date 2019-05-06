@@ -217,6 +217,21 @@ class TypeEditPanel extends Component {
                         onChange={this.handleChange}
                     />
                 </Grid>
+                <Grid item id='LineSpacingSlider' className={classes.fontSlider}>
+                    <Typography className={classes.controlElementLabel}>Line Spacing</Typography>
+                    <Slider
+                        classes={{
+                            container: classes.sliderContainer,
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={7}
+                        min={0}
+                        max={100}
+                        onChange={this.handleChange}
+                    />
+                </Grid>
             </Grid>
         );
     }
