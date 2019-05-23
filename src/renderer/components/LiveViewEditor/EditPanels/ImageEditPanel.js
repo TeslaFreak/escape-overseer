@@ -22,6 +22,7 @@ import TextIcon from '@material-ui/icons/Title';
 import ColorIcon from '@material-ui/icons/ColorLens';
 import ClueIcon from '@material-ui/icons/Lock';
 import AddClueIcon from '@material-ui/icons/EnhancedEncryption';
+import Tooltip from '@material-ui/core/Tooltip';
 var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
@@ -51,43 +52,47 @@ const styles = theme => ({
         color: '#dce0e3',
     },
     alignmentButtonRow: {
+        fontSize: '12px',
         width: '100%',
         padding: '12px 0px',
     },
     alignLeftButton: {
-        width: '55px',
+        fontSize: '12px',
+        fontWeight: '600',
         height: '40px',
         borderRadius: '3px 0 0 3px',
         backgroundColor: '#3e4c58',
         color: '#fff',
         opacity: '.5',
-        padding: '0',
+        padding: '0px 10px',
         '&:hover': {
             opacity: 1,
             backgroundColor: '#3e4c58',
         },
     },
     alignCenterButton: {
-        width: '55px',
+        fontSize: '12px',
+        fontWeight: '600',
         height: '40px',
         borderRadius: '0',
         backgroundColor: '#3e4c58',
         color: '#fff',
         opacity: '.5',
-        padding: '0',
+        padding: '0px 10px',
         '&:hover': {
             opacity: 1,
             backgroundColor: '#3e4c58',
         },
     },
     alignRightButton: {
-        width: '55px',
+        fontSize: '12px',
+        fontWeight: '600',
         height: '40px',
         borderRadius: '0 3px 3px 0',
         backgroundColor: '#3e4c58',
         color: '#fff',
         opacity: '.5',
-        padding: '0',
+        padding: '0px 10px',
         '&:hover': {
             opacity: 1,
             backgroundColor: '#3e4c58',
@@ -122,7 +127,7 @@ class TypeEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={scale: this.props.selectedItem.getScaledWidth()**0.588, opacity: this.props.selectedItem.opacity*100, fit: this.props.selectedItem.fit};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -136,47 +141,59 @@ class TypeEditPanel extends Component {
 
     }
 
-    updateLiveViewTypeFace = (nextFont) => {
-        this.setState({ activeFont: nextFont.family });
+    componentWillUpdate(nextProps) {
+        if (this.state.scale !== nextProps.selectedItem.getScaledWidth()**0.588 ) {
+            this.setState({scale: this.props.selectedItem.getScaledWidth()**0.588, opacity: this.props.selectedItem.opacity*100, fit: this.props.selectedItem.fit})
+        }
+    }
 
-        this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function (doc) {
-            doc.font=nextFont.family;
-            this.db.put(doc).catch(function (err) {
-                console.log(err);
-            });
-        }.bind(this)).catch(function (err) {
-            if(err.name=="not_found") {
-                this.db.put({
-                    _id: this.props.selectedRoomId + '\\liveViewFont',
-                    font: nextFont.family
-                  }).catch(function (err) {
-                    console.log(err);
-                  });
-            }
-        }.bind(this));
+    handleChange = (event, value, propertyName) => {
+        let trueValue = value;
+        let displayValue = value;
+        switch(propertyName) {
+            case 'opacity':
+                trueValue = parseInt(value, 10)/100;
+                displayValue = parseInt(value, 10);
+                break;
+            case 'scale':
+                trueValue = parseInt(value, 10)**1.7;
+                displayValue = parseInt(value, 10);
+                break;
+            case 'fit':
+                break;
+            default:
+                trueValue = parseInt(value, 10);
+                displayValue = parseInt(value, 10);
+        }
+        this.setState({[propertyName]: displayValue});
+        this.props.updateItemProperty(propertyName, trueValue);
     }
 
     render() {
         const { classes } = this.props;
         return(
             <Grid container direction='column' >
-                <Grid item id='FontSizeSlider' className={classes.sliderContainer}>
-                    <Typography className={classes.controlElementLabel}>Size</Typography>
-                    <Slider
-                        classes={{
-                            container: classes.sliderContainer,
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={460}
-                        min={20}
-                        max={500}
-                        onChange={this.handleChange}
-                    />
+                <Typography className={classes.editPanelSubsectionHeader}>Image</Typography>
+                <Grid item container direction='row' id='FontAlignRow' className={classes.alignmentButtonRow}>
+                    <Grid item>
+                        <IconButton id='FillWidthButton' disableRipple className={classes.alignLeftButton} onClick={(event) => this.handleChange(event, 'width', 'fit')}> 
+                            Fit To Width
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+                        <IconButton id='FillHeightButton' disableRipple className={classes.alignCenterButton} onClick={(event) => this.handleChange(event, 'height', 'fit')}>
+                            Fit To Height
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+                        <IconButton id='FreeStandingButton' disableRipple className={classes.alignRightButton} onClick={(event) => this.handleChange(event, 'none', 'fit')}>
+                            No Fit
+                        </IconButton>
+                    </Grid>
                 </Grid>
-                <Grid item id='LetterSpacingSlider' className={classes.fontSlider}>
-                    <Typography className={classes.controlElementLabel}>Letter Spacing</Typography>
+                <Grid item id='ImageSizeSlider' className={classes.sliderContainer}>
+                    <Typography className={classes.controlElementLabel}>Size</Typography>
+                    <Tooltip title={this.state.scale} placement="top">
                     <Slider
                         classes={{
                             container: classes.sliderContainer,
@@ -184,13 +201,30 @@ class TypeEditPanel extends Component {
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
                           }}
-                        value={7}
+                        value={this.state.scale}
+                        min={1}
+                        max={100}
+                        onChange={(event, value) => this.handleChange(event, value, 'scale')} //TODO disable when set to fit width or height
+                    />
+                    </Tooltip>
+                </Grid>
+                <Grid item id='OpacitySlider' className={classes.fontSlider}>
+                    <Typography className={classes.controlElementLabel}>Opacity</Typography>
+                    <Tooltip title={this.state.opacity} placement="top">
+                    <Slider
+                        classes={{
+                            container: classes.sliderContainer,
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={this.state.opacity}
                         min={0}
                         max={100}
-                        onChange={this.handleChange}
+                        onChange={(event, value) => this.handleChange(event, value, 'opacity')}
                     />
+                    </Tooltip>
                 </Grid>
-                //TODO: add fit to screen button.
             </Grid>
         );
     }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
+import TimerNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
 import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
@@ -243,6 +244,7 @@ class LiveScreenEditorView extends Component {
         this.canvas = new fabric.Canvas("mainCanvas", {
                                             width: oldCanvas.parentNode.clientWidth, 
                                             height: oldCanvas.parentNode.clientHeight,
+                                            selection: false,
                                             backgroundColor: '#fff',
                                             preserveObjectStacking: true,
                                             uniScaleTransform: true, });
@@ -255,26 +257,24 @@ class LiveScreenEditorView extends Component {
         else {
             this.setState({ anchorEl: event.currentTarget});
         }
-        console.log("plz no");
       };
     
     handleCloseAddMenu = () => {
         this.setState({anchorEl: null });
-        console.log("hit");
     };
 
     renderEditPanels = (selectedPanel) => {
         switch(selectedPanel) {
             case EditPanelTypes.TYPEFACE:
-                return <TypeEditPanel />;
+                return <TypeEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.COLOR:
-                return <ColorEditPanel />;
+                return <ColorEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.IMAGE:
-                return <ImageEditPanel />;
+                return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.ASPECTRATIO:
-                return <AspectRatioEditPanel />;
+                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             default:
-                return <AspectRatioEditPanel />;
+                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             }
     }
 
@@ -287,7 +287,7 @@ class LiveScreenEditorView extends Component {
             case NavPanelTypes.IMAGE:
                 return <ImageNavPanel />;
             case NavPanelTypes.TIMER:
-                //return <TimerNavPanel />;
+                return <TimerNavPanel />;
             case NavPanelTypes.COUNTER:
                 //return <CounterNavPanel />;
             case NavPanelTypes.CLUEDISPLAY:
@@ -298,7 +298,7 @@ class LiveScreenEditorView extends Component {
     }
 
     updateSelectedItem = (selectedItem, itemType) => {
-        
+        this.setState({selectedItem: selectedItem});
         switch(itemType) {
             case CanvasItemTypes.TEXT:
                 this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
@@ -307,7 +307,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({selectedNavPanelType: NavPanelTypes.IMAGE, selectedEditPanelType: EditPanelTypes.IMAGE});
                 break;
             case CanvasItemTypes.TIMER:
-                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
                 this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
@@ -322,15 +322,88 @@ class LiveScreenEditorView extends Component {
         }
     }
 
+    updateItemProperty = (propertyName, propertyValue) => {
+        console.log(this.state.selectedItem.getScaledWidth());
+        switch(propertyName) {
+            case 'scale':
+                this.state.selectedItem.scaleToWidth(propertyValue);
+                break;
+            case 'fit':
+                switch(propertyValue) {
+                    case 'width':
+                        this.state.selectedItem.rotate(0);
+                        this.state.selectedItem.setCoords();
+                        this.state.selectedItem.scaleToWidth(this.canvas.getWidth());
+                        this.state.selectedItem.center();
+                        this.state.selectedItem.lockMovementX = true;
+                        this.state.selectedItem.lockMovementY = true;
+                        this.state.selectedItem.lockRotation = true;
+                        this.state.selectedItem.setControlsVisibility({
+                            bl: false, // bottom left disable
+                            br: false, // bottom right
+                            tl: false, // top left
+                            tr: false, // top right
+                            mtr: false, // rotation
+                        });
+                    break;
+                    case 'height':
+                        this.state.selectedItem.rotate(0);
+                        this.state.selectedItem.setCoords();
+                        this.state.selectedItem.scaleToHeight(this.canvas.getHeight());
+                        this.state.selectedItem.center();
+                        this.state.selectedItem.lockMovementX = true;
+                        this.state.selectedItem.lockMovementY = true;
+                        this.state.selectedItem.lockRotation = true;
+                        this.state.selectedItem.setControlsVisibility({
+                            bl: false, // bottom left disable
+                            br: false, // bottom right
+                            tl: false, // top left
+                            tr: false, // top right
+                            mtr: false, // rotation
+                        });
+                    break;
+                    case 'none':
+                        this.state.selectedItem.lockMovementX = false;
+                        this.state.selectedItem.lockMovementY = false;
+                        this.state.selectedItem.lockScalingX = false;
+                        this.state.selectedItem.lockScalingY = false;
+                        this.state.selectedItem.lockRotation = false;
+                        this.state.selectedItem.setControlsVisibility({
+                            bl: true, // bottom left disable
+                            br: true, // bottom right
+                            tl: true, // top left
+                            tr: true, // top right
+                            mtr: true, // rotation
+                        });
+                    break;
+                }
+                
+                break;
+            default:
+                this.state.selectedItem[propertyName] = propertyValue;
+                break;
+        }
+        this.state.selectedItem.setCoords();
+        this.canvas.renderAll();
+    }
+
     createNewCanvasItem = (itemType, event) => {
-        console.log("hit");
-        console.log(itemType);
         switch(itemType) {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Background Text Example", {
                     fontSize: 40,
                     lockUniScaling: true,
+                    lockScalingFlip: true,
                 });
+                newItem.on('modified', function() { 
+                    var newfontsize = (newItem.fontSize * newItem.scaleX);
+                    newItem.width = newItem.width * newItem.scaleX;
+                    newItem.fontSize = (parseInt(newfontsize, 10));
+                    newItem.height = newItem.height * newItem.scaleY;
+                    newItem.scaleX = 1;
+                    newItem.scaleY = 1;
+                    this.updateSelectedItem(newItem, itemType);
+                }.bind(this));
                 break;
             case CanvasItemTypes.IMAGE:
                 var reader = new FileReader();
@@ -340,8 +413,12 @@ class LiveScreenEditorView extends Component {
                     imgObj.onload = function () {
                         var newItem = new fabric.Image(imgObj, {
                             lockUniScaling: true,
+                            fit: 'none',
                         });
                         newItem.on('selected', () => { 
+                            this.updateSelectedItem(newItem, itemType);
+                        });
+                        newItem.on('modified', () => { 
                             this.updateSelectedItem(newItem, itemType);
                         });
                         this.canvas.add(newItem);
@@ -351,18 +428,20 @@ class LiveScreenEditorView extends Component {
                 reader.readAsDataURL(event.target.files[0]);
                 break;
             case CanvasItemTypes.TIMER:
-                var circle = new fabric.Circle({
-                    radius: 200, fill: 'green', left: 50, top: 50
+                var newItem = new fabric.IText("60:00", {
+                    fontSize: 40,
+                    lockUniScaling: true,
+                    lockScalingFlip: true,
                 });
-                this.canvas.add(circle);
-                var rect = new fabric.Rect({
-                    left: 0,
-                    top: 0,
-                    fill: 'red',
-                    width: 200,
-                    height: 200
-                });
-                this.canvas.add(rect);
+                newItem.on('modified', function() { 
+                    var newfontsize = (newItem.fontSize * newItem.scaleX);
+                    newItem.width = newItem.width * newItem.scaleX;
+                    newItem.fontSize = (parseInt(newfontsize, 10));
+                    newItem.height = newItem.height * newItem.scaleY;
+                    newItem.scaleX = 1;
+                    newItem.scaleY = 1;
+                    this.updateSelectedItem(newItem, itemType);
+                }.bind(this));
                 break;
             case CanvasItemTypes.COUNTER:
                 break;
@@ -371,6 +450,7 @@ class LiveScreenEditorView extends Component {
                     fontSize: 40,
                     editable: false,
                     lockUniScaling: false,
+                    lockScalingFlip: true,
                 });
                 newItem.setControlsVisibility({
                     mt: false, // middle top disable
