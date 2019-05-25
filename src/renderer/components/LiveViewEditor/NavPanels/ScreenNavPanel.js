@@ -38,6 +38,27 @@ const styles = theme => ({
         backgroundPosition: 'top',
         boxSizing: 'border-box',
         borderRadius: '0',
+        backgroundColor: 'transparent',
+        '&:hover': {
+            opacity: 0.7,
+            backgroundColor: 'transparent',
+        },
+    },
+
+    navPanelButtonSelected: {
+        transition: 'all .15s',
+        width: '100%',
+        color: '#fff',
+        fontSize: '11px',
+        fontWeight: '400',
+        textTransform: 'uppercase',
+        backgroundSize: '22px 22px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top',
+        boxSizing: 'border-box',
+        borderRadius: '0',
+        opacity: 1,
+        backgroundColor: 'transparent',
         '&:hover': {
             opacity: 1,
             backgroundColor: 'transparent',

@@ -48,6 +48,27 @@ const styles = theme => ({
         backgroundPosition: 'top',
         boxSizing: 'border-box',
         borderRadius: '0',
+        backgroundColor: 'transparent',
+        '&:hover': {
+            opacity: 0.7,
+            backgroundColor: 'transparent',
+        },
+    },
+
+    navPanelButtonSelected: {
+        transition: 'all .15s',
+        width: '100%',
+        color: '#fff',
+        fontSize: '11px',
+        fontWeight: '400',
+        textTransform: 'uppercase',
+        backgroundSize: '22px 22px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top',
+        boxSizing: 'border-box',
+        borderRadius: '0',
+        opacity: 1,
+        backgroundColor: 'transparent',
         '&:hover': {
             opacity: 1,
             backgroundColor: 'transparent',
@@ -60,7 +81,7 @@ class TextNavPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={selectedEditPanelType: this.props.EditPanelTypes.TYPEFACE};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -74,12 +95,24 @@ class TextNavPanel extends Component {
 
     }
 
+    componentWillUpdate(nextProps) {
+        if (this.state.selectedEditPanelType !== nextProps.selectedEditPanelType ) {
+            this.setState({selectedEditPanelType: nextProps.selectedEditPanelType})
+        }
+    }
+
+    updateSelectedEditPanel(newPanelType) {
+        this.props.updateSelectedEditPanel(newPanelType);
+    }
+
     render() {
         const { classes } = this.props;
         return(
             <React.Fragment>
-                <IconButton id="EditTypeButton" disableRipple className={classes.navPanelButton}>
-                    <Grid container direction='column'>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.TYPEFACE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.TYPEFACE)}>
+                    <Grid container direction='column' >
                         <Grid item>
                             <TextIcon/>
                         </Grid>
@@ -88,7 +121,9 @@ class TextNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
-                <IconButton id="EditColorButton" disableRipple className={classes.navPanelButton}>
+                <IconButton id="EditColorButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>
                     <Grid container direction='column'>
                         <Grid item>
                             <ColorIcon/>

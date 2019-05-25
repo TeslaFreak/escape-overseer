@@ -281,17 +281,17 @@ class LiveScreenEditorView extends Component {
     renderNavPanels = (selectedPanel) => {
         switch(selectedPanel) {
             case NavPanelTypes.SCREEN:
-                return <ScreenNavPanel />;
+                return <ScreenNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.TEXT:
-                return <TextNavPanel />;
+                return <TextNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.IMAGE:
-                return <ImageNavPanel />;
+                return <ImageNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.TIMER:
-                return <TimerNavPanel />;
+                return <TimerNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.COUNTER:
-                //return <CounterNavPanel />;
+                //return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.CLUEDISPLAY:
-                //return <ClueDisplayNavPanel />;
+                //return <ClueDisplayNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             default:
                 return <ScreenNavPanel />;
             }
@@ -322,8 +322,12 @@ class LiveScreenEditorView extends Component {
         }
     }
 
+    updateSelectedEditPanel = (panelType) => {
+        this.setState({selectedEditPanelType: panelType});
+    }
+
     updateItemProperty = (propertyName, propertyValue) => {
-        console.log(this.state.selectedItem.getScaledWidth());
+        console.log(propertyValue);
         switch(propertyName) {
             case 'scale':
                 this.state.selectedItem.scaleToWidth(propertyValue);
@@ -380,7 +384,7 @@ class LiveScreenEditorView extends Component {
                 
                 break;
             default:
-                this.state.selectedItem[propertyName] = propertyValue;
+                this.state.selectedItem.set(propertyName, propertyValue);
                 break;
         }
         this.state.selectedItem.setCoords();
@@ -402,7 +406,6 @@ class LiveScreenEditorView extends Component {
                     newItem.height = newItem.height * newItem.scaleY;
                     newItem.scaleX = 1;
                     newItem.scaleY = 1;
-                    this.updateSelectedItem(newItem, itemType);
                 }.bind(this));
                 break;
             case CanvasItemTypes.IMAGE:
@@ -416,9 +419,6 @@ class LiveScreenEditorView extends Component {
                             fit: 'none',
                         });
                         newItem.on('selected', () => { 
-                            this.updateSelectedItem(newItem, itemType);
-                        });
-                        newItem.on('modified', () => { 
                             this.updateSelectedItem(newItem, itemType);
                         });
                         this.canvas.add(newItem);
@@ -440,7 +440,6 @@ class LiveScreenEditorView extends Component {
                     newItem.height = newItem.height * newItem.scaleY;
                     newItem.scaleX = 1;
                     newItem.scaleY = 1;
-                    this.updateSelectedItem(newItem, itemType);
                 }.bind(this));
                 break;
             case CanvasItemTypes.COUNTER:

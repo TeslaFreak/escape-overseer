@@ -10,33 +10,9 @@ import Dialog from '@material-ui/core/Dialog';
 import FontPicker from 'font-picker-react';
 import ChromePicker from 'react-color';
 import Grid from '@material-ui/core/Grid';
-import AddIcon from '@material-ui/icons/Add';
-import TextFieldIcon from '@material-ui/icons/TextFields';
-import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
-import StarIcon from '@material-ui/icons/Star';
-import TimerIcon from '@material-ui/icons/Timer';
-import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
-import TextIcon from '@material-ui/icons/Title';
-import ColorIcon from '@material-ui/icons/ColorLens';
-import ClueIcon from '@material-ui/icons/Lock';
-import AddClueIcon from '@material-ui/icons/EnhancedEncryption';
 var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
-
-const appbarHeight = 64;
-
-const aspectRatio = 0.5625;
-const aspectWidthRatio = 1;
-const aspectHeightRatio = aspectRatio;
-const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
-const containerHeight = `calc(100vh - ${appbarHeight}px - 200px)`;
-const aspectWidth = containerWidth * aspectWidthRatio;
-const aspectHeight = containerWidth * aspectHeightRatio;
-
-//google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
 
 const styles = theme => ({
     editPanelSubsectionHeader: {
@@ -50,79 +26,13 @@ const styles = theme => ({
         fontWeight: '400',
         color: '#dce0e3',
     },
-    alignmentButtonRow: {
-        width: '100%',
-        padding: '12px 0px',
-    },
-    alignLeftButton: {
-        width: '55px',
-        height: '40px',
-        borderRadius: '3px 0 0 3px',
-        backgroundColor: '#3e4c58',
-        color: '#fff',
-        opacity: '.5',
-        padding: '0',
-        '&:hover': {
-            opacity: 1,
-            backgroundColor: '#3e4c58',
-        },
-    },
-    alignCenterButton: {
-        width: '55px',
-        height: '40px',
-        borderRadius: '0',
-        backgroundColor: '#3e4c58',
-        color: '#fff',
-        opacity: '.5',
-        padding: '0',
-        '&:hover': {
-            opacity: 1,
-            backgroundColor: '#3e4c58',
-        },
-    },
-    alignRightButton: {
-        width: '55px',
-        height: '40px',
-        borderRadius: '0 3px 3px 0',
-        backgroundColor: '#3e4c58',
-        color: '#fff',
-        opacity: '.5',
-        padding: '0',
-        '&:hover': {
-            opacity: 1,
-            backgroundColor: '#3e4c58',
-        },
-    },
-    fontPicker: {
-        width: '100%',
-        padding: '12px 0px',
-    },
-    fontSlider: {
-        paddingTop: '12px',
-    },
-    sliderContainer: {
-        padding: '12px 0px',
-    },
-    thumb: {
-        cursor: 'pointer',
-        background: '#35414c',
-        borderRadius: '100px',
-        boxShadow: '0 0 0 2px #f2f4f5  !important',
-    },
-    thumbWrapper: {
-        backgroundColor: '#fff',
-    },
-    track: {
-        background: '#6f7d86',
-        opacity: 1,
-    },
 });
 
-class ColorEditPanel extends Component {
+class TypeEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={fill: this.props.selectedItem.fill};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -136,14 +46,29 @@ class ColorEditPanel extends Component {
 
     }
 
+    componentWillUpdate(nextProps) {
+        //TODO: separate out for each state variable. here and in each edit panel file.
+        if (this.state.fill !== nextProps.selectedItem.fill ) {
+            this.setState({fill: nextProps.selectedItem.fill})
+        }
+    }
+
+    handleChange = (value) => {
+        this.setState({fill: value});
+        this.props.updateItemProperty('fill', value.hex);
+    }
+
     render() {
         const { classes } = this.props;
         return(
             <Grid container direction='column' >
-                
+                <Typography id="ColorHeader" className={classes.editPanelSubsectionHeader}>Color</Typography>
+                <Grid item id='ColorPicker' className={classes.colorPicker}>
+                    <ChromePicker color={this.state.fill} disableAlpha={true} onChange={this.handleChange}/>
+                </Grid>
             </Grid>
         );
     }
 }
 
-export default  withStyles(styles)(ColorEditPanel)
+export default  withStyles(styles)(TypeEditPanel)

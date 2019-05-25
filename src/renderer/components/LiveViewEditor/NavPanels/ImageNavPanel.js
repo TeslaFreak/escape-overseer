@@ -35,62 +35,6 @@ const aspectHeight = containerWidth * aspectHeightRatio;
 //google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
 
 const styles = theme => ({
-    editorContainer: {
-        width: '100%',
-        height: `calc(100vh - ${appbarHeight}px)`
-    },
-    centeredAspectPanel: {
-        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-        height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
-        margin: '100px 70px',
-    },
-    editingSurface: {
-        backgroundColor: '#fff',
-        height: '100%',
-        width: '100%',
-        
-    },
-    editingBackground: {
-        backgroundColor: '#ededed',
-        height: '100%',
-        width: `calc(100% - 280px - 80px)`
-    },
-    sidePanel: {
-        width: '280px',
-        height: '100%',
-        backgroundColor: '#35414c',
-    },
-    navigationPanel: {
-        width: '80px',
-        height: '100%',
-        backgroundColor: '#242c33'
-    },
-    navPanelAddButton: {
-        color: '#fff',
-        backgroundColor: '#9aa6af',
-        borderRadius: '50%',
-        margin: '0',
-        width: '40px',
-        height: '40px',
-        top: 0,
-        left: 0,
-        transition: 'all .15s'
-    },
-    navPanelAddRegion: {
-            transition: 'all .15s',
-            width: '100%',
-            margin: '20px 0 0',
-            color: '#fff',
-            opacity: '.8',
-            fontSize: '11px',
-            fontWeight: '400',
-            textTransform: 'uppercase',
-            backgroundSize: '22px 22px',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'top',
-            boxSizing: 'border-box',
-            borderRadius: '0'
-    },
     navPanelButton: {
         transition: 'all .15s',
         width: '100%',
@@ -104,9 +48,26 @@ const styles = theme => ({
         backgroundPosition: 'top',
         boxSizing: 'border-box',
         borderRadius: '0',
-        hoverCursor: {
-            opacity: 1,
+        '&:hover': {
+            opacity: 0.7,
+            backgroundColor: 'transparent',
         },
+    },
+
+    navPanelButtonSelected: {
+        transition: 'all .15s',
+        width: '100%',
+        color: '#fff',
+        fontSize: '11px',
+        fontWeight: '400',
+        textTransform: 'uppercase',
+        backgroundSize: '22px 22px',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top',
+        boxSizing: 'border-box',
+        borderRadius: '0',
+        opacity: 1,
+        backgroundColor: 'transparent',
     },
 
 });
@@ -115,7 +76,7 @@ class ImageNavPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={};
+        this.state={selectedEditPanelType: this.props.EditPanelTypes.IMAGE};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -129,12 +90,24 @@ class ImageNavPanel extends Component {
 
     }
 
+    componentWillUpdate(nextProps) {
+        if (this.state.selectedEditPanelType !== nextProps.selectedEditPanelType ) {
+            this.setState({selectedEditPanelType: nextProps.selectedEditPanelType})
+        }
+    }
+
+    updateSelectedEditPanel(newPanelType) {
+        this.props.updateSelectedEditPanel(newPanelType);
+    }
+
     render() {
         const { classes } = this.props;
         return(
             <React.Fragment>
-                <IconButton id="EditTypeButton" disableRipple className={classes.navPanelButton}>
-                    <Grid container direction='column'>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.IMAGE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.IMAGE)}>
+                    <Grid container direction='column' >
                         <Grid item>
                             <InsertPhotoIcon/>
                         </Grid>
@@ -143,8 +116,10 @@ class ImageNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
-                <IconButton id="EditColorButton" disableRipple className={classes.navPanelButton}>
-                    <Grid container direction='column'>
+                <IconButton id="EditColorButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>
+                    <Grid container direction='column' >
                         <Grid item>
                             <ColorIcon/>
                         </Grid>

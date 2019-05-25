@@ -168,84 +168,15 @@ class TypeEditPanel extends Component {
         const { classes } = this.props;
         return(
             <Grid container direction='column' >
-                <Typography id="FontFaceHeader" className={classes.editPanelSubsectionHeader}>Font Family</Typography>
+                <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Timer</Typography>
                 <Grid item id='FontFacePicker' className={classes.fontPicker}>
-                    <FontPicker
-                        apiKey="AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E"
-                        activeFont={this.props.selectedItem.fontFamily}
-                        options={{limit:100}}
-                        onChange={nextFont => this.updateLiveViewTypeFace(nextFont)}
-                        className={classes.fontPicker}
-                    />
+                    Timer settings needed:
+                        whether to include hours, minutes, seconds, milliseconds
+                        total time for room
+                        meter yes/no
+                        digital/analog/various styles for clock
                 </Grid>
-                <Grid item container direction='row' id='FontAlignRow' className={classes.alignmentButtonRow}>
-                    <Grid item>
-                        <IconButton id='LeftAlignButton' disableRipple className={classes.alignLeftButton}>
-                            <FormatAlignLeftIcon className={classes.alignIcon}/>
-                        </IconButton>
-                    </Grid>
-                    <Grid item>
-                        <IconButton id='CenterAlignButton' disableRipple className={classes.alignCenterButton}>
-                            <FormatAlignCenterIcon className={classes.alignIcon}/>
-                        </IconButton>
-                    </Grid>
-                    <Grid item>
-                        <IconButton id='RightAlignButton'disableRipple className={classes.alignRightButton}>
-                            <FormatAlignRightIcon className={classes.alignIcon}/>
-                        </IconButton>
-                    </Grid>
-                </Grid>
-                <Grid item id='FontSizeSlider' className={classes.sliderContainer}>
-                    <Typography className={classes.controlElementLabel}>Size</Typography>
-                    <Tooltip title={this.state.fontSize} placement="top">
-                    <Slider
-                        classes={{
-                            container: classes.sliderContainer,
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.fontSize}
-                        min={20}
-                        max={500}
-                        onChange={(event, value) => this.handleChange(event, value, 'fontSize')}
-                    />
-                    </Tooltip>
-                </Grid>
-                <Grid item id='LetterSpacingSlider' className={classes.fontSlider}>
-                    <Typography className={classes.controlElementLabel}>Letter Spacing</Typography>
-                    <Tooltip title={this.state.charSpacing} placement="top">
-                    <Slider
-                        classes={{
-                            container: classes.sliderContainer,
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.charSpacing}
-                        min={0}
-                        max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'charSpacing')}
-                    />
-                    </Tooltip>
-                </Grid>
-                <Grid item id='LineSpacingSlider' className={classes.fontSlider}>
-                    <Typography className={classes.controlElementLabel}>Line Spacing</Typography>
-                    <Tooltip title={this.state.lineHeight} placement="top">
-                    <Slider
-                        classes={{
-                            container: classes.sliderContainer,
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.lineHeight}
-                        min={1}
-                        max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'lineHeight')}
-                    />
-                    </Tooltip>
-                </Grid>
+                
             </Grid>
         );
     }

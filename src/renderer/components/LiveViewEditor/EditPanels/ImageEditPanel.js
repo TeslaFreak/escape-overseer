@@ -27,18 +27,6 @@ var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
 
-const appbarHeight = 64;
-
-const aspectRatio = 0.5625;
-const aspectWidthRatio = 1;
-const aspectHeightRatio = aspectRatio;
-const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
-const containerHeight = `calc(100vh - ${appbarHeight}px - 200px)`;
-const aspectWidth = containerWidth * aspectWidthRatio;
-const aspectHeight = containerWidth * aspectHeightRatio;
-
-//google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
-
 const styles = theme => ({
     editPanelSubsectionHeader: {
         color: '#dce0e3',
