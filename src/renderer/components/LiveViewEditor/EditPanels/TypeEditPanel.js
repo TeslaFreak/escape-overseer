@@ -85,6 +85,13 @@ const styles = theme => ({
             backgroundColor: '#3e4c58',
         },
     },
+    alignButtonSelected: {
+        backgroundColor: '#242c33',
+        opacity: 0.8,
+        '&:hover': {
+            backgroundColor: '#242c33',
+        }
+    },
     fontPicker: {
         width: '100%',
         padding: '12px 0px',
@@ -116,7 +123,7 @@ class TypeEditPanel extends Component {
     constructor(props) {
         super(props);
         this.state={fontSize: this.props.selectedItem.fontSize, charSpacing: this.props.selectedItem.charSpacing/10, lineHeight: this.props.selectedItem.lineHeight**2,
-                    textLineLength: this.props.selectedItem.textLines.length, order: this.props.selectedItem.getZIndex()};
+                    textLineLength: this.props.selectedItem.textLines.length, textAlign: this.props.selectedItem.textAlign, order: this.props.selectedItem.getZIndex()};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -141,6 +148,9 @@ class TypeEditPanel extends Component {
         if (this.state.order !== nextProps.selectedItem.getZIndex()) {
             this.setState({order: nextProps.selectedItem.getZIndex()})
         }
+        if (this.state.textAlign !== nextProps.selectedItem.textAlign) {
+            this.setState({textAlign: nextProps.selectedItem.textAlign})
+        }
     }
 
     handleChange = (event, value, propertyName) => {
@@ -154,6 +164,10 @@ class TypeEditPanel extends Component {
             case 'lineHeight':
                 roundedValue = parseInt(value,10)**0.5;
                 displayValue = parseInt(value, 10);
+                break;
+            case 'textAlign':
+                roundedValue = value;
+                displayValue = value;
                 break;
             default:
                 roundedValue = parseInt(value, 10);
@@ -179,17 +193,20 @@ class TypeEditPanel extends Component {
                 </Grid>
                 <Grid item container direction='row' id='FontAlignRow' className={classes.alignmentButtonRow}>
                     <Grid item>
-                        <IconButton id='LeftAlignButton' disableRipple className={classes.alignLeftButton}>
+                        <IconButton id='LeftAlignButton' disableRipple className={classNames(classes.alignLeftButton, this.state.textAlign == 'left' ? classes.alignButtonSelected : '')}
+                                    onClick={(event) => this.handleChange(event, 'left', 'textAlign')}>
                             <FormatAlignLeftIcon className={classes.alignIcon}/>
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton id='CenterAlignButton' disableRipple className={classes.alignCenterButton}>
+                        <IconButton id='CenterAlignButton' disableRipple className={classNames(classes.alignCenterButton, this.state.textAlign == 'center' ? classes.alignButtonSelected : '')}
+                                    onClick={(event) => this.handleChange(event, 'center', 'textAlign')}>
                             <FormatAlignCenterIcon className={classes.alignIcon}/>
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton id='RightAlignButton'disableRipple className={classes.alignRightButton}>
+                        <IconButton id='RightAlignButton'disableRipple className={classNames(classes.alignRightButton, this.state.textAlign == 'right' ? classes.alignButtonSelected : '')}
+                                    onClick={(event) => this.handleChange(event, 'right', 'textAlign')}>
                             <FormatAlignRightIcon className={classes.alignIcon}/>
                         </IconButton>
                     </Grid>

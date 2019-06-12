@@ -233,7 +233,7 @@ class LiveScreenEditorView extends Component {
         var oldCanvas = document.getElementById('mainCanvas');
 
         fabric.Object.prototype.getZIndex = function() {
-            return this.canvas.getObjects().indexOf(this);
+            return this.canvas ? this.canvas.getObjects().indexOf(this) : 0;
         }
 
         fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
@@ -270,13 +270,25 @@ class LiveScreenEditorView extends Component {
                                             backgroundColor: '#fff',
                                             preserveObjectStacking: true,
                                             uniScaleTransform: true, });
-        
+        let editorContainer = document.getElementById('editorContainer');
+        editorContainer.tabIndex = 1000;
+        editorContainer.addEventListener("keydown", this.handleKeyPress, false);
+        editorContainer.addEventListener("click", this.handleGeneralClick, false);
         
     }
 
     handleKeyPress = (e) => {
-        if(e.which in [8, 46])
+        console.log(e.which);
+        if([8, 46].includes(e.which)) {
             this.canvas.remove(this.canvas.getActiveObject());
+            this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
+        }
+    }
+
+    handleGeneralClick = (e) => {
+        if(this.canvas.getActiveObject() === null) {
+            this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
+        }
     }
 
     handleOpenAddMenu = event => {
@@ -286,10 +298,6 @@ class LiveScreenEditorView extends Component {
         else {
             this.setState({ anchorEl: event.currentTarget});
         }
-      };
-    
-    handleCloseAddMenu = () => {
-        this.setState({anchorEl: null });
     };
 
     renderEditPanels = (selectedPanel) => {
@@ -329,26 +337,25 @@ class LiveScreenEditorView extends Component {
     }
 
     updateSelectedItem = (selectedItem, itemType) => {
-        this.setState({selectedItem: selectedItem});
         switch(itemType) {
             case CanvasItemTypes.TEXT:
-                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.IMAGE:
-                this.setState({selectedNavPanelType: NavPanelTypes.IMAGE, selectedEditPanelType: EditPanelTypes.IMAGE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.IMAGE, selectedEditPanelType: EditPanelTypes.IMAGE});
                 break;
             case CanvasItemTypes.TIMER:
-                this.setState({selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
-                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
-                this.setState({selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.SCREEN:
             default:
-                this.setState({selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO});
                 break;
         }
     }
@@ -551,10 +558,10 @@ class LiveScreenEditorView extends Component {
         const { classes } = this.props;
 
         return(
-            <Grid container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
+            <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='flex-end' className={classes.editingBackground}>
                     <Grid item id='aspectPanel' className={classes.centeredAspectPanel}>
-                        <canvas id= 'mainCanvas' onKeyPress={this.handleKeyPress}>
+                        <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>
                 </Grid>

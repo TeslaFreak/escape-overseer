@@ -87,6 +87,13 @@ const styles = theme => ({
             backgroundColor: '#3e4c58',
         },
     },
+    alignButtonSelected: {
+        backgroundColor: '#242c33',
+        opacity: 0.8,
+        '&:hover': {
+            backgroundColor: '#242c33',
+        }
+    },
     fontPicker: {
         width: '100%',
         padding: '12px 0px',
@@ -174,17 +181,20 @@ class TypeEditPanel extends Component {
                 <Typography className={classes.editPanelSubsectionHeader}>Image</Typography>
                 <Grid item container direction='row' id='FontAlignRow' className={classes.alignmentButtonRow}>
                     <Grid item>
-                        <IconButton id='FillWidthButton' disableRipple className={classes.alignLeftButton} onClick={(event) => this.handleChange(event, 'width', 'fit')}> 
+                        <IconButton id='FillWidthButton' disableRipple className={classNames(classes.alignLeftButton, this.state.fit == 'width' ? classes.alignButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, 'width', 'fit')}> 
                             Fit To Width
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton id='FillHeightButton' disableRipple className={classes.alignCenterButton} onClick={(event) => this.handleChange(event, 'height', 'fit')}>
+                        <IconButton id='FillHeightButton' disableRipple className={classNames(classes.alignCenterButton, this.state.fit == 'height' ? classes.alignButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, 'height', 'fit')}>
                             Fit To Height
                         </IconButton>
                     </Grid>
                     <Grid item>
-                        <IconButton id='FreeStandingButton' disableRipple className={classes.alignRightButton} onClick={(event) => this.handleChange(event, 'none', 'fit')}>
+                        <IconButton id='FreeStandingButton' disableRipple className={classNames(classes.alignRightButton, this.state.fit == 'none' ? classes.alignButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, 'none', 'fit')}>
                             No Fit
                         </IconButton>
                     </Grid>
