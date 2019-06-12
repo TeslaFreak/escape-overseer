@@ -89,7 +89,7 @@ class TextNavPanel extends Component {
         const { classes } = this.props;
         return(
             <React.Fragment>
-                <IconButton id="EditSizeButton" disableRipple className={classes.navPanelButton}>
+                <IconButton id="EditSizeButton" disableRipple className={this.state.selectedEditPanelType == this.props.EditPanelTypes.SCREEN ? classes.navPanelButtonSelected : classes.navPanelButton}>
                     <Grid container direction='column'>
                         <Grid item>
                             <AspectIcon/>
