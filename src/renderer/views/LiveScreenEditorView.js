@@ -7,6 +7,7 @@ import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPane
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
 import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
+import TimerEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
 import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -231,6 +232,10 @@ class LiveScreenEditorView extends Component {
     componentDidMount() {
         var oldCanvas = document.getElementById('mainCanvas');
 
+        fabric.Object.prototype.getZIndex = function() {
+            return this.canvas.getObjects().indexOf(this);
+        }
+
         fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
             type: 'cluetextbox',
              /**
@@ -241,6 +246,23 @@ class LiveScreenEditorView extends Component {
             _dimensionAffectingProps: fabric.Text.prototype._dimensionAffectingProps,
         });
 
+        fabric.FittableImage = fabric.util.createClass(fabric.Image, {
+            type: 'fittableimage',
+
+            initialize: function(options) {
+                options || (options = { });
+
+                this.callSuper('initialize', options);
+                this.set('fit', options.fit || 'none');
+            },
+
+            toObject: function() {
+                return fabric.util.object.extend(this.callSuper('toObject'), {
+                fit: this.get('fit')
+                });
+            },
+        });
+
         this.canvas = new fabric.Canvas("mainCanvas", {
                                             width: oldCanvas.parentNode.clientWidth, 
                                             height: oldCanvas.parentNode.clientHeight,
@@ -248,6 +270,13 @@ class LiveScreenEditorView extends Component {
                                             backgroundColor: '#fff',
                                             preserveObjectStacking: true,
                                             uniScaleTransform: true, });
+        
+        
+    }
+
+    handleKeyPress = (e) => {
+        if(e.which in [8, 46])
+            this.canvas.remove(this.canvas.getActiveObject());
     }
 
     handleOpenAddMenu = event => {
@@ -266,13 +295,15 @@ class LiveScreenEditorView extends Component {
     renderEditPanels = (selectedPanel) => {
         switch(selectedPanel) {
             case EditPanelTypes.TYPEFACE:
-                return <TypeEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+                return <TypeEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} canvasObjectCount={this.canvas.size()}/>;
             case EditPanelTypes.COLOR:
                 return <ColorEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.IMAGE:
-                return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+                return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} canvasObjectCount={this.canvas.size()}/>;
             case EditPanelTypes.ASPECTRATIO:
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+            case EditPanelTypes.TIMER:
+                return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             default:
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             }
@@ -381,7 +412,10 @@ class LiveScreenEditorView extends Component {
                         });
                     break;
                 }
-                
+                this.state.selectedItem.set(propertyName, propertyValue);
+                break;
+            case 'order':
+                this.state.selectedItem.moveTo(propertyValue);
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
@@ -396,6 +430,7 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Background Text Example", {
                     fontSize: 40,
+                    lineHeight: 1,
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
@@ -406,6 +441,7 @@ class LiveScreenEditorView extends Component {
                     newItem.height = newItem.height * newItem.scaleY;
                     newItem.scaleX = 1;
                     newItem.scaleY = 1;
+                    this.updateSelectedItem(newItem, itemType);
                 }.bind(this));
                 break;
             case CanvasItemTypes.IMAGE:
@@ -414,9 +450,11 @@ class LiveScreenEditorView extends Component {
                     var imgObj = new Image();
                     imgObj.src = event.target.result;
                     imgObj.onload = function () {
-                        var newItem = new fabric.Image(imgObj, {
+                        var newItem = new fabric.FittableImage(imgObj, {
                             lockUniScaling: true,
-                            fit: 'none',
+                        });
+                        newItem.on('modified',  () => { 
+                            this.updateSelectedItem(newItem, itemType);
                         });
                         newItem.on('selected', () => { 
                             this.updateSelectedItem(newItem, itemType);
@@ -433,20 +471,22 @@ class LiveScreenEditorView extends Component {
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
-                newItem.on('modified', function() { 
+                newItem.on('modified',  () => {
                     var newfontsize = (newItem.fontSize * newItem.scaleX);
                     newItem.width = newItem.width * newItem.scaleX;
                     newItem.fontSize = (parseInt(newfontsize, 10));
                     newItem.height = newItem.height * newItem.scaleY;
                     newItem.scaleX = 1;
                     newItem.scaleY = 1;
-                }.bind(this));
+                });
                 break;
             case CanvasItemTypes.COUNTER:
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
-                var newItem = new fabric.ClueTextbox("Lorim Ipsum", {
+                var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.", {
                     fontSize: 40,
+                    width: this.canvas.width - 40,
+                    lineHeight: 1,
                     editable: false,
                     lockUniScaling: false,
                     lockScalingFlip: true,
@@ -457,7 +497,7 @@ class LiveScreenEditorView extends Component {
                     ml: false, // middle left
                     mr: false, // middle right
                 });
-                newItem.on('scaling', function() { 
+                newItem.on('scaling',  () => {
                     var newfontsize = (newItem.fontSize * newItem.scaleX);
                     newItem.width = newItem.width * newItem.scaleX;
                     //newItem.fontSize = (parseInt(newfontsize, 10));
@@ -471,9 +511,8 @@ class LiveScreenEditorView extends Component {
                     newItem._unwrappedTextLines = newLinesObject._unwrappedLines;
                     newItem._text = newLinesObject.graphemeText;
                     newItem._textLines = newLinesObject.graphemeLines;
-                    
                 });
-                newItem.on('modified', function() { 
+                newItem.on('modified',  () => { 
                     var newfontsize = (newItem.fontSize * newItem.scaleX);
                     newItem.width = newItem.width * newItem.scaleX;
                     //newItem.fontSize = (parseInt(newfontsize, 10));
@@ -487,6 +526,8 @@ class LiveScreenEditorView extends Component {
                     newItem._unwrappedTextLines = newLinesObject._unwrappedLines;
                     newItem._text = newLinesObject.graphemeText;
                     newItem._textLines = newLinesObject.graphemeLines;
+                    this.updateSelectedItem(newItem, itemType);
+
                 });
                 break;
             default:
@@ -498,6 +539,8 @@ class LiveScreenEditorView extends Component {
                 this.updateSelectedItem(newItem, itemType);
             });
             this.canvas.add(newItem);
+            newItem.center();
+            console.log(newItem);
             this.canvas.setActiveObject(newItem);
         }
         this.handleOpenAddMenu();
@@ -511,7 +554,7 @@ class LiveScreenEditorView extends Component {
             <Grid container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='flex-end' className={classes.editingBackground}>
                     <Grid item id='aspectPanel' className={classes.centeredAspectPanel}>
-                        <canvas id= 'mainCanvas'>
+                        <canvas id= 'mainCanvas' onKeyPress={this.handleKeyPress}>
                         </canvas>
                     </Grid>
                 </Grid>

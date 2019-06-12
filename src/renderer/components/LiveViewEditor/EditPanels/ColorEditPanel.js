@@ -25,6 +25,7 @@ const styles = theme => ({
         fontSize: '12px',
         fontWeight: '400',
         color: '#dce0e3',
+        padding: '18px 0px 12px 0px',
     },
 });
 

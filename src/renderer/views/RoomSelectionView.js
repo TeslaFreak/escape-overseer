@@ -24,7 +24,7 @@ const styles = theme => ({
       backgroundColor: '#4f5b62'
     },
     contentPadding: {
-        padding: theme.spacing.unit * 3,
+        padding: theme.spacing(3),
     }
   });
 
@@ -123,7 +123,7 @@ class RoomSelectionView extends Component {
                 <Route path='/roomconfig' render={(props) => <Typography variant='h6'>Choose a room to edit:</Typography>} />
             </Switch>  
             </Grid>
-            <Grid container direction='row' spacing={16}>
+            <Grid container direction='row' spacing={2}>
             {!this.state.isLoading && this.state.rooms.map(room => (
                 <Grid item>
                     <Card className={classes.card}>

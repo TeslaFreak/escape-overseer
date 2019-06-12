@@ -38,6 +38,7 @@ const styles = theme => ({
         fontSize: '12px',
         fontWeight: '400',
         color: '#dce0e3',
+        padding: '18px 0px 12px 0px',
     },
     alignmentButtonRow: {
         fontSize: '12px',
@@ -115,7 +116,8 @@ class TypeEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={scale: this.props.selectedItem.getScaledWidth()**0.588, opacity: this.props.selectedItem.opacity*100, fit: this.props.selectedItem.fit};
+        this.state={scale: parseInt(this.props.selectedItem.getScaledWidth()**(1/1.7), 10), opacity: this.props.selectedItem.opacity*100, fit: this.props.selectedItem.fit,
+                    order: this.props.selectedItem.getZIndex()};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -130,8 +132,16 @@ class TypeEditPanel extends Component {
     }
 
     componentWillUpdate(nextProps) {
-        if (this.state.scale !== nextProps.selectedItem.getScaledWidth()**0.588 ) {
-            this.setState({scale: this.props.selectedItem.getScaledWidth()**0.588, opacity: this.props.selectedItem.opacity*100, fit: this.props.selectedItem.fit})
+        if (this.state.scale !== parseInt(nextProps.selectedItem.getScaledWidth()**(1/1.7), 10) ) {
+            this.setState({scale: parseInt(nextProps.selectedItem.getScaledWidth()**(1/1.7), 10), opacity: nextProps.selectedItem.opacity*100})
+        }
+        if (this.state.fit !== nextProps.selectedItem.fit) {
+            
+            console.log("new fit: " + nextProps.selectedItem.fit);
+            this.setState({fit: nextProps.selectedItem.fit})
+        }
+        if (this.state.order !== nextProps.selectedItem.getZIndex()) {
+            this.setState({order: nextProps.selectedItem.getZIndex()})
         }
     }
 
@@ -179,12 +189,11 @@ class TypeEditPanel extends Component {
                         </IconButton>
                     </Grid>
                 </Grid>
-                <Grid item id='ImageSizeSlider' className={classes.sliderContainer}>
+                <Grid item id='ImageSizeSlider'>
                     <Typography className={classes.controlElementLabel}>Size</Typography>
                     <Tooltip title={this.state.scale} placement="top">
                     <Slider
                         classes={{
-                            container: classes.sliderContainer,
                             thumb: classes.thumb,
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
@@ -192,16 +201,17 @@ class TypeEditPanel extends Component {
                         value={this.state.scale}
                         min={1}
                         max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'scale')} //TODO disable when set to fit width or height
+                        onChange={(event, value) => this.handleChange(event, value, 'scale')}
+                        valueLabelDisplay="auto"
+                        disabled={this.state.fit!=='none'}
                     />
                     </Tooltip>
                 </Grid>
-                <Grid item id='OpacitySlider' className={classes.fontSlider}>
+                <Grid item id='OpacitySlider'>
                     <Typography className={classes.controlElementLabel}>Opacity</Typography>
                     <Tooltip title={this.state.opacity} placement="top">
                     <Slider
                         classes={{
-                            container: classes.sliderContainer,
                             thumb: classes.thumb,
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
@@ -210,6 +220,23 @@ class TypeEditPanel extends Component {
                         min={0}
                         max={100}
                         onChange={(event, value) => this.handleChange(event, value, 'opacity')}
+                    />
+                    </Tooltip>
+                </Grid>
+                <Grid item id='OrderSlider' >
+                    <Typography className={classes.controlElementLabel}>Order</Typography>
+                    <Tooltip title={this.state.order} placement="top">
+                    <Slider
+                        classes={{
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={this.state.order}
+                        min={0}
+                        max={this.props.canvasObjectCount-1}
+                        step={1}
+                        onChange={(event, value) => this.handleChange(event, value, 'order')}
                     />
                     </Tooltip>
                 </Grid>

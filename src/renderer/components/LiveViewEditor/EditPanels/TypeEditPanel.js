@@ -40,6 +40,7 @@ const styles = theme => ({
         fontSize: '12px',
         fontWeight: '400',
         color: '#dce0e3',
+        padding: '18px 0px 12px 0px',
     },
     alignmentButtonRow: {
         width: '100%',
@@ -92,7 +93,8 @@ const styles = theme => ({
         paddingTop: '12px',
     },
     sliderContainer: {
-        padding: '12px 0px',
+        paddingLeft: '30px',
+        paddingRight: '30px'
     },
     thumb: {
         cursor: 'pointer',
@@ -113,7 +115,8 @@ class TypeEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={fontSize: this.props.selectedItem.fontSize, charSpacing: this.props.selectedItem.charSpacing/10, lineHeight: this.props.selectedItem.lineHeight**2};
+        this.state={fontSize: this.props.selectedItem.fontSize, charSpacing: this.props.selectedItem.charSpacing/10, lineHeight: this.props.selectedItem.lineHeight**2,
+                    textLineLength: this.props.selectedItem.textLines.length, order: this.props.selectedItem.getZIndex()};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -131,6 +134,12 @@ class TypeEditPanel extends Component {
         //TODO: separate out for each state variable. here and in each edit panel file.
         if (this.state.fontSize !== nextProps.selectedItem.fontSize ) {
             this.setState({fontSize: nextProps.selectedItem.fontSize, charSpacing: nextProps.selectedItem.charSpacing/10, lineHeight: nextProps.selectedItem.lineHeight**2})
+        }
+        if (nextProps && nextProps.selectedItem.textLines && this.state.textLineLength !== nextProps.selectedItem.textLines.length) {
+            this.setState({textLineLength: nextProps.selectedItem.textLines.length})
+        }
+        if (this.state.order !== nextProps.selectedItem.getZIndex()) {
+            this.setState({order: nextProps.selectedItem.getZIndex()})
         }
     }
 
@@ -185,12 +194,11 @@ class TypeEditPanel extends Component {
                         </IconButton>
                     </Grid>
                 </Grid>
-                <Grid item id='FontSizeSlider' className={classes.sliderContainer}>
+                <Grid item id='FontSizeSlider' >
                     <Typography className={classes.controlElementLabel}>Size</Typography>
                     <Tooltip title={this.state.fontSize} placement="top">
                     <Slider
                         classes={{
-                            container: classes.sliderContainer,
                             thumb: classes.thumb,
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
@@ -202,12 +210,11 @@ class TypeEditPanel extends Component {
                     />
                     </Tooltip>
                 </Grid>
-                <Grid item id='LetterSpacingSlider' className={classes.sliderContainer}>
+                <Grid item id='LetterSpacingSlider' >
                     <Typography className={classes.controlElementLabel}>Letter Spacing</Typography>
                     <Tooltip title={this.state.charSpacing} placement="top">
                     <Slider
                         classes={{
-                            container: classes.sliderContainer,
                             thumb: classes.thumb,
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
@@ -219,12 +226,12 @@ class TypeEditPanel extends Component {
                     />
                     </Tooltip>
                 </Grid>
-                <Grid item id='LineSpacingSlider' className={classes.sliderContainer}>
+                {this.state.textLineLength > 1 &&
+                <Grid item id='LineSpacingSlider'>
                     <Typography className={classes.controlElementLabel}>Line Spacing</Typography>
                     <Tooltip title={this.state.lineHeight} placement="top">
                     <Slider
                         classes={{
-                            container: classes.sliderContainer,
                             thumb: classes.thumb,
                             thumbWrapper: classes.thumbWrapper,
                             track: classes.track,
@@ -233,6 +240,23 @@ class TypeEditPanel extends Component {
                         min={1}
                         max={100}
                         onChange={(event, value) => this.handleChange(event, value, 'lineHeight')}
+                    />
+                    </Tooltip>
+                </Grid>}
+                <Grid item id='OrderSlider' >
+                    <Typography className={classes.controlElementLabel}>Order</Typography>
+                    <Tooltip title={this.state.order} placement="top">
+                    <Slider
+                        classes={{
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={this.state.order}
+                        min={0}
+                        max={this.props.canvasObjectCount-1}
+                        step={1}
+                        onChange={(event, value) => this.handleChange(event, value, 'order')}
                     />
                     </Tooltip>
                 </Grid>
