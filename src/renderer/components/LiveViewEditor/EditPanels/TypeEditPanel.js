@@ -95,6 +95,7 @@ const styles = theme => ({
     fontPicker: {
         width: '100%',
         padding: '12px 0px',
+        zIndex: 3,
     },
     fontSlider: {
         paddingTop: '12px',
@@ -123,7 +124,8 @@ class TypeEditPanel extends Component {
     constructor(props) {
         super(props);
         this.state={fontSize: this.props.selectedItem.fontSize, charSpacing: this.props.selectedItem.charSpacing/10, lineHeight: this.props.selectedItem.lineHeight**2,
-                    textLineLength: this.props.selectedItem.textLines.length, textAlign: this.props.selectedItem.textAlign, order: this.props.selectedItem.getZIndex()};
+                    textLineLength: this.props.selectedItem.textLines.length, textAlign: this.props.selectedItem.textAlign, order: this.props.selectedItem.getZIndex(),
+                    fontFamily: this.props.selectedItem.fontFamily};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -151,6 +153,9 @@ class TypeEditPanel extends Component {
         if (this.state.textAlign !== nextProps.selectedItem.textAlign) {
             this.setState({textAlign: nextProps.selectedItem.textAlign})
         }
+        if (this.state.fontFamily !== nextProps.selectedItem.fontFamily) {
+            this.setState({fontFamily: nextProps.selectedItem.fontFamily})
+        }
     }
 
     handleChange = (event, value, propertyName) => {
@@ -165,6 +170,7 @@ class TypeEditPanel extends Component {
                 roundedValue = parseInt(value,10)**0.5;
                 displayValue = parseInt(value, 10);
                 break;
+            case 'fontFamily':
             case 'textAlign':
                 roundedValue = value;
                 displayValue = value;
@@ -185,9 +191,9 @@ class TypeEditPanel extends Component {
                 <Grid item id='FontFacePicker' className={classes.fontPicker}>
                     <FontPicker
                         apiKey="AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E"
-                        activeFont={this.props.selectedItem.fontFamily}
+                        activeFont={this.state.fontFamily}
                         options={{limit:100}}
-                        onChange={nextFont => this.updateLiveViewTypeFace(nextFont)}
+                        onChange={(nextFont) => this.handleChange(null, nextFont.family, 'fontFamily')}
                         className={classes.fontPicker}
                     />
                 </Grid>
@@ -237,7 +243,7 @@ class TypeEditPanel extends Component {
                             track: classes.track,
                           }}
                         value={this.state.charSpacing}
-                        min={0}
+                        min={1}
                         max={100}
                         onChange={(event, value) => this.handleChange(event, value, 'charSpacing')}
                     />

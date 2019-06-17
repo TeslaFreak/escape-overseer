@@ -231,7 +231,6 @@ class LiveScreenEditorView extends Component {
 
     componentDidMount() {
         var oldCanvas = document.getElementById('mainCanvas');
-
         fabric.Object.prototype.getZIndex = function() {
             return this.canvas ? this.canvas.getObjects().indexOf(this) : 0;
         }
@@ -270,6 +269,12 @@ class LiveScreenEditorView extends Component {
                                             backgroundColor: '#fff',
                                             preserveObjectStacking: true,
                                             uniScaleTransform: true, });
+        this.canvas.setDimensions({
+            width: '100%',
+            height: '100%'
+          },{
+            cssOnly: true
+          });
         let editorContainer = document.getElementById('editorContainer');
         editorContainer.tabIndex = 1000;
         editorContainer.addEventListener("keydown", this.handleKeyPress, false);
@@ -332,7 +337,7 @@ class LiveScreenEditorView extends Component {
             case NavPanelTypes.CLUEDISPLAY:
                 //return <ClueDisplayNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             default:
-                return <ScreenNavPanel />;
+                return <ScreenNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             }
     }
 
@@ -424,6 +429,14 @@ class LiveScreenEditorView extends Component {
             case 'order':
                 this.state.selectedItem.moveTo(propertyValue);
                 break;
+            case 'fontFamily':
+                    WebFont.load({
+                    google: { 
+                            families: [propertyValue] 
+                        } 
+                    });
+                    this.state.selectedItem.set(propertyName, propertyValue);
+                break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
                 break;
@@ -438,6 +451,7 @@ class LiveScreenEditorView extends Component {
                 var newItem = new fabric.IText("Background Text Example", {
                     fontSize: 40,
                     lineHeight: 1,
+                    charSpacing: 10,
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
@@ -475,6 +489,7 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.IText("60:00", {
                     fontSize: 40,
+                    charSpacing: 10,
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
@@ -494,6 +509,7 @@ class LiveScreenEditorView extends Component {
                     fontSize: 40,
                     width: this.canvas.width - 40,
                     lineHeight: 1,
+                    charSpacing: 10,
                     editable: false,
                     lockUniScaling: false,
                     lockScalingFlip: true,
