@@ -177,7 +177,7 @@ class TimerEditPanel extends Component {
                 <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Timer</Typography>
                 <Grid item id='LetterSpacingSlider' >
                     <Typography className={classes.controlElementLabel}>Total Time (in minutes)</Typography>
-                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
+                    <TextField type="number"/>
                 </Grid>
                 <Typography className={classes.controlElementLabel}>Format</Typography>
                 <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>
@@ -204,10 +204,6 @@ class TimerEditPanel extends Component {
                                     onClick={(event) => this.handleChange(event, !this.state.showMilliseconds, 'showMilliseconds')}>
                             MS
                         </IconButton>
-                    </Grid>
-                    <Grid>
-                        <Typography className={classes.controlElementLabel}>Include Leading Zero</Typography>
-                        {/*TODO: add checkbox and helper tooltip for what this does */}
                     </Grid>
                 </Grid>
             </Grid>

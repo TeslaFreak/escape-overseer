@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
 import TimerNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
-import CounterNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
 import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
 import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
 import TimerEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
-import CounterEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
 import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -250,10 +248,10 @@ class LiveScreenEditorView extends Component {
         fabric.FittableImage = fabric.util.createClass(fabric.Image, {
             type: 'fittableimage',
 
-            initialize: function(element, options) {
+            initialize: function(options) {
                 options || (options = { });
 
-                this.callSuper('initialize', element, options);
+                this.callSuper('initialize', options);
                 this.set('fit', options.fit || 'none');
             },
 
@@ -287,40 +285,9 @@ class LiveScreenEditorView extends Component {
                 showMilliseconds: this.get('showMilliseconds'),
                 });
             },
-
-            updateTimeDisplay: function() {
-                let remainingMinutes = this.totalTime;
-                let displayString = '';
-                if(this.showHours) {
-                    let totalHours = Math.floor(remainingMinutes/60);
-                    let substring = totalHours.toString().padStart(2, '0');
-                    displayString += (this.showMinutes || this.showSeconds || this.showMilliseconds) ? `${substring}:` : `${substring}`;
-                    remainingMinutes -= totalHours*60;
-                }
-                if(this.showMinutes) {
-                    let totalMinutes = remainingMinutes;
-                    let substring = totalMinutes.toString().padStart(2, '0');
-                    displayString += (this.showSeconds || this.showMilliseconds) ? `${substring}:` : `${substring}`;
-                    remainingMinutes -= totalMinutes;
-                }
-                if(this.showSeconds) {
-                    let totalSeconds = remainingMinutes*60;
-                    let substring = totalSeconds.toString().padStart(2, '0');
-                    displayString += this.showMilliseconds ? `${substring}.` : `${substring}`;
-                    remainingMinutes -= totalSeconds/60;
-                }
-                if(this.showMilliseconds) {
-                    let totalMilliseconds = remainingMinutes*60*1000;
-                    let substring = totalMilliseconds.toString().padStart(3, '0');
-                    displayString += `${substring}`;
-                }
-                this.set("text", displayString);
-            }
         });
 
         this.canvas = new fabric.Canvas("mainCanvas", {
-                                            width: oldCanvas.parentNode.clientWidth, 
-                                            height: oldCanvas.parentNode.clientHeight,
                                             selection: false,
                                             backgroundColor: '#fff',
                                             preserveObjectStacking: true,
@@ -373,8 +340,6 @@ class LiveScreenEditorView extends Component {
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.TIMER:
                 return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
-            case EditPanelTypes.COUNTER:
-                return <CounterEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             default:
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             }
@@ -391,7 +356,7 @@ class LiveScreenEditorView extends Component {
             case NavPanelTypes.TIMER:
                 return <TimerNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.COUNTER:
-                return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
+                //return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.CLUEDISPLAY:
                 //return <ClueDisplayNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             default:
@@ -411,7 +376,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
-                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.COUNTER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
@@ -487,14 +452,6 @@ class LiveScreenEditorView extends Component {
             case 'order':
                 this.state.selectedItem.moveTo(propertyValue);
                 break;
-            case 'showHours':
-            case 'showMinutes':
-            case 'showSeconds':
-            case 'showMilliseconds':
-            case 'totalTime':
-                this.state.selectedItem.set(propertyName, propertyValue);
-                this.state.selectedItem.updateTimeDisplay();
-                break;
             case 'fontFamily':
                     WebFont.load({
                     google: { 
@@ -508,13 +465,13 @@ class LiveScreenEditorView extends Component {
                 break;
         }
         this.state.selectedItem.setCoords();
-        this.canvas.requestRenderAll();
+        this.canvas.renderAll();
     }
 
     createNewCanvasItem = (itemType, event) => {
         switch(itemType) {
             case CanvasItemTypes.TEXT:
-                var newItem = new fabric.IText("Enter Text Here", {
+                var newItem = new fabric.IText("Background Text Example", {
                     fontSize: 40,
                     lineHeight: 1,
                     charSpacing: 10,
@@ -556,7 +513,6 @@ class LiveScreenEditorView extends Component {
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
                     charSpacing: 10,
-                    editable: false,
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
@@ -571,7 +527,6 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case CanvasItemTypes.COUNTER:
-
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")

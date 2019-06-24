@@ -89,6 +89,7 @@ class TypeEditPanel extends Component {
         return(
             <Grid container direction='column' >
                 {/*TODO: Add Custom size section */}
+                {/*TODO: Make these actually work and set up onHover/onSelected styling */}
                 <Typography id="StandardRatioHeader" className={classes.editPanelSubsectionHeader}>Standard</Typography>
                 <Grid item container direction='column' justify='center' alignItems='stretch' id='StandardRatioSection'>
                     <Grid item container direction='column' justify='center' id='16:9Button' className={classes.clickableArea}>

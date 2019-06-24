@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
 import TimerNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
-import CounterNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
 import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
 import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
 import TimerEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
-import CounterEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
 import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -373,8 +371,6 @@ class LiveScreenEditorView extends Component {
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.TIMER:
                 return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
-            case EditPanelTypes.COUNTER:
-                return <CounterEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             default:
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             }
@@ -391,7 +387,7 @@ class LiveScreenEditorView extends Component {
             case NavPanelTypes.TIMER:
                 return <TimerNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.COUNTER:
-                return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
+                //return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.CLUEDISPLAY:
                 //return <ClueDisplayNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             default:
@@ -411,7 +407,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
-                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.COUNTER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});

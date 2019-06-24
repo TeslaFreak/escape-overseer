@@ -132,7 +132,7 @@ const styles = theme => ({
     },
 });
 
-class TimerEditPanel extends Component {
+class ClueCountEditPanel extends Component {
 
     constructor(props) {
         super(props);
@@ -215,4 +215,4 @@ class TimerEditPanel extends Component {
     }
 }
 
-export default  withStyles(styles)(TimerEditPanel)
+export default  withStyles(styles)(ClueCountEditPanel)

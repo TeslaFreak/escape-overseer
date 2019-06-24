@@ -205,10 +205,6 @@ class TimerEditPanel extends Component {
                             MS
                         </IconButton>
                     </Grid>
-                    <Grid>
-                        <Typography className={classes.controlElementLabel}>Include Leading Zero</Typography>
-                        {/*TODO: add checkbox and helper tooltip for what this does */}
-                    </Grid>
                 </Grid>
             </Grid>
         );
