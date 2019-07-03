@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
 import TimerNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
-import CounterNavPanel from '../components/LiveViewEditor/NavPanels/CounterNavPanel.js';
+import CounterNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
 import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
 import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
 import TimerEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
-import CounterEditPanel from '../components/LiveViewEditor/EditPanels/CounterEditPanel.js';
+import CounterEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
 import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -63,7 +63,6 @@ const EditPanelTypes = {
     COLOR: 'color',
     IMAGE: 'image',
     ASPECTRATIO: 'aspectratio',
-    COUNTER: 'counter',
 }
 
 const NavPanelTypes = {
@@ -87,8 +86,7 @@ const CanvasItemTypes = {
 const styles = theme => ({
     editorContainer: {
         width: '100%',
-        height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent'
+        height: `calc(100vh - ${appbarHeight}px)`
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -247,29 +245,6 @@ class LiveScreenEditorView extends Component {
              * @private
              */
             _dimensionAffectingProps: fabric.IText.prototype._dimensionAffectingProps.slice(0),
-
-            _renderTextCommon: function(ctx, method) {
-                ctx.save();
-                var lineHeights = 0, left = this._getLeftOffset(), top = this._getTopOffset(),
-                    offsets = this._applyPatternGradientTransform(ctx, method === 'fillText' ? this.fill : this.stroke);
-                for (var i = 0, len = this._textLines.length; i < len; i++) {
-                  var heightOfLine = this.getHeightOfLine(i),
-                      maxHeight = heightOfLine / this.lineHeight,
-                      leftOffset = this._getLineLeftOffset(i);
-                  if(lineHeights+heightOfLine < this.getScaledHeight()){
-                  this._renderTextLine(
-                    method,
-                    ctx,
-                    this._textLines[i],
-                    left + leftOffset - offsets.offsetX,
-                    top + lineHeights + maxHeight - offsets.offsetY,
-                    i
-                  );
-                  }
-                  lineHeights += heightOfLine;
-                }
-                ctx.restore();
-              }
         });
 
         fabric.FittableImage = fabric.util.createClass(fabric.Image, {
@@ -285,39 +260,6 @@ class LiveScreenEditorView extends Component {
             toObject: function() {
                 return fabric.util.object.extend(this.callSuper('toObject'), {
                 fit: this.get('fit')
-                });
-            },
-        });
-
-        fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
-            type: 'visualcounter',
-
-            //get width of each icon, have property for space between them, set default spacing to width of icon
-            initialize: function(element, options) {
-                options || (options = { });
-
-                let numberOfClues = (options.numberOfClues || 3);
-                let imageSpacing = (options.imageSpacing || 12);
-                let imageSize = (options.imageSize || 12);
-                let objects=[]
-                for(var i = 1; i <= numberOfClues; i++) {
-                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                        var img = img.scaleToWidth(imageSize).set({ left: (imageSpacing*i)+(imageSize*(i-1)), top: 12 });
-                        objects += img;
-                    }.bind(this));
-                }
-                this.callSuper('initialize', objects, options);
-                this.set('numberOfClues', numberOfClues);
-                this.set('imageSpacing', imageSpacing);
-                this.set('imageSize', imageSize);
-
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    numberOfClues: this.get('numberOfClues'),
-                    imageSpacing: this.get('imageSpacing'),
-                    imageSize: this.get('imageSize'),
                 });
             },
         });
@@ -469,7 +411,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
-                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.COUNTER, selectedEditPanelType: EditPanelTypes.COUNTER});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.COUNTER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
@@ -557,12 +499,9 @@ class LiveScreenEditorView extends Component {
                     WebFont.load({
                     google: { 
                             families: [propertyValue] 
-                        },
-                        active: function () {
-                            this.state.selectedItem.set(propertyName, propertyValue);
-                            this.canvas.requestRenderAll();
-                        }.bind(this), 
+                        } 
                     });
+                    this.state.selectedItem.set(propertyName, propertyValue);
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
@@ -577,7 +516,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Enter Text Here", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     lineHeight: 1,
                     charSpacing: 10,
                     lockUniScaling: true,
@@ -617,7 +555,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     charSpacing: 10,
                     editable: false,
                     lockUniScaling: true,
@@ -634,36 +571,18 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case CanvasItemTypes.COUNTER:
-                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                        var img1 = img.scale(0.2).set({ left: 100});
-                        
-                        fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                            var img2 = img.scale(0.2).set({ left: 175});
-                            
-                            fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                            var img3 = img.scale(0.2).set({ left: 250});
-                            var newItem = new fabric.Group([ img1, img2, img3], { 
-                                left: 200, 
-                                top: 200,
-                                lockUniScaling: true,
-                            });
-                            newItem.on('modified',  () => { 
-                                this.updateSelectedItem(newItem, itemType);
-                            });
-                            newItem.on('selected', () => { 
-                                this.updateSelectedItem(newItem, itemType);
-                            });
-                            this.canvas.add(newItem);
-                            this.canvas.setActiveObject(newItem);
-                            }.bind(this));
-                        }.bind(this));
+                    var circle1 = new fabric.Circle({ radius: 100, fill: 'red' });
+                    var circle2 = new fabric.Circle({ radius: 75, fill: 'green' });
+                    var circle3 = new fabric.Circle({ radius: 50, fill: 'blue' });
+                    fabric.Image.fromURL('https://github.com/google/material-design-icons/tree/master/action/svg/production/ic_lock_48px.svg', function(img) {
+                    var group2 = new fabric.Group([ circle1, circle2, img ], { left: 200, top: 200 });
+                    this.canvas.add(group2);
                     }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
                 newItem.set({
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
                     lineHeight: 1,
                     charSpacing: 10,

@@ -87,8 +87,7 @@ const CanvasItemTypes = {
 const styles = theme => ({
     editorContainer: {
         width: '100%',
-        height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent'
+        height: `calc(100vh - ${appbarHeight}px)`
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -289,35 +288,20 @@ class LiveScreenEditorView extends Component {
             },
         });
 
-        fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
+        fabric.VisualCounter = fabric.util.createClass(fabric.Image, {
             type: 'visualcounter',
 
             //get width of each icon, have property for space between them, set default spacing to width of icon
             initialize: function(element, options) {
                 options || (options = { });
 
-                let numberOfClues = (options.numberOfClues || 3);
-                let imageSpacing = (options.imageSpacing || 12);
-                let imageSize = (options.imageSize || 12);
-                let objects=[]
-                for(var i = 1; i <= numberOfClues; i++) {
-                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                        var img = img.scaleToWidth(imageSize).set({ left: (imageSpacing*i)+(imageSize*(i-1)), top: 12 });
-                        objects += img;
-                    }.bind(this));
-                }
-                this.callSuper('initialize', objects, options);
-                this.set('numberOfClues', numberOfClues);
-                this.set('imageSpacing', imageSpacing);
-                this.set('imageSize', imageSize);
-
+                this.callSuper('initialize', element, options);
+                this.set('fit', options.fit || 'none');
             },
 
             toObject: function() {
                 return fabric.util.object.extend(this.callSuper('toObject'), {
-                    numberOfClues: this.get('numberOfClues'),
-                    imageSpacing: this.get('imageSpacing'),
-                    imageSize: this.get('imageSize'),
+                fit: this.get('fit')
                 });
             },
         });
@@ -557,12 +541,9 @@ class LiveScreenEditorView extends Component {
                     WebFont.load({
                     google: { 
                             families: [propertyValue] 
-                        },
-                        active: function () {
-                            this.state.selectedItem.set(propertyName, propertyValue);
-                            this.canvas.requestRenderAll();
-                        }.bind(this), 
+                        } 
                     });
+                    this.state.selectedItem.set(propertyName, propertyValue);
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
@@ -577,7 +558,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Enter Text Here", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     lineHeight: 1,
                     charSpacing: 10,
                     lockUniScaling: true,
@@ -617,7 +597,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     charSpacing: 10,
                     editable: false,
                     lockUniScaling: true,
@@ -663,7 +642,6 @@ class LiveScreenEditorView extends Component {
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
                 newItem.set({
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
                     lineHeight: 1,
                     charSpacing: 10,

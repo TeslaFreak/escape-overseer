@@ -577,7 +577,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Enter Text Here", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     lineHeight: 1,
                     charSpacing: 10,
                     lockUniScaling: true,
@@ -617,7 +616,6 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     charSpacing: 10,
                     editable: false,
                     lockUniScaling: true,
@@ -663,7 +661,6 @@ class LiveScreenEditorView extends Component {
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
                 newItem.set({
                     fontSize: 40,
-                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
                     lineHeight: 1,
                     charSpacing: 10,

@@ -203,7 +203,7 @@ class ClueCountEditPanel extends Component {
                     <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
                 </Grid>
                 <Grid item id='SizeSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Size</Typography>
+                    <Typography className={classes.controlElementLabel}>Size</Typography>
                     <Tooltip title={this.state.charSpacing} placement="top">
                     <Slider
                         classes={{
@@ -219,7 +219,7 @@ class ClueCountEditPanel extends Component {
                     </Tooltip>
                 </Grid>
                 <Grid item id='SpacingSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Spacing</Typography>
+                    <Typography className={classes.controlElementLabel}>Spacing</Typography>
                     <Tooltip title={this.state.charSpacing} placement="top">
                     <Slider
                         classes={{

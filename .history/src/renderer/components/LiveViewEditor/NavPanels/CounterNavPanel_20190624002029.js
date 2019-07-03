@@ -13,7 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
 import StarIcon from '@material-ui/icons/Star';
-import LockIcon from '@material-ui/icons/Lock';
+import TimerIcon from '@material-ui/icons/Timer';
 import TextIcon from '@material-ui/icons/Title';
 import ColorIcon from '@material-ui/icons/ColorLens';
 import ClueIcon from '@material-ui/icons/Lock';
@@ -77,11 +77,11 @@ const styles = theme => ({
 
 });
 
-class CounterNavPanel extends Component {
+class ClueCountNavPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={selectedEditPanelType: this.props.EditPanelTypes.COUNTER};
+        this.state={selectedEditPanelType: this.props.EditPanelTypes.TYPEFACE};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -110,14 +110,26 @@ class CounterNavPanel extends Component {
         return(
             <React.Fragment>
                 <IconButton id="EditTimerButton" disableRipple 
-                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COUNTER ? classes.navPanelButtonSelected : classes.navPanelButton}
-                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COUNTER)}>
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.TIMER ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.TIMER)}>
                     <Grid container direction='column'>
                         <Grid item>
-                            <LockIcon/>
+                            <TimerIcon/>
                         </Grid>
                         <Grid item>
-                            Counter
+                            Timer
+                        </Grid>
+                    </Grid>
+                </IconButton>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.TYPEFACE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.TYPEFACE)}>
+                    <Grid container direction='column'>
+                        <Grid item>
+                            <TextIcon/>
+                        </Grid>
+                        <Grid item>
+                            Type
                         </Grid>
                     </Grid>
                 </IconButton>
@@ -138,4 +150,4 @@ class CounterNavPanel extends Component {
     }
 }
 
-export default  withStyles(styles)(CounterNavPanel)
+export default  withStyles(styles)(ClueCountNavPanel)

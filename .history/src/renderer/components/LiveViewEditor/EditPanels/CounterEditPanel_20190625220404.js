@@ -202,24 +202,8 @@ class ClueCountEditPanel extends Component {
                     <Typography className={classes.controlElementLabel}>Set used clue icon</Typography>
                     <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
                 </Grid>
-                <Grid item id='SizeSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Size</Typography>
-                    <Tooltip title={this.state.charSpacing} placement="top">
-                    <Slider
-                        classes={{
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.charSpacing}
-                        min={1}
-                        max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'charSpacing')}
-                    />
-                    </Tooltip>
-                </Grid>
                 <Grid item id='SpacingSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Spacing</Typography>
+                    <Typography className={classes.controlElementLabel}>Spacing</Typography>
                     <Tooltip title={this.state.charSpacing} placement="top">
                     <Slider
                         classes={{

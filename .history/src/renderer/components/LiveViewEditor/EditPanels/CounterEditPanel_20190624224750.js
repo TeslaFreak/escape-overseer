@@ -174,65 +174,41 @@ class ClueCountEditPanel extends Component {
         const { classes } = this.props;
         return(
             <Grid container direction='column' >
-                <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Clue Counter</Typography>
-                <Grid item >
-                    <Typography className={classes.controlElementLabel}>Number of Clues</Typography>
-                    <TextField type="number" defaultValue={3} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
+                <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Timer</Typography>
+                <Grid item id='LetterSpacingSlider' >
+                    <Typography className={classes.controlElementLabel}>Total Time (in minutes)</Typography>
+                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
                 </Grid>
                 <Typography className={classes.controlElementLabel}>Format</Typography>
                 <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>
                     <Grid item>
                         <IconButton disableRipple className={classNames(classes.LeftRowButton, this.state.showHours ? classes.rowButtonSelected : '')} 
                                     onClick={(event) => this.handleChange(event, !this.state.showHours, 'showHours')}> 
-                            Visual
+                            C
                         </IconButton>
                     </Grid>
                     <Grid item>
                         <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
                                     onClick={(event) => this.handleChange(event, !this.state.showMinutes, 'showMinutes')}>
-                            Numeric
+                            M
                         </IconButton>
                     </Grid>
-                </Grid>
-                <Grid item >
-                    <Typography className={classes.controlElementLabel}>Set unused clue icon</Typography>
-                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
-                </Grid>
-                <Grid item >
-                    <Typography className={classes.controlElementLabel}>Set used clue icon</Typography>
-                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
-                </Grid>
-                <Grid item id='SizeSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Size</Typography>
-                    <Tooltip title={this.state.charSpacing} placement="top">
-                    <Slider
-                        classes={{
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.charSpacing}
-                        min={1}
-                        max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'charSpacing')}
-                    />
-                    </Tooltip>
-                </Grid>
-                <Grid item id='SpacingSlider' >
-                    <Typography className={classes.controlElementLabel}>Icon Spacing</Typography>
-                    <Tooltip title={this.state.charSpacing} placement="top">
-                    <Slider
-                        classes={{
-                            thumb: classes.thumb,
-                            thumbWrapper: classes.thumbWrapper,
-                            track: classes.track,
-                          }}
-                        value={this.state.charSpacing}
-                        min={1}
-                        max={100}
-                        onChange={(event, value) => this.handleChange(event, value, 'charSpacing')}
-                    />
-                    </Tooltip>
+                    <Grid item>
+                        <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showSeconds ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, !this.state.showSeconds, 'showSeconds')}>
+                            S
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+                        <IconButton disableRipple className={classNames(classes.RightRowButton, this.state.showMilliseconds ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, !this.state.showMilliseconds, 'showMilliseconds')}>
+                            MS
+                        </IconButton>
+                    </Grid>
+                    <Grid>
+                        <Typography className={classes.controlElementLabel}>Include Leading Zero</Typography>
+                        {/*TODO: add checkbox and helper tooltip for what this does */}
+                    </Grid>
                 </Grid>
             </Grid>
         );

@@ -13,7 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
 import StarIcon from '@material-ui/icons/Star';
-import LockIcon from '@material-ui/icons/Lock';
+import TimerIcon from '@material-ui/icons/Lock';
 import TextIcon from '@material-ui/icons/Title';
 import ColorIcon from '@material-ui/icons/ColorLens';
 import ClueIcon from '@material-ui/icons/Lock';
@@ -81,7 +81,7 @@ class CounterNavPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={selectedEditPanelType: this.props.EditPanelTypes.COUNTER};
+        this.state={selectedEditPanelType: this.props.EditPanelTypes.TYPEFACE};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -118,6 +118,18 @@ class CounterNavPanel extends Component {
                         </Grid>
                         <Grid item>
                             Counter
+                        </Grid>
+                    </Grid>
+                </IconButton>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.TYPEFACE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.TYPEFACE)}>
+                    <Grid container direction='column'>
+                        <Grid item>
+                            <TextIcon/>
+                        </Grid>
+                        <Grid item>
+                            Type
                         </Grid>
                     </Grid>
                 </IconButton>

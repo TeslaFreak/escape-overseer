@@ -121,6 +121,18 @@ class CounterNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.TYPEFACE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.TYPEFACE)}>
+                    <Grid container direction='column'>
+                        <Grid item>
+                            <TextIcon/>
+                        </Grid>
+                        <Grid item>
+                            Type
+                        </Grid>
+                    </Grid>
+                </IconButton>
                 <IconButton id="EditColorButton" disableRipple 
                             className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
                             onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>
