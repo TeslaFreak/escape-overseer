@@ -636,7 +636,7 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.COUNTER:
 
                     var newItem = new fabric.VisualCounter();
-                    /*fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
                         var img1 = img.scale(0.2).set({ left: 100});
                         
                         fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
@@ -659,7 +659,7 @@ class LiveScreenEditorView extends Component {
                             this.canvas.setActiveObject(newItem);
                             }.bind(this));
                         }.bind(this));
-                    }.bind(this));*/
+                    }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")

@@ -196,17 +196,11 @@ class ClueCountEditPanel extends Component {
                 </Grid>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Set unused clue icon</Typography>
-                    <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                    onClick={(event) => this.handleChange(event, !this.state.showMinutes, 'showMinutes')}>
-                            Change
-                    </IconButton>
+                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
                 </Grid>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Set used clue icon</Typography>
-                    <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                    onClick={(event) => this.handleChange(event, !this.state.showMinutes, 'showMinutes')}>
-                            Change
-                    </IconButton>
+                    <TextField type="number" defaultValue={this.state.totalTime} onChange={(event) => this.handleChange(event, event.target.value, 'totalTime')}/>
                 </Grid>
                 <Grid item id='SizeSlider' >
                     <Typography className={classes.controlElementLabel}>Icon Size</Typography>
