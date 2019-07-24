@@ -738,7 +738,7 @@ class LiveScreenEditorView extends Component {
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='flex-end' className={classes.editingBackground}>
-                    <Grid item id='aspectPanel' className={classes.centeredAspectPanel}>
+                    <Grid item id='aspectPanel' className={classes.centeredAspectPanel2}>
                         <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>

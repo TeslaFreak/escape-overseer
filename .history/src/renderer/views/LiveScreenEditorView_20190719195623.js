@@ -49,7 +49,6 @@ const uuidv4 = require('uuid/v4');
 const appbarHeight = 64;
 
 const aspectRatio = 0.5625;
-const aspectRatio2 = 1;
 const aspectWidthRatio = 1;
 const aspectHeightRatio = aspectRatio;
 const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
@@ -94,11 +93,6 @@ const styles = theme => ({
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
         height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
-        margin: '100px 70px',
-    },
-    centeredAspectPanel2: {
-        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-        height: `calc(${containerWidth} * ${aspectRatio2} )`,
         margin: '100px 70px',
     },
     editingSurface: {
@@ -434,7 +428,7 @@ class LiveScreenEditorView extends Component {
             case EditPanelTypes.IMAGE:
                 return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} canvasObjectCount={this.canvas.size()}/>;
             case EditPanelTypes.ASPECTRATIO:
-                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} aspectRatio={this.state.aspectRatio}/>;
+                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} selectedRatio={"16:9"}/>;
             case EditPanelTypes.TIMER:
                 return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.COUNTER:
@@ -571,12 +565,7 @@ class LiveScreenEditorView extends Component {
                     });
                 break;
             case 'aspectRatio':
-                    this.canvas.setDimensions({
-                        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-                        height: `calc(${containerWidth} * ${1} )`,
-                      },{
-                        cssOnly: true
-                      });
+                this.state.aspectRatio = propertyValue;
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);

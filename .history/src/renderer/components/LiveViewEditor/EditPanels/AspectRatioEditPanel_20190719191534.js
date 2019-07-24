@@ -6,10 +6,8 @@ import Slider from '@material-ui/lab/Slider';
 import PouchDB from 'pouchdb';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
-import TVIcon from '@material-ui/icons/Tv';
 import Dialog from '@material-ui/core/Dialog';
 import FontPicker from 'font-picker-react';
-import Fade from '@material-ui/core/Fade';
 import Grid from '@material-ui/core/Grid';
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
@@ -45,8 +43,6 @@ const styles = theme => ({
     },
     selected: {
         border: '2px',
-        borderStyle: 'solid',
-        borderColor: 'white',
     },
     generalRatioStyles: {
         width: '100px',
@@ -58,36 +54,18 @@ const styles = theme => ({
         height: '75px',
         marginLeft: '43px',
         marginTop: '25px',
-        '&:hover': {
-            border: '2px',
-            borderStyle: 'solid',
-            borderColor: 'white',
-            cursor: 'pointer',
-        }
     },
     aspectRatio1by1Button: {
         width: '100px',
         height: '100px',
         marginLeft: '60px',
         marginTop: '12px',
-        '&:hover': {
-            border: '2px',
-            borderStyle: 'solid',
-            borderColor: 'white',
-            cursor: 'pointer',
-        }
     },
     aspectRatio4by3Button: {
         width: '115px',
         height: '87px',
         marginLeft: '52px',
         marginTop: '25px',
-        '&:hover': {
-            border: '2px',
-            borderStyle: 'solid',
-            borderColor: 'white',
-            cursor: 'pointer',
-        }
     },
 });
 
@@ -95,7 +73,7 @@ class TypeEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={aspectRatio: this.props.aspectRatio, hoveringOn: null};
+        this.state={selectedRatio: this.props.selectedItem.selectedRatio};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -121,10 +99,6 @@ class TypeEditPanel extends Component {
         this.props.updateItemProperty(propertyName, roundedValue);
     }
 
-    handleHover(buttonName) {
-        this.setState({hoveringOn: buttonName})
-    }
-
     render() {
         const { classes } = this.props;
         return(
@@ -133,31 +107,26 @@ class TypeEditPanel extends Component {
                 {/*TODO: Make these actually work and set up onHover/onSelected styling */}
                 <Typography id="StandardRatioHeader" className={classes.editPanelSubsectionHeader}>Standard</Typography>
                 <Grid item container direction='column' justify='center' alignItems='stretch' id='StandardRatioSection'>
-                    <Grid item container direction='column' justify='center' id='16:9Button' className={classNames(classes.clickableArea)}>
-                        <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio16by9Button, this.state.aspectRatio == "16:9" ? classes.selected : '')}
-                            onClick={(event) => this.handleChange(event, '16:9', "aspectRatio")}
-                            onMouseEnter={() => this.handleHover("16:9")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "16:9"} ><Typography style={{color: '#fff'}}>16:9</Typography></Fade>
+                    <Grid item container direction='column' justify='center' id='16:9Button' className={classNames(classes.clickableArea, this.state.selectedRatio == "16:9" ? classes.selected : '')}>
+                        <Grid className={classNames(classes.generalRatioStyles, classes.aspectRatio16by9Button)}
+                            onClick={(event) => this.handleChange(event, this.state.selectedRatio, '16:9')}>
+
                         </Grid>
                     </Grid>
                     <Grid item>
                         <Typography align='center' className={classes.controlElementLabel}>Widescreen</Typography>
                     </Grid>
-                    <Grid item container direction='column' justify='center' id='1:1Button' className={classNames(classes.clickableArea)}>
-                        <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio1by1Button, this.state.aspectRatio == "1:1" ? classes.selected : '')}
-                            onClick={(event) => this.handleChange(event, '1:1', "aspectRatio")}
-                            onMouseEnter={() => this.handleHover("1:1")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "1:1"} ><Typography style={{color: '#fff'}}>1:1</Typography></Fade>
+                    <Grid item container direction='column' justify='center' id='1:1Button' className={classNames(classes.clickableArea, this.state.selectedRatio == "1:1" ? classes.selected : '')}>
+                        <Grid className={classNames(classes.generalRatioStyles, classes.aspectRatio1by1Button)}>
+
                         </Grid>
                     </Grid>
                     <Grid item>
                         <Typography align='center' className={classes.controlElementLabel}>Square</Typography>
                     </Grid>
-                    <Grid item container direction='column' justify='center' id='4:3Button' className={classNames(classes.clickableArea)}>
-                        <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio4by3Button, this.state.aspectRatio == "4:3" ? classes.selected : '')}
-                            onClick={(event) => this.handleChange(event, '4:3', "aspectRatio")}
-                            onMouseEnter={() => this.handleHover("4:3")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "4:3"} ><Typography style={{color: '#fff'}}>4:3</Typography></Fade>
+                    <Grid item container direction='column' justify='center' id='4:3Button' className={classNames(classes.clickableArea, this.state.selectedRatio == "4:3" ? classes.selected : '')}>
+                        <Grid className={classNames(classes.generalRatioStyles, classes.aspectRatio4by3Button)}>
+
                         </Grid>
                     </Grid>
                     <Grid item>

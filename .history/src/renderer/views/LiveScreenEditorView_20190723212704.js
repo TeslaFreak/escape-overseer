@@ -49,7 +49,6 @@ const uuidv4 = require('uuid/v4');
 const appbarHeight = 64;
 
 const aspectRatio = 0.5625;
-const aspectRatio2 = 1;
 const aspectWidthRatio = 1;
 const aspectHeightRatio = aspectRatio;
 const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
@@ -94,11 +93,6 @@ const styles = theme => ({
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
         height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
-        margin: '100px 70px',
-    },
-    centeredAspectPanel2: {
-        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-        height: `calc(${containerWidth} * ${aspectRatio2} )`,
         margin: '100px 70px',
     },
     editingSurface: {
@@ -572,10 +566,8 @@ class LiveScreenEditorView extends Component {
                 break;
             case 'aspectRatio':
                     this.canvas.setDimensions({
-                        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-                        height: `calc(${containerWidth} * ${1} )`,
-                      },{
-                        cssOnly: true
+                        width: 500,
+                        height: 500
                       });
                 break;
             default:

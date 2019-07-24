@@ -135,9 +135,8 @@ class TypeEditPanel extends Component {
                 <Grid item container direction='column' justify='center' alignItems='stretch' id='StandardRatioSection'>
                     <Grid item container direction='column' justify='center' id='16:9Button' className={classNames(classes.clickableArea)}>
                         <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio16by9Button, this.state.aspectRatio == "16:9" ? classes.selected : '')}
-                            onClick={(event) => this.handleChange(event, '16:9', "aspectRatio")}
-                            onMouseEnter={() => this.handleHover("16:9")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "16:9"} ><Typography style={{color: '#fff'}}>16:9</Typography></Fade>
+                            onClick={(event) => this.handleChange(event, '16:9', "aspectRatio")}>
+                                <TVIcon style={{color: '#fff'}}/>
                         </Grid>
                     </Grid>
                     <Grid item>
@@ -147,7 +146,7 @@ class TypeEditPanel extends Component {
                         <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio1by1Button, this.state.aspectRatio == "1:1" ? classes.selected : '')}
                             onClick={(event) => this.handleChange(event, '1:1', "aspectRatio")}
                             onMouseEnter={() => this.handleHover("1:1")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "1:1"} ><Typography style={{color: '#fff'}}>1:1</Typography></Fade>
+                                <Fade timeout={100} in={this.state.hoveringOn == "1:1"} ><Typography style={{color: '#fff'}}>1:1</Typography></Fade>
                         </Grid>
                     </Grid>
                     <Grid item>
@@ -155,9 +154,8 @@ class TypeEditPanel extends Component {
                     </Grid>
                     <Grid item container direction='column' justify='center' id='4:3Button' className={classNames(classes.clickableArea)}>
                         <Grid container direction='column' justify='center' alignItems='center' className={classNames(classes.generalRatioStyles, classes.aspectRatio4by3Button, this.state.aspectRatio == "4:3" ? classes.selected : '')}
-                            onClick={(event) => this.handleChange(event, '4:3', "aspectRatio")}
-                            onMouseEnter={() => this.handleHover("4:3")} onMouseLeave={() => this.handleHover(null)}>
-                                <Fade timeout={150} in={this.state.hoveringOn == "4:3"} ><Typography style={{color: '#fff'}}>4:3</Typography></Fade>
+                            onClick={(event) => this.handleChange(event, '4:3', "aspectRatio")}>
+                                <Typography style={{color: '#fff'}}>4:3</Typography>
                         </Grid>
                     </Grid>
                     <Grid item>

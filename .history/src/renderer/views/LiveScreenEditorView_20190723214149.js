@@ -96,11 +96,6 @@ const styles = theme => ({
         height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
         margin: '100px 70px',
     },
-    centeredAspectPanel2: {
-        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
-        height: `calc(${containerWidth} * ${aspectRatio2} )`,
-        margin: '100px 70px',
-    },
     editingSurface: {
         backgroundColor: '#fff',
         height: '100%',

@@ -138,6 +138,7 @@ class TypeEditPanel extends Component {
                             onClick={(event) => this.handleChange(event, '16:9', "aspectRatio")}
                             onMouseEnter={() => this.handleHover("16:9")} onMouseLeave={() => this.handleHover(null)}>
                                 <Fade timeout={150} in={this.state.hoveringOn == "16:9"} ><Typography style={{color: '#fff'}}>16:9</Typography></Fade>
+                                <Fade timeout={150} in={!this.state.hoveringOn == "16:9"} ><TVIcon style={{color: '#fff'}}/></Fade>
                         </Grid>
                     </Grid>
                     <Grid item>
