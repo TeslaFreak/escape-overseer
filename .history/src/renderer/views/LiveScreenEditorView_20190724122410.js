@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import TextNavPanel from '../components/LiveViewEditor/NavPanels/TextNavPanel.js';
 import ImageNavPanel from '../components/LiveViewEditor/NavPanels/ImageNavPanel.js';
 import TimerNavPanel from '../components/LiveViewEditor/NavPanels/TimerNavPanel.js';
+import CounterNavPanel from '../components/LiveViewEditor/NavPanels/CounterNavPanel.js';
 import IconNavPanel from '../components/LiveViewEditor/NavPanels/IconNavPanel.js';
 import ScreenNavPanel from '../components/LiveViewEditor/NavPanels/ScreenNavPanel.js';
 import TypeEditPanel from '../components/LiveViewEditor/EditPanels/TypeEditPanel.js';
 import ColorEditPanel from '../components/LiveViewEditor/EditPanels/ColorEditPanel.js';
 import ImageEditPanel from '../components/LiveViewEditor/EditPanels/ImageEditPanel.js';
 import TimerEditPanel from '../components/LiveViewEditor/EditPanels/TimerEditPanel.js';
+import CounterEditPanel from '../components/LiveViewEditor/EditPanels/CounterEditPanel.js';
 import AspectRatioEditPanel from '../components/LiveViewEditor/EditPanels/AspectRatioEditPanel.js';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
@@ -47,6 +49,7 @@ const uuidv4 = require('uuid/v4');
 const appbarHeight = 64;
 
 const aspectRatio = 0.5625;
+const aspectRatio2 = 1;
 const aspectWidthRatio = 1;
 const aspectHeightRatio = aspectRatio;
 const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
@@ -61,6 +64,7 @@ const EditPanelTypes = {
     COLOR: 'color',
     IMAGE: 'image',
     ASPECTRATIO: 'aspectratio',
+    COUNTER: 'counter',
 }
 
 const NavPanelTypes = {
@@ -84,11 +88,17 @@ const CanvasItemTypes = {
 const styles = theme => ({
     editorContainer: {
         width: '100%',
-        height: `calc(100vh - ${appbarHeight}px)`
+        height: `calc(100vh - ${appbarHeight}px)`,
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
         height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
+        margin: '100px 70px',
+    },
+    centeredAspectPanel2: {
+        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+        height: `calc(${containerWidth} * ${aspectRatio2} )`,
         margin: '100px 70px',
     },
     editingSurface: {
@@ -220,7 +230,7 @@ class LiveScreenEditorView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO};
+        this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO, aspectRatio: "16:9"};
         this.objects = [];
         this.db = new PouchDB('kittens');
     }
@@ -242,22 +252,78 @@ class LiveScreenEditorView extends Component {
              * @type Object
              * @private
              */
-            _dimensionAffectingProps: fabric.IText.prototype._dimensionAffectingProps,
+            _dimensionAffectingProps: fabric.IText.prototype._dimensionAffectingProps.slice(0),
+
+            _renderTextCommon: function(ctx, method) {
+                ctx.save();
+                var lineHeights = 0, left = this._getLeftOffset(), top = this._getTopOffset(),
+                    offsets = this._applyPatternGradientTransform(ctx, method === 'fillText' ? this.fill : this.stroke);
+                for (var i = 0, len = this._textLines.length; i < len; i++) {
+                  var heightOfLine = this.getHeightOfLine(i),
+                      maxHeight = heightOfLine / this.lineHeight,
+                      leftOffset = this._getLineLeftOffset(i);
+                  if(lineHeights+heightOfLine < this.getScaledHeight()){
+                  this._renderTextLine(
+                    method,
+                    ctx,
+                    this._textLines[i],
+                    left + leftOffset - offsets.offsetX,
+                    top + lineHeights + maxHeight - offsets.offsetY,
+                    i
+                  );
+                  }
+                  lineHeights += heightOfLine;
+                }
+                ctx.restore();
+              }
         });
 
         fabric.FittableImage = fabric.util.createClass(fabric.Image, {
             type: 'fittableimage',
 
-            initialize: function(options) {
+            initialize: function(element, options) {
                 options || (options = { });
 
-                this.callSuper('initialize', options);
+                this.callSuper('initialize', element, options);
                 this.set('fit', options.fit || 'none');
             },
 
             toObject: function() {
                 return fabric.util.object.extend(this.callSuper('toObject'), {
                 fit: this.get('fit')
+                });
+            },
+        });
+
+        fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
+            type: 'visualcounter',
+
+            //get width of each icon, have property for space between them, set default spacing to width of icon
+            initialize: function(element, options) {
+                options || (options = { });
+
+                let numberOfClues = (options.numberOfClues || 3);
+                let imageSpacing = (options.imageSpacing || 12);
+                let imageSize = (options.imageSize || 12);
+                let objects=[]
+                for(var i = 1; i <= numberOfClues; i++) {
+                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+                        var img = img.scaleToWidth(imageSize).set({ left: (imageSpacing*i)+(imageSize*(i-1)), top: 12 });
+                        objects += img;
+                    }.bind(this));
+                }
+                this.callSuper('initialize', objects, options);
+                this.set('numberOfClues', numberOfClues);
+                this.set('imageSpacing', imageSpacing);
+                this.set('imageSize', imageSize);
+
+            },
+
+            toObject: function() {
+                return fabric.util.object.extend(this.callSuper('toObject'), {
+                    numberOfClues: this.get('numberOfClues'),
+                    imageSpacing: this.get('imageSpacing'),
+                    imageSize: this.get('imageSize'),
                 });
             },
         });
@@ -368,9 +434,11 @@ class LiveScreenEditorView extends Component {
             case EditPanelTypes.IMAGE:
                 return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} canvasObjectCount={this.canvas.size()}/>;
             case EditPanelTypes.ASPECTRATIO:
-                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} aspectRatio={this.state.aspectRatio}/>;
             case EditPanelTypes.TIMER:
                 return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+            case EditPanelTypes.COUNTER:
+                return <CounterEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             default:
                 return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             }
@@ -387,7 +455,7 @@ class LiveScreenEditorView extends Component {
             case NavPanelTypes.TIMER:
                 return <TimerNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.COUNTER:
-                //return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
+                return <CounterNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={this.updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             case NavPanelTypes.CLUEDISPLAY:
                 //return <ClueDisplayNavPanel selectedEditPanelType={this.state.selectedEditPanelType} updateSelectedEditPanel={updateSelectedEditPanel} EditPanelTypes={EditPanelTypes}/>;
             default:
@@ -407,7 +475,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TIMER, selectedEditPanelType: EditPanelTypes.TYPEFACE});
                 break;
             case CanvasItemTypes.COUNTER:
-                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
+                this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.COUNTER, selectedEditPanelType: EditPanelTypes.COUNTER});
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 this.setState({selectedItem: selectedItem, selectedNavPanelType: NavPanelTypes.TEXT, selectedEditPanelType: EditPanelTypes.TYPEFACE});
@@ -491,27 +559,113 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set(propertyName, propertyValue);
                 this.state.selectedItem.updateTimeDisplay();
                 break;
+            case 'totalTimeNew':
+                if(this.state.selectedItem._objects.length == 1) {
+                    var group = [], tmpObj = null, objWidth = 0;
+                    fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        tmpObj = object.set({ left: 0 });
+                        this.state.selectedItem.addWithUpdate(tmpObj);
+                        this.canvas.renderAll();
+                    }.bind(this));
+                } else {
+                var scalePos = 1, scaleLength = 1;
+                if(this.state.selectedItem.scaleX != 1) {
+                    scalePos = this.state.selectedItem.scaleX * this.state.scalePos;
+                    scaleLength = this.state.selectedItem.scaleX * this.state.scaleLength;
+                } else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
+                this.setState({
+                    scalePos: scalePos,
+                    scaleLength: scaleLength
+                });
+                    fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+					}, function(item, object) {
+						var tmpObj = object.set({
+							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.clueOffset * scaleLength,
+							top: this.state.selectedItem.top,
+							width: this.state.selectedItem._objects[1].width,
+							height: this.state.selectedItem._objects[1].height,
+							scaleX: scaleLength,
+							scaleY: scaleLength
+						});
+						this.state.selectedItem.set(propertyName, propertyValue);
+						this.state.selectedItem.addWithUpdate(tmpObj);
+						this.canvas.renderAll();
+					}.bind(this));
+				}
+				this.state.selectedItem.set(propertyName, propertyValue);
+				this.state.selectedItem.set('totalTime', this.state.selectedItem.get('totalTime') + 1);
+				break;
+			case 'totalTimeUsed':
+				if(this.state.selectedItem._objects.length == 1) {
+					var group = [], tmpObj = null, objWidth = 0;
+					fabric.loadSVGFromURL("unlock-solid.svg", function(object) {
+					}, function(item, object) {
+						tmpObj = object.set({ left: 0 });
+						this.state.selectedItem.addWithUpdate(tmpObj);
+						this.canvas.renderAll();
+					}.bind(this));
+				} else {
+					var scalePos = 1, scaleLength = 1;
+					if(this.state.selectedItem.scaleX != 1) {
+						scalePos = this.state.selectedItem.scaleX * this.state.scalePos;
+						scaleLength = this.state.selectedItem.scaleX * this.state.scaleLength;
+					} else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
+					this.setState({
+						scalePos: scalePos,
+						scaleLength: scaleLength
+					});
+					fabric.loadSVGFromURL("unlock-solid.svg", function(object) {
+					}, function(item, object) {
+						var tmpObj = object.set({
+							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.clueOffset * scaleLength,
+							top: this.state.selectedItem.top,
+							width: this.state.selectedItem._objects[1].width,
+							height: this.state.selectedItem._objects[1].height,
+							scaleX: scaleLength,
+							scaleY: scaleLength
+						});
+						this.state.selectedItem.set(propertyName, propertyValue);
+						this.state.selectedItem.addWithUpdate(tmpObj);
+						this.canvas.renderAll();
+					}.bind(this));
+				}
+				this.state.selectedItem.set(propertyName, propertyValue);
+				this.state.selectedItem.set('totalTime', this.state.selectedItem.get('totalTime') + 1);
+				break;			
             case 'fontFamily':
                     WebFont.load({
                     google: { 
                             families: [propertyValue] 
-                        } 
+                        },
+                        active: function () {
+                            this.state.selectedItem.set(propertyName, propertyValue);
+                            this.canvas.requestRenderAll();
+                        }.bind(this), 
                     });
-                    this.state.selectedItem.set(propertyName, propertyValue);
+                break;
+            case 'aspectRatio':
+                    this.canvas.setDimensions({
+                        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+                        height: `calc(${containerWidth} * ${1} )`,
+                      },{
+                        cssOnly: true
+                      });
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
                 break;
         }
         this.state.selectedItem.setCoords();
-        this.canvas.renderAll();
+        this.canvas.requestRenderAll();
     }
 
     createNewCanvasItem = (itemType, event) => {
         switch(itemType) {
             case CanvasItemTypes.TEXT:
-                var newItem = new fabric.IText("Background Text Example", {
+                var newItem = new fabric.IText("Enter Text Here", {
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     lineHeight: 1,
                     charSpacing: 10,
                     lockUniScaling: true,
@@ -551,7 +705,9 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     charSpacing: 10,
+                    editable: false,
                     lockUniScaling: true,
                     lockScalingFlip: true,
                 });
@@ -566,11 +722,34 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case CanvasItemTypes.COUNTER:
+
+                    var rect = new fabric.Rect({
+                        width: 30,
+                        height: 22,
+                        fill: 'rgba(255, 255, 255)'
+                    });
+                    tmpObj = rect.set({ left: 0 });
+                    group.push(tmpObj);
+                    var newItem = new fabric.Group(group, {
+                        left: 100,
+                        top: 100,
+                        lockUniScaling: true
+                    });
+                    newItem.set({ totalTime: 0, totalTimeNew: 0, totalTimeUsed: 0 });
+                    newItem.on('modified', () => {
+                        this.updateSelectedItem(newItem, itemType);
+                    });
+                    newItem.on('selected', () => {
+                        this.updateSelectedItem(newItem, itemType);
+                    });
+                    this.canvas.add(newItem);
+                    this.canvas.setActiveObject(newItem);
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
                 newItem.set({
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
                     lineHeight: 1,
                     charSpacing: 10,
@@ -585,14 +764,14 @@ class LiveScreenEditorView extends Component {
                     mr: false, // middle right
                 });
                 newItem.on('scaling',  () => {
-                    var newfontsize = (newItem.fontSize * newItem.scaleX);
+                    var newHeight = newItem.height * newItem.scaleY;
                     newItem.set({
                         width: newItem.width * newItem.scaleX,
-                        height: newItem.height * newItem.scaleY,
                         scaleX: 1,
-                        scaleY: 1,
                     });
-                    newItem._splitText();
+                    newItem.initDimensions();
+                    newItem.set({ height: newHeight, scaleY: 1 })
+                    console.log(newItem);
                 });
                 newItem.on('modified',  () => { 
                     var newfontsize = (newItem.fontSize * newItem.scaleX);
