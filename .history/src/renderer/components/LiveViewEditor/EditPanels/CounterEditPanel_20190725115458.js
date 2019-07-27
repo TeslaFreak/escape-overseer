@@ -141,8 +141,8 @@ class ClueCountEditPanel extends Component {
 			totalTime: this.props.selectedItem.totalTime,
 			totalTimeNew: this.props.selectedItem.totalTimeNew,
 			totalTimeUsed: this.props.selectedItem.totalTimeUsed,
-			iconSize: this.props.selectedItem.iconSize,
-			iconSpacing: this.props.selectedItem.iconSpacing
+			iconSize: 50,
+			iconSpacing: 250
 		};
 		this.objects = [];
 		this.db = new PouchDB('kittens');

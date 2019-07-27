@@ -752,6 +752,30 @@ class LiveScreenEditorView extends Component {
 				break;
 			case CanvasItemTypes.COUNTER:
 				var group = [], tmpObj = null, objWidth = 0, clueOffset = 250;
+				// var rect = new fabric.Rect({
+				// 	width: 30,
+				// 	height: 22,
+				// 	fill: 'rgba(255, 255, 255)'
+				// });
+				// tmpObj = rect.set({ left: 0 });
+				// group.push(tmpObj);
+				// var newItem = new fabric.Group(group, {
+				// 	left: 100,
+				// 	top: 100,
+				// 	lockUniScaling: true,
+				// 	objectCaching: false,
+				// 	statefullCache: false,
+				// 	noScaleCache: false
+				// });
+				// newItem.set({ totalTime: 0, totalTimeNew: 0, totalTimeUsed: 0 });
+				// newItem.on('modified', () => {
+				// 	this.updateSelectedItem(newItem, itemType);
+				// });
+				// newItem.on('selected', () => {
+				// 	this.updateSelectedItem(newItem, itemType);
+				// });
+				// this.canvas.add(newItem);
+				// this.canvas.setActiveObject(newItem);
 
 				fabric.loadSVGFromURL("lock-solid.svg", function(object) {
 				}, function(item, object) {
@@ -799,6 +823,32 @@ class LiveScreenEditorView extends Component {
 						}.bind(this));
 					}.bind(this));
 				}.bind(this));
+
+				// fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 	var img1 = img.scale(0.2).set({ left: 100});
+					
+				// 	fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 		var img2 = img.scale(0.2).set({ left: 175});
+						
+				// 		fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 			var img3 = img.scale(0.2).set({ left: 250});
+				// 			console.log("----img : ", img1);
+				// 			var newItem = new fabric.Group([ img1, img2, img3], { 
+				// 				left: 200, 
+				// 				top: 200,
+				// 				lockUniScaling: true,
+				// 			});
+				// 			newItem.on('modified',  () => { 
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			newItem.on('selected', () => { 
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			this.canvas.add(newItem);
+				// 			this.canvas.setActiveObject(newItem);
+				// 		}.bind(this));
+				// 	}.bind(this));
+				// }.bind(this));
 				break;
 			case CanvasItemTypes.CLUEDISPLAY:
 				var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")

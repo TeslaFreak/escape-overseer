@@ -226,6 +226,10 @@ class LiveScreenEditorView extends Component {
 			anchorEl: null,
 			selectedNavPanelType: NavPanelTypes.SCREEN,
 			selectedEditPanelType: EditPanelTypes.ASPECTRATIO,
+			scalePos: 1,
+			scaleLength: 1,
+			clueOffset: 250,
+			scaleTemp: 50
 		};
 		this.objects = [];
 		this.db = new PouchDB('kittens');
@@ -552,44 +556,32 @@ class LiveScreenEditorView extends Component {
 			case 'showMilliseconds':
 			case 'iconSize':
 				var itemLen = this.state.selectedItem._objects.length;
-				var scaleTemp = (propertyValue / 50) / (this.state.selectedItem.scaleTemp / 50);
+				var scaleTemp = (propertyValue / 50) / (this.state.scaleTemp / 50);
 				this.state.selectedItem.set({
 					scaleX: this.state.selectedItem.scaleX * scaleTemp,
 					scaleY: this.state.selectedItem.scaleY * scaleTemp
 				});
-				this.state.selectedItem.set({ scaleTemp: propertyValue });
+				this.setState({ scaleTemp: propertyValue });
+				this.canvas.renderAll();
+				// for(var i = 1; i < itemLen; i ++) {
+				// 	this.state.selectedItem.item(i).set({ left: this.state.selectedItem.item(i).left + (propertyValue - this.state.clueOffset) * (i - 1) * scalePos });
+				// }
+				// this.state.selectedItem.set({
+				// 	width: this.state.selectedItem.width + (propertyValue - this.state.clueOffset) * (itemLen - 0) * scalePos,
+				// });
+				// this.setState({ clueOffset: propertyValue });
 				this.canvas.renderAll();
 				break;
 			case 'iconSpacing':
-				console.log(this.state.selectedItem);
-				var scalePos = this.state.selectedItem.item(0).scaleX;
+				var scalePos = this.state.selectedItem.item(1).scaleX;
 				var itemLen = this.state.selectedItem._objects.length;
-				var clueOffset = this.state.selectedItem.clueOffset;
-
-				this.state.selectedItem.forEachObject(function(obj, i) {
-					if(i != 0) {
-						obj.set({
-							left: obj.left + (propertyValue - clueOffset) * i * scalePos
-						});
-					}
-				});
-				// for(var i = 1; i < itemLen; i ++) {
-				// 	this.state.selectedItem.item(i).set({
-				// 		left: this.state.selectedItem.item(i).left + 
-				// 			(propertyValue - this.state.selectedItem.clueOffset) * (i - 0) * scalePos
-				// 	});
-				// }
+				for(var i = 2; i < itemLen; i ++) {
+					this.state.selectedItem.item(i).set({ left: this.state.selectedItem.item(i).left + (propertyValue - this.state.clueOffset) * (i - 1) * scalePos });
+				}
 				this.state.selectedItem.set({
-					width: this.state.selectedItem.width + 
-						(propertyValue - this.state.selectedItem.clueOffset) * (itemLen - 1) * scalePos,
-					clueOffset: propertyValue
+					width: this.state.selectedItem.width + (propertyValue - this.state.clueOffset) * (itemLen - 0) * scalePos,
 				});
-
-				var rect = new fabric.Rect({ width: 30, height: 22, fill: 'rgba(255, 255, 255)' });
-				var tmpObj = rect.set({ left: 0 });
-				this.state.selectedItem.addWithUpdate(tmpObj);
-				this.canvas.renderAll();
-				this.state.selectedItem.removeWithUpdate(tmpObj);
+				this.setState({ clueOffset: propertyValue });
 				this.canvas.renderAll();
 				break;
 			case 'totalTime':
@@ -608,17 +600,17 @@ class LiveScreenEditorView extends Component {
 				} else {
 					var scalePos = 1, scaleLength = 1;
 					if(this.state.selectedItem.scaleX != 1) {
-						scalePos = this.state.selectedItem.scaleX * this.state.selectedItem.scalePos;
-						scaleLength = this.state.selectedItem.scaleX * this.state.selectedItem.scaleLength;
+						scalePos = this.state.selectedItem.scaleX * this.state.scalePos;
+						scaleLength = this.state.selectedItem.scaleX * this.state.scaleLength;
 					} else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
-					this.state.selectedItem.set({
+					this.setState({
 						scalePos: scalePos,
 						scaleLength: scaleLength
 					});
 					fabric.loadSVGFromURL("lock-solid.svg", function(object) {
 					}, function(item, object) {
 						var tmpObj = object.set({
-							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.selectedItem.clueOffset * scaleLength,
+							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.clueOffset * scaleLength,
 							top: this.state.selectedItem.top,
 							width: this.state.selectedItem._objects[1].width,
 							height: this.state.selectedItem._objects[1].height,
@@ -645,17 +637,17 @@ class LiveScreenEditorView extends Component {
 				} else {
 					var scalePos = 1, scaleLength = 1;
 					if(this.state.selectedItem.scaleX != 1) {
-						scalePos = this.state.selectedItem.scaleX * this.state.selectedItem.scalePos;
-						scaleLength = this.state.selectedItem.scaleX * this.state.selectedItem.scaleLength;
+						scalePos = this.state.selectedItem.scaleX * this.state.scalePos;
+						scaleLength = this.state.selectedItem.scaleX * this.state.scaleLength;
 					} else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
-					this.state.selectedItem.set({
+					this.setState({
 						scalePos: scalePos,
 						scaleLength: scaleLength
 					});
 					fabric.loadSVGFromURL("unlock-solid.svg", function(object) {
 					}, function(item, object) {
 						var tmpObj = object.set({
-							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.selectedItem.clueOffset * scaleLength,
+							left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.clueOffset * scaleLength,
 							top: this.state.selectedItem.top,
 							width: this.state.selectedItem._objects[1].width,
 							height: this.state.selectedItem._objects[1].height,
@@ -751,54 +743,89 @@ class LiveScreenEditorView extends Component {
 				});
 				break;
 			case CanvasItemTypes.COUNTER:
-				var group = [], tmpObj = null, objWidth = 0, clueOffset = 250;
+				var group = [], tmpObj = null, objWidth = 0;
+				var rect = new fabric.Rect({
+					width: 30,
+					height: 22,
+					fill: 'rgba(255, 255, 255)'
+				});
+				tmpObj = rect.set({ left: 0 });
+				group.push(tmpObj);
+				var newItem = new fabric.Group(group, {
+					left: 100,
+					top: 100,
+					lockUniScaling: true,
+					objectCaching: false,
+					statefullCache: false,
+					noScaleCache: false
+				});
+				newItem.set({ totalTime: 0, totalTimeNew: 0, totalTimeUsed: 0 });
+				newItem.on('modified', () => {
+					this.updateSelectedItem(newItem, itemType);
+				});
+				newItem.on('selected', () => {
+					this.updateSelectedItem(newItem, itemType);
+				});
+				this.canvas.add(newItem);
+				this.canvas.setActiveObject(newItem);
 
-				fabric.loadSVGFromURL("lock-solid.svg", function(object) {
-				}, function(item, object) {
-					tmpObj = object.set({
-						left: 0
-					});
-					objWidth = object.width;
-					group.push(tmpObj);
-					fabric.loadSVGFromURL("lock-solid.svg", function(object) {
-					}, function(item, object) {
-						tmpObj = object.set({
-							left: objWidth + clueOffset
-						});
-						objWidth += object.width + clueOffset;
-						group.push(tmpObj);
-						fabric.loadSVGFromURL("lock-solid.svg", function(object) {
-						}, function(item, object) {
-							tmpObj = object.set({
-								left: objWidth + clueOffset
-							});
-							group.push(tmpObj);
-							var newItem = new fabric.Group(group, {
-								left: 100,
-								top: 100,
-								lockUniScaling: true,
-								ownCaching: false,
-								totalTime: 3,
-								totalTimeNew: 3,
-								totalTimeUsed: 0,
-								scalePos: 1,
-								scaleLength: 1,
-								clueOffset: 250,
-								scaleTemp: 50,
-								iconSize: 50,
-								iconSpacing: 250
-							});
-							newItem.on('modified', () => {
-								this.updateSelectedItem(newItem, itemType);
-							});
-							newItem.on('selected', () => {
-								this.updateSelectedItem(newItem, itemType);
-							});
-							this.canvas.add(newItem);
-							this.canvas.setActiveObject(newItem);
-						}.bind(this));
-					}.bind(this));
-				}.bind(this));
+				// fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+				// }, function(item, object) {
+				// 	tmpObj = object.set({ left: 0 });
+				// 	objWidth = object.width;
+				// 	group.push(tmpObj);
+				// 	fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+				// 	}, function(item, object) {
+				// 		tmpObj = object.set({ left: objWidth + this.state.clueOffset });
+				// 		objWidth += object.width + this.state.clueOffset;
+				// 		group.push(tmpObj);
+				// 		fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+				// 		}, function(item, object) {
+				// 			tmpObj = object.set({ left: objWidth + this.state.clueOffset });
+				// 			group.push(tmpObj);
+				// 			var newItem = new fabric.Group(group, {
+				// 				left: 200,
+				// 				top: 200,
+				// 				lockUniScaling: true
+				// 			});
+				// 			newItem.set({totalTime: 3, totalTimeNew: 3});
+				// 			newItem.on('modified', () => {
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			newItem.on('selected', () => {
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			this.canvas.add(newItem);
+				// 			this.canvas.setActiveObject(newItem);
+				// 		}.bind(this));
+				// 	}.bind(this));
+				// }.bind(this));
+
+				// fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 	var img1 = img.scale(0.2).set({ left: 100});
+					
+				// 	fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 		var img2 = img.scale(0.2).set({ left: 175});
+						
+				// 		fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
+				// 			var img3 = img.scale(0.2).set({ left: 250});
+				// 			console.log("----img : ", img1);
+				// 			var newItem = new fabric.Group([ img1, img2, img3], { 
+				// 				left: 200, 
+				// 				top: 200,
+				// 				lockUniScaling: true,
+				// 			});
+				// 			newItem.on('modified',  () => { 
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			newItem.on('selected', () => { 
+				// 				this.updateSelectedItem(newItem, itemType);
+				// 			});
+				// 			this.canvas.add(newItem);
+				// 			this.canvas.setActiveObject(newItem);
+				// 		}.bind(this));
+				// 	}.bind(this));
+				// }.bind(this));
 				break;
 			case CanvasItemTypes.CLUEDISPLAY:
 				var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
