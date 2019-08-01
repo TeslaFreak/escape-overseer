@@ -49,6 +49,7 @@ const uuidv4 = require('uuid/v4');
 const appbarHeight = 64;
 
 const aspectRatio = 0.5625;
+const aspectRatio2 = 1;
 const aspectWidthRatio = 1;
 const aspectHeightRatio = aspectRatio;
 const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
@@ -87,11 +88,17 @@ const CanvasItemTypes = {
 const styles = theme => ({
     editorContainer: {
         width: '100%',
-        height: `calc(100vh - ${appbarHeight}px)`
+        height: `calc(100vh - ${appbarHeight}px)`,
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
         height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
+        margin: '100px 70px',
+    },
+    centeredAspectPanel2: {
+        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+        height: `calc(${containerWidth} * ${aspectRatio2} )`,
         margin: '100px 70px',
     },
     editingSurface: {
@@ -223,7 +230,7 @@ class LiveScreenEditorView extends Component {
 
     constructor(props) {
         super(props);
-        this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO};
+        this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO, aspectRatio: "16:9"};
         this.objects = [];
         this.db = new PouchDB('kittens');
     }
@@ -427,7 +434,7 @@ class LiveScreenEditorView extends Component {
             case EditPanelTypes.IMAGE:
                 return <ImageEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} canvasObjectCount={this.canvas.size()}/>;
             case EditPanelTypes.ASPECTRATIO:
-                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
+                return <AspectRatioEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty} aspectRatio={this.state.aspectRatio}/>;
             case EditPanelTypes.TIMER:
                 return <TimerEditPanel selectedItem={this.state.selectedItem} updateItemProperty={this.updateItemProperty}/>;
             case EditPanelTypes.COUNTER:
@@ -552,13 +559,119 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set(propertyName, propertyValue);
                 this.state.selectedItem.updateTimeDisplay();
                 break;
+            case 'iconSize':
+                this.state.selectedItem.scaleToWidth((propertyValue*this.state.selectedItem.numberOfClues)+(this.state.selectedItem.iconSpacing*(this.state.selectedItem.numberOfClues-1)));
+                this.state.selectedItem.set(propertyName, propertyValue);
+                break;
+            case 'iconSpacing':
+                var iconSize = this.state.selectedItem.iconSize;
+                var groupWidth = (propertyValue*(this.state.selectedItem.numberOfClues-1))+(iconSize*this.state.selectedItem.numberOfClues);
+                this.state.selectedItem.set(propertyName, propertyValue);
+                this.state.selectedItem.forEachObject(function(obj, i) {
+                    if(i == 0) {
+                        obj.set({left: -(groupWidth / 2)})
+                    }
+                    else{
+                        obj.set({ left: -(groupWidth / 2) + (propertyValue+iconSize)*i})
+                    }
+                });
+                
+                this.state.selectedItem.set({
+                    width: groupWidth
+                });
+                break;
+            case 'numberOfClues':
+                if(this.state.selectedItem._objects.length == 1) {
+                    var group = [], tmpObj = null, objWidth = 0;
+                    fabric.loadSVGFromURL("lock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        tmpObj = object.set({ left: 0 });
+                        this.state.selectedItem.addWithUpdate(tmpObj);
+                        this.canvas.renderAll();
+                    }.bind(this));
+                } else {
+                    var scalePos = 1, scaleLength = 1;
+                    if(this.state.selectedItem.scaleX != 1) {
+                        scalePos = this.state.selectedItem.scaleX * this.state.selectedItem.scalePos;
+                        scaleLength = this.state.selectedItem.scaleX * this.state.selectedItem.scaleLength;
+                    } else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
+                    this.state.selectedItem.set({
+                        scalePos: scalePos,
+                        scaleLength: scaleLength
+                    });
+                    fabric.loadSVGFromURL("/assets/images/lock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        var tmpObj = object.set({
+                            left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.selectedItem.iconSpacing * scaleLength,
+                            top: this.state.selectedItem.top,
+                            width: this.state.selectedItem._objects[1].width,
+                            height: this.state.selectedItem._objects[1].height,
+                            scaleX: scaleLength,
+                            scaleY: scaleLength
+                        });
+                        this.state.selectedItem.set(propertyName, propertyValue);
+                        this.state.selectedItem.addWithUpdate(tmpObj);
+                        this.canvas.renderAll();
+                    }.bind(this));
+                }
+                this.state.selectedItem.set(propertyName, propertyValue);
+                this.state.selectedItem.set('totalTime', this.state.selectedItem.get('totalTime') + 1);
+                break;
+            case 'numberOfUsedClues':
+                if(this.state.selectedItem._objects.length == 1) {
+                    var group = [], tmpObj = null, objWidth = 0;
+                    fabric.loadSVGFromURL("unlock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        tmpObj = object.set({ left: 0 });
+                        this.state.selectedItem.addWithUpdate(tmpObj);
+                        this.canvas.renderAll();
+                    }.bind(this));
+                } else {
+                    var scalePos = 1, scaleLength = 1;
+                    if(this.state.selectedItem.scaleX != 1) {
+                        scalePos = this.state.selectedItem.scaleX * this.state.selectedItem.scalePos;
+                        scaleLength = this.state.selectedItem.scaleX * this.state.selectedItem.scaleLength;
+                    } else { scaleLength = this.state.selectedItem._objects[1].scaleX; }
+                    this.state.selectedItem.set({
+                        scalePos: scalePos,
+                        scaleLength: scaleLength
+                    });
+                    fabric.loadSVGFromURL("unlock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        var tmpObj = object.set({
+                            left: this.state.selectedItem.left + this.state.selectedItem.width * scalePos + this.state.selectedItem.iconSpacing * scaleLength,
+                            top: this.state.selectedItem.top,
+                            width: this.state.selectedItem._objects[1].width,
+                            height: this.state.selectedItem._objects[1].height,
+                            scaleX: scaleLength,
+                            scaleY: scaleLength
+                        });
+                        this.state.selectedItem.set(propertyName, propertyValue);
+                        this.state.selectedItem.addWithUpdate(tmpObj);
+                        this.canvas.renderAll();
+                    }.bind(this));
+                }
+                this.state.selectedItem.set(propertyName, propertyValue);
+                this.state.selectedItem.set('totalTime', this.state.selectedItem.get('totalTime') + 1);
+                break;		
             case 'fontFamily':
                     WebFont.load({
                     google: { 
                             families: [propertyValue] 
-                        } 
+                        },
+                        active: function () {
+                            this.state.selectedItem.set(propertyName, propertyValue);
+                            this.canvas.requestRenderAll();
+                        }.bind(this), 
                     });
-                    this.state.selectedItem.set(propertyName, propertyValue);
+                break;
+            case 'aspectRatio':
+                    this.canvas.setDimensions({
+                        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+                        height: `calc(${containerWidth} * ${1} )`,
+                      },{
+                        cssOnly: true
+                      });
                 break;
             default:
                 this.state.selectedItem.set(propertyName, propertyValue);
@@ -573,6 +686,7 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TEXT:
                 var newItem = new fabric.IText("Enter Text Here", {
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     lineHeight: 1,
                     charSpacing: 10,
                     lockUniScaling: true,
@@ -612,6 +726,7 @@ class LiveScreenEditorView extends Component {
             case CanvasItemTypes.TIMER:
                 var newItem = new fabric.Timer("60:00", {
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     charSpacing: 10,
                     editable: false,
                     lockUniScaling: true,
@@ -628,35 +743,58 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case CanvasItemTypes.COUNTER:
-                    fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                        var img1 = img.scale(0.2).set({ left: 100});
-                        
-                        fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                            var img2 = img.scale(0.2).set({ left: 175});
-                            
-                            fabric.Image.fromURL('http://i.imgur.com/8rmMZI3.jpg', function(img) {
-                            var img3 = img.scale(0.2).set({ left: 250});
-                            var newItem = new fabric.Group([ img1, img2, img3], { 
-                                left: 200, 
-                                top: 200,
+                var group = [], tmpObj = null, objWidth = 0, iconSpacing = 12;
+
+                fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
+                }, function(item, object) {
+                    tmpObj = object.set({
+                        left: 0
+                    });
+                    tmpObj.scaleToWidth(12);
+                    objWidth = 12;
+                    group.push(tmpObj);
+                    fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
+                    }, function(item, object) {
+                        tmpObj = object.set({
+                            left: objWidth + iconSpacing
+                        });
+                        objWidth += 12 + iconSpacing;
+                        tmpObj.scaleToWidth(12);
+                        group.push(tmpObj);
+                        fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
+                        }, function(item, object) {
+                            tmpObj = object.set({
+                                left: objWidth + iconSpacing
+                            });
+                            tmpObj.scaleToWidth(12);
+                            group.push(tmpObj);
+                            var newItem = new fabric.Group(group, {
                                 lockUniScaling: true,
+                                numberOfClues: 3,
+                                iconSpacing: 12,
+                                iconSize: 12
                             });
-                            newItem.on('modified',  () => { 
+                            newItem.on('modified', () => {
                                 this.updateSelectedItem(newItem, itemType);
+                                newItem.set({
+                                    iconSize: (newItem.getScaledWidth()-(newItem.iconSpacing*newItem.numberOfClues))/newItem.numberOfClues)
+                                });
                             });
-                            newItem.on('selected', () => { 
+                            newItem.on('selected', () => {
                                 this.updateSelectedItem(newItem, itemType);
                             });
                             this.canvas.add(newItem);
+                            newItem.center();
                             this.canvas.setActiveObject(newItem);
-                            }.bind(this));
                         }.bind(this));
                     }.bind(this));
+                }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
                 newItem.set({
                     fontSize: 40,
+                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
                     lineHeight: 1,
                     charSpacing: 10,
@@ -688,8 +826,6 @@ class LiveScreenEditorView extends Component {
                         scaleX: 1,
                         scaleY: 1,
                     });
-                    //console.log(newItem);
-                
                 });
                 break;
             default:

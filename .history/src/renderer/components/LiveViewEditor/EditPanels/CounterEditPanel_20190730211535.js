@@ -137,7 +137,7 @@ class ClueCountEditPanel extends Component {
     constructor(props) {
         super(props);
         this.state={/*iconSize: (parseInt((this.props.selectedItem.getScaledWidth()**(1/1.7)-(this.props.selectedItem.iconSpacing*this.props.selectedItem.numberOfClues-1)))/this.props.selectedItem.numberOfClues, 10),*/
-                    iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/1.4), 10),
+                    iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/1.2), 10),
                     numberOfClues: this.props.selectedItem.numberOfClues};
         this.objects = [];
         this.db = new PouchDB('kittens');

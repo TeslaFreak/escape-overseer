@@ -582,11 +582,10 @@ class LiveScreenEditorView extends Component {
                 break;
             case 'numberOfClues':
                 var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue))+(iconSize*propertyValue);
-                var groupHeight = (this.state.selectedItem.get('height'));
                 fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
                 }, function(item, object) {
                     let tmpObj = object.set({ left: (this.state.selectedItem.iconSpacing+this.state.selectedItem.iconSize)*propertyValue,
-                                                top: -(groupHeight/2)});
+                                                top: 5});
                     tmpObj.scaleToWidth(12);
                     this.state.selectedItem.add(tmpObj);
                     this.state.selectedItem.set({
@@ -595,7 +594,6 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 
                 this.state.selectedItem.set(propertyName, propertyValue);
-                this.state.selectedItem.addWithUpdate();
                 break;	
             case 'fontFamily':
                     WebFont.load({

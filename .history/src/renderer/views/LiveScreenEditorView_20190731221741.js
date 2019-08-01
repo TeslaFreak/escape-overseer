@@ -595,7 +595,8 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 
                 this.state.selectedItem.set(propertyName, propertyValue);
-                this.state.selectedItem.addWithUpdate();
+                this.canvas.renderAll();
+                this.canvas.renderAll();
                 break;	
             case 'fontFamily':
                     WebFont.load({

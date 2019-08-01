@@ -137,8 +137,7 @@ class ClueCountEditPanel extends Component {
     constructor(props) {
         super(props);
         this.state={/*iconSize: (parseInt((this.props.selectedItem.getScaledWidth()**(1/1.7)-(this.props.selectedItem.iconSpacing*this.props.selectedItem.numberOfClues-1)))/this.props.selectedItem.numberOfClues, 10),*/
-                    iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/1.4), 10),
-                    numberOfClues: this.props.selectedItem.numberOfClues};
+                    iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/1.2), 10)};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -154,12 +153,8 @@ class ClueCountEditPanel extends Component {
 
     componentWillUpdate(nextProps) {
         //TODO: separate out for each state variable. here and in each edit panel file.
-        if (this.state.numberOfClues !== nextProps.selectedItem.numberOfClues) {
-            this.setState({numberOfClues: nextProps.selectedItem.numberOfClues})
-        }
-
-        if (this.state.iconSpacing !== parseInt(nextProps.selectedItem.iconSpacing**(1/1.4), 10) ) {
-            this.setState({iconSpacing: parseInt(nextProps.selectedItem.iconSpacing**(1/1.4), 10)})
+        if (this.state.iconSpacing !== parseInt(nextProps.selectedItem.iconSpacing**(1/1.2), 10) ) {
+            this.setState({iconSpacing: parseInt(nextProps.selectedItem.iconSpacing**(1/1.2), 10)})
         }
         
         /*if (this.state.iconSize !== (parseInt((nextProps.selectedItem.getScaledWidth()**(1/1.7)-(nextProps.selectedItem.iconSpacing*nextProps.selectedItem.numberOfClues-1)))/nextProps.selectedItem.numberOfClues, 10)) {
@@ -176,7 +171,7 @@ class ClueCountEditPanel extends Component {
                 displayValue = parseInt(value, 10);
                 break;
             case 'iconSpacing':
-                roundedValue = parseInt(value, 10)**1.4;
+                roundedValue = parseInt(value, 10)**1.2;
                 displayValue = parseInt(value, 10);
                 break;
             default:
@@ -194,7 +189,7 @@ class ClueCountEditPanel extends Component {
                 <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Clue Counter</Typography>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Number of Clues</Typography>
-                    <TextField type="number" defaultValue={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
+                    <TextField type="number" defaultValue={3} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
                 </Grid>
                 <Typography className={classes.controlElementLabel}>Format</Typography>
                 <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>

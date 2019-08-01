@@ -581,21 +581,15 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'numberOfClues':
-                var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue))+(iconSize*propertyValue);
-                var groupHeight = (this.state.selectedItem.get('height'));
+                var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue-1))+(iconSize*propertyValue);
                 fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
                 }, function(item, object) {
-                    let tmpObj = object.set({ left: (this.state.selectedItem.iconSpacing+this.state.selectedItem.iconSize)*propertyValue,
-                                                top: -(groupHeight/2)});
+                    let tmpObj = object.set({ left: -(groupWidth / 2) + (this.state.selectedItem.iconSpacing+this.state.selectedItem.iconSize)*propertyValue});
                     tmpObj.scaleToWidth(12);
                     this.state.selectedItem.add(tmpObj);
-                    this.state.selectedItem.set({
-                        width: groupWidth
-                    });
                 }.bind(this));
                 
                 this.state.selectedItem.set(propertyName, propertyValue);
-                this.state.selectedItem.addWithUpdate();
                 break;	
             case 'fontFamily':
                     WebFont.load({
@@ -715,7 +709,7 @@ class LiveScreenEditorView extends Component {
                                 lockUniScaling: true,
                                 numberOfClues: 3,
                                 iconSpacing: 12,
-                                iconSize: 12,
+                                iconSize: 12
                             });
                             newItem.on('modified', () => {
                                 this.updateSelectedItem(newItem, itemType);
