@@ -170,6 +170,7 @@ class ClueCountEditPanel extends Component {
     handleChange = (event, value, propertyName) => {
         let roundedValue = value;
         let displayValue = value;
+        console.log(event.type);
         switch(propertyName) {
             case 'iconSize':
                 roundedValue = parseInt(value, 10)**1.7;

@@ -198,7 +198,7 @@ class ClueCountEditPanel extends Component {
                 <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Clue Counter</Typography>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Number of Clues</Typography>
-                    <TextField type="number" value={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
+                    <TextField type="number" readonly={true} value={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
                 </Grid>
                 <Typography className={classes.controlElementLabel}>Format</Typography>
                 <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>

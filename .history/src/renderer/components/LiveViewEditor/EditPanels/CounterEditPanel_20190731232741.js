@@ -179,10 +179,6 @@ class ClueCountEditPanel extends Component {
                 roundedValue = parseInt(value, 10)**1.4;
                 displayValue = parseInt(value, 10);
                 break;
-            case 'numberOfClues':
-                if(value<1 || value>9) {
-                    return;
-                }
             default:
                 roundedValue = value;
                 displayValue = value;
@@ -198,7 +194,7 @@ class ClueCountEditPanel extends Component {
                 <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Clue Counter</Typography>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Number of Clues</Typography>
-                    <TextField type="number" value={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
+                    <TextField type="number" min="1" max="9"defaultValue={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
                 </Grid>
                 <Typography className={classes.controlElementLabel}>Format</Typography>
                 <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>

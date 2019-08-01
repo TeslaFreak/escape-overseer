@@ -586,8 +586,9 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set(propertyName, propertyValue);
                 var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue))+(iconSize*propertyValue);
                 var groupHeight = (this.state.selectedItem.get('height'));
+                let i = oldClueCount;
                 if (oldClueCount < propertyValue) {
-                    for (var i = Number(oldClueCount)+1; i <= propertyValue; i++) { 
+                    for (i = oldClueCount+1; i <= propertyValue; i++) { 
                         console.log('i before loading:' + i);
                         fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
                         }, function(item, object) {
@@ -611,7 +612,7 @@ class LiveScreenEditorView extends Component {
                 }
                 else {
                     var items = this.state.selectedItem.getObjects();
-                    for (var i = oldClueCount; i >= propertyValue; i--) { 
+                    for (i = oldClueCount; i >= propertyValue; i--) { 
                         this.state.selectedItem.remove(items[i]);
                     }
                     this.state.selectedItem.set({

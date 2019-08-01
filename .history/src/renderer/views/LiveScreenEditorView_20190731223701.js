@@ -581,47 +581,22 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'numberOfClues':
-                var oldClueCount = this.state.selectedItem.numberOfClues;
-                console.log('original:' + oldClueCount + ' new:' + propertyValue);
                 this.state.selectedItem.set(propertyName, propertyValue);
                 var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue))+(iconSize*propertyValue);
                 var groupHeight = (this.state.selectedItem.get('height'));
-                if (oldClueCount < propertyValue) {
-                    for (var i = Number(oldClueCount)+1; i <= propertyValue; i++) { 
-                        console.log('i before loading:' + i);
-                        fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
-                        }, function(item, object) {
-                            console.log('i after loading:' + i);
-                            let tmpObj = object.set({ left: (this.state.selectedItem.iconSpacing+this.state.selectedItem.iconSize)*i,
-                                                        top: -(groupHeight/2)});
-                            tmpObj.scaleToWidth(12);
-                            this.state.selectedItem.add(tmpObj);
-                            this.state.selectedItem.set({
-                                width: groupWidth,
-                                dirty: true
-                            });
-                            this.state.selectedItem.forEachObject(function(obj, i) {
-                                obj.set('dirty', true);
-                            })
-                            this.canvas.renderAll();
-                            //dumb fix for group not rendering after updating clue count
-                            this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
-                        }.bind(this));
-                    }
-                }
-                else {
-                    var items = this.state.selectedItem.getObjects();
-                    for (var i = oldClueCount; i >= propertyValue; i--) { 
-                        this.state.selectedItem.remove(items[i]);
-                    }
+                fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
+                }, function(item, object) {
+                    let tmpObj = object.set({ left: (this.state.selectedItem.iconSpacing+this.state.selectedItem.iconSize)*propertyValue,
+                                                top: -(groupHeight/2)});
+                    tmpObj.scaleToWidth(12);
+                    this.state.selectedItem.add(tmpObj);
                     this.state.selectedItem.set({
                         width: groupWidth,
                         dirty: true
                     });
-                    this.canvas.renderAll();
-                    //dumb fix for group not rendering after updating clue count
-                    this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
-                }
+                    this.canvas.requestRenderAll();
+                }.bind(this));
+                
                 
                 break;	
             case 'fontFamily':

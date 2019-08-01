@@ -587,7 +587,7 @@ class LiveScreenEditorView extends Component {
                 var groupWidth = (this.state.selectedItem.iconSpacing*(propertyValue))+(iconSize*propertyValue);
                 var groupHeight = (this.state.selectedItem.get('height'));
                 if (oldClueCount < propertyValue) {
-                    for (var i = Number(oldClueCount)+1; i <= propertyValue; i++) { 
+                    for (var i = oldClueCount+1; i <= propertyValue; i++) { 
                         console.log('i before loading:' + i);
                         fabric.loadSVGFromURL("assets/images/lock-solid.svg", function(object) {
                         }, function(item, object) {
