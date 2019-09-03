@@ -462,7 +462,6 @@ class LiveScreenEditorView extends Component {
     handleOutsideCanvasClick = (e) => {
         console.log('click');
         this.canvas.discardActiveObject();
-        this.canvas.requestRenderAll();
         this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
         
     }
@@ -660,6 +659,7 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set({
                     width: groupWidth
                 });
+                console.log(this.state.selectedItem.getObjects());
                 break;
             case 'numberOfClues':
                 var oldClueCount = this.state.selectedItem.numberOfClues;
@@ -732,8 +732,12 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                    this.canvas.setWidth(1000) ;  
-                    this.canvas.setHeight(1000);
+                this.canvas.setDimensions({
+                    width: 100,
+                    height: 100,
+                    },{
+                    cssOnly: true
+                    });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);

@@ -91,9 +91,9 @@ const CanvasItemTypes = {
 }
 
 const AspectRatios = {
-    ratio16_9: {width: 1920, height: 1080},
-    ratio4_3: {width: 1024, height: 768},
-    ratio1_1: {width: 1000, height: 1000}
+    16_9: {width: 1920, height: 1080},
+    4_3: {width: 1024, height: 768},
+    1_1: {width: 1000, height: 1000}
 }
 
 const styles = theme => ({
@@ -108,8 +108,8 @@ const styles = theme => ({
         margin: '100px 70px',
     },
     centeredAspectPanel2: {
-        width: `calc(${containerHeight} * ${aspectWidthRatio} )`,
-        height: `calc(${containerHeight} * ${aspectRatio2} )`,
+        width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+        height: `calc(${containerWidth} * ${aspectRatio2} )`,
         margin: '100px 70px',
     },
     editingSurface: {
@@ -438,7 +438,6 @@ class LiveScreenEditorView extends Component {
                                             uniScaleTransform: true, });
         
         let editorContainer = document.getElementById('canvasInteractionLayer');
-        let mainCanvas = document.getElementById('aspectPanel');
         this.canvas.setDimensions({
             width: '100%',
             height: '100%'
@@ -447,8 +446,7 @@ class LiveScreenEditorView extends Component {
           });
         editorContainer.tabIndex = 1000;
         editorContainer.addEventListener("keydown", this.handleKeyPress, false);
-        editorContainer.addEventListener("click", this.handleOutsideCanvasClick, false);
-        mainCanvas.addEventListener("click", this.handleNullCanvasClick, false);
+        editorContainer.addEventListener("click", this.handleGeneralClick, false);
     }
 
     handleKeyPress = (e) => {
@@ -459,20 +457,11 @@ class LiveScreenEditorView extends Component {
         }
     }
 
-    handleOutsideCanvasClick = (e) => {
+    handleGeneralClick = (e) => {
         console.log('click');
-        this.canvas.discardActiveObject();
-        this.canvas.requestRenderAll();
-        this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
-        
-    }
-    handleNullCanvasClick = (e) => {
-        console.log('click2');
         if(this.canvas.getActiveObject() === null) {
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
         }
-        e.stopPropagation();
-        console.log("props stopped");
     }
 
     handleOpenAddMenu = event => {
@@ -660,6 +649,7 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set({
                     width: groupWidth
                 });
+                console.log(this.state.selectedItem.getObjects());
                 break;
             case 'numberOfClues':
                 var oldClueCount = this.state.selectedItem.numberOfClues;
@@ -732,8 +722,12 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                    this.canvas.setWidth(1000) ;  
-                    this.canvas.setHeight(1000);
+                this.canvas.setDimensions({
+                    width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+                    height: `calc(${containerWidth} * ${1} )`,
+                    },{
+                    cssOnly: true
+                    });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);

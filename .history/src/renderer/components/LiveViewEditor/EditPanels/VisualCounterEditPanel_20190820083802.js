@@ -135,14 +135,16 @@ const styles = theme => ({
     }
 });
 
-class NumericCounterEditPanel extends Component {
+class VisualCounterEditPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={
+        this.state={/*iconSize: (parseInt((this.props.selectedItem.getScaledWidth()**(1/1.7)-(this.props.selectedItem.iconSpacing*this.props.selectedItem.numberOfClues-1)))/this.props.selectedItem.numberOfClues, 10),*/
+                    iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/1.4), 10),
                     order: this.props.selectedItem.getZIndex(),
                     numberOfClues: this.props.selectedItem.numberOfClues,
-                    countDirection: this.props.selectedItem.countDirection};
+                    counterType: this.props.selectedItem.counterType,
+                    usedStatus: this.props.selectedItem.usedStatus};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -157,24 +159,44 @@ class NumericCounterEditPanel extends Component {
     }
 
     componentWillUpdate(nextProps) {
+        //TODO: separate out for each state variable. here and in each edit panel file.
         if (this.state.numberOfClues !== nextProps.selectedItem.numberOfClues) {
             this.setState({numberOfClues: nextProps.selectedItem.numberOfClues})
+        }
+        if (this.state.counterType !== nextProps.selectedItem.counterType) {
+            this.setState({counterType: nextProps.selectedItem.counterType})
         }
         if (this.state.order !== nextProps.selectedItem.getZIndex()) {
             this.setState({order: nextProps.selectedItem.getZIndex()})
         }
 
-        if (this.state.countDirection !== nextProps.selectedItem.countDirection) {
-            this.setState({countDirection: nextProps.selectedItem.countDirection})
+        if (this.state.iconSpacing !== parseInt(nextProps.selectedItem.iconSpacing**(1/1.4), 10) ) {
+            this.setState({iconSpacing: parseInt(nextProps.selectedItem.iconSpacing**(1/1.4), 10)})
         }
+
+        if (this.state.usedStatus !== nextProps.selectedItem.usedStatus) {
+            this.setState({usedStatus: nextProps.selectedItem.usedStatus})
+        }
+        
+        /*if (this.state.iconSize !== (parseInt((nextProps.selectedItem.getScaledWidth()**(1/1.7)-(nextProps.selectedItem.iconSpacing*nextProps.selectedItem.numberOfClues-1)))/nextProps.selectedItem.numberOfClues, 10)) {
+            this.setState({iconSize: (parseInt((nextProps.selectedItem.getScaledWidth()**(1/1.7)-(nextProps.selectedItem.iconSpacing*nextProps.selectedItem.numberOfClues-1)))/nextProps.selectedItem.numberOfClues, 10)})
+        }*/
     }
 
     handleChange = (event, value, propertyName) => {
         let roundedValue = value;
         let displayValue = value;
         switch(propertyName) {
+            case 'iconSize':
+                roundedValue = parseInt(value, 10)**1.7;
+                displayValue = parseInt(value, 10);
+                break;
+            case 'iconSpacing':
+                roundedValue = parseInt(value, 10)**1.4;
+                displayValue = parseInt(value, 10);
+                break;
             case 'numberOfClues':
-                if(value<0) {
+                if(value<1 || value>9) {
                     return;
                 }
             default:
@@ -191,8 +213,72 @@ class NumericCounterEditPanel extends Component {
             <Grid container direction='column' >
                 <Typography id="TimerHeader" className={classes.editPanelSubsectionHeader}>Clue Counter</Typography>
                 <Grid item >
-                    <Typography className={classes.controlElementLabel}>Starting Number</Typography>
+                    <Typography className={classes.controlElementLabel}>Number of Clues</Typography>
                     <TextField type="number" value={this.state.numberOfClues} onChange={(event) => this.handleChange(event, event.target.value, 'numberOfClues')}/>
+                </Grid>
+                <Tooltip title="Note: this has no effect on the live view of the screen. This is only a toggle to allow you to see both states of the icon during editing." placement="bottom-start" classes={{ tooltip: classes.tooltipWidth }}>
+                    <Typography className={classes.controlElementLabel}>Icon Status</Typography>
+                </Tooltip>
+                <Grid item container direction='row' id='ButtonRow' className={classes.alignmentButtonRow}>
+                    <Grid item>
+                        <IconButton disableRipple className={classNames(classes.LeftRowButton, this.state.usedStatus == 'unused' ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, 'unused', 'usedStatus')}> 
+                            Unused
+                        </IconButton>
+                    </Grid>
+                    <Grid item>
+                        <IconButton disableRipple className={classNames(classes.RightRowButton, this.state.usedStatus == 'used' ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, 'used', 'usedStatus')}>
+                            Used
+                        </IconButton>
+                    </Grid>
+                </Grid>
+                <Grid item >
+                    <Typography className={classes.controlElementLabel}>Set unused clue icon</Typography>
+                    {//TODO: make this actually change src}
+                    <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, !this.state.changeSrc, 'changeSrc')}>
+                            Change
+                    </IconButton>
+                </Grid>
+                <Grid item >
+                    <Typography className={classes.controlElementLabel}>Set used clue icon</Typography>
+                    <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, !this.state.showMinutes, 'showMinutes')}>
+                            Change
+                    </IconButton>
+                </Grid>
+                {/*<Grid item id='SizeSlider' >
+                    <Typography className={classes.controlElementLabel}>Icon Size</Typography>
+                    <Tooltip title={this.state.iconSize} placement="top">
+                    <Slider
+                        classes={{
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={this.state.iconSize}
+                        min={1}
+                        max={100}
+                        onChange={(event, value) => this.handleChange(event, value, 'iconSize')}
+                    />
+                    </Tooltip>
+                        </Grid> */}
+                <Grid item id='SpacingSlider' >
+                    <Typography className={classes.controlElementLabel}>Icon Spacing</Typography>
+                    <Tooltip title={this.state.iconSpacing} placement="top">
+                    <Slider
+                        classes={{
+                            thumb: classes.thumb,
+                            thumbWrapper: classes.thumbWrapper,
+                            track: classes.track,
+                          }}
+                        value={this.state.iconSpacing}
+                        min={0}
+                        max={100}
+                        onChange={(event, value) => this.handleChange(event, value, 'iconSpacing')}
+                    />
+                    </Tooltip>
                 </Grid>
                 <Grid item id='OrderSlider' >
                     <Typography className={classes.controlElementLabel}>Order</Typography>
@@ -216,4 +302,4 @@ class NumericCounterEditPanel extends Component {
     }
 }
 
-export default  withStyles(styles)(NumericCounterEditPanel)
+export default  withStyles(styles)(VisualCounterEditPanel)

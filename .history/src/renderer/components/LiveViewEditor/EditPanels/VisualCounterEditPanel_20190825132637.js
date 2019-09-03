@@ -195,10 +195,6 @@ class VisualCounterEditPanel extends Component {
                 roundedValue = parseInt(value, 10)**1.4;
                 displayValue = parseInt(value, 10);
                 break;
-            case 'changeUnusedSrc':
-            case 'changeUsedSrc':
-                displayValue = value.target.result;
-                break;
             case 'numberOfClues':
                 if(value<1 || value>9) {
                     return;
@@ -207,7 +203,7 @@ class VisualCounterEditPanel extends Component {
                 roundedValue = value;
                 displayValue = value;
         }
-        this.setState({[propertyName]: displayValue});
+        this.setState({[propertyName]: displayValue.target.result});
         this.props.updateItemProperty(propertyName, roundedValue);
     }
 
@@ -239,39 +235,30 @@ class VisualCounterEditPanel extends Component {
                 </Grid>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Set unused clue icon</Typography>
+                    {//TODO: make this actually change src
+                    }
                     <input
                         accept="image/*"
                         style={{ display: 'none' }}
                         id="image-input"
                         multiple
                         type="file"
-                        onChange={(event) => this.handleChange(event, event,'changeUnusedSrc')}
-                        ref={(ref) => this.unusedSrcInputRef = ref}
+                        onChange={(event) => this.handleChange(event, event,'changeSrc')}
+                        ref={(ref) => this.fileInputRef = ref}
                         />
                     <label htmlFor="image-input">
                         <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                        onClick={(event) => this.unusedSrcInputRef.click()}>
+                                        onClick={(event) => this.fileInputRef.click()}>
                                 Change
                         </IconButton>
                     </label>
                 </Grid>
                 <Grid item >
                     <Typography className={classes.controlElementLabel}>Set used clue icon</Typography>
-                    <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id="image-input"
-                        multiple
-                        type="file"
-                        onChange={(event) => this.handleChange(event, event,'changeUsedSrc')}
-                        ref={(ref) => this.usedSrcInputRef = ref}
-                        />
-                    <label htmlFor="image-input">
-                        <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                        onClick={(event) => this.usedSrcInputRef.click()}>
-                                Change
-                        </IconButton>
-                    </label>
+                    <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
+                                    onClick={(event) => this.handleChange(event, !this.state.showMinutes, 'showMinutes')}>
+                            Change
+                    </IconButton>
                 </Grid>
                 {/*<Grid item id='SizeSlider' >
                     <Typography className={classes.controlElementLabel}>Icon Size</Typography>

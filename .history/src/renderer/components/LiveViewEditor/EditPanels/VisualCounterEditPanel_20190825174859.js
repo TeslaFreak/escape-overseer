@@ -246,11 +246,11 @@ class VisualCounterEditPanel extends Component {
                         multiple
                         type="file"
                         onChange={(event) => this.handleChange(event, event,'changeUnusedSrc')}
-                        ref={(ref) => this.unusedSrcInputRef = ref}
+                        ref={(ref) => this.fileInputRef = ref}
                         />
                     <label htmlFor="image-input">
                         <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                        onClick={(event) => this.unusedSrcInputRef.click()}>
+                                        onClick={(event) => this.fileInputRef.click()}>
                                 Change
                         </IconButton>
                     </label>
@@ -264,11 +264,11 @@ class VisualCounterEditPanel extends Component {
                         multiple
                         type="file"
                         onChange={(event) => this.handleChange(event, event,'changeUsedSrc')}
-                        ref={(ref) => this.usedSrcInputRef = ref}
+                        ref={(ref) => this.fileInputRef = ref}
                         />
                     <label htmlFor="image-input">
                         <IconButton disableRipple className={classNames(classes.CenterRowButton, this.state.showMinutes ? classes.rowButtonSelected : '')} 
-                                        onClick={(event) => this.usedSrcInputRef.click()}>
+                                        onClick={(event) => this.fileInputRef.click()}>
                                 Change
                         </IconButton>
                     </label>

@@ -438,7 +438,7 @@ class LiveScreenEditorView extends Component {
                                             uniScaleTransform: true, });
         
         let editorContainer = document.getElementById('canvasInteractionLayer');
-        let mainCanvas = document.getElementById('aspectPanel');
+        let mainCanvas = document.getElementById('canvas-container');
         this.canvas.setDimensions({
             width: '100%',
             height: '100%'
@@ -447,8 +447,8 @@ class LiveScreenEditorView extends Component {
           });
         editorContainer.tabIndex = 1000;
         editorContainer.addEventListener("keydown", this.handleKeyPress, false);
-        editorContainer.addEventListener("click", this.handleOutsideCanvasClick, false);
-        mainCanvas.addEventListener("click", this.handleNullCanvasClick, false);
+        editorContainer.addEventListener("click", this.handleGeneralClick, false);
+        mainCanvas.addEventListener("click", this.handleGeneralClick2, false);
     }
 
     handleKeyPress = (e) => {
@@ -459,20 +459,20 @@ class LiveScreenEditorView extends Component {
         }
     }
 
-    handleOutsideCanvasClick = (e) => {
+    handleGeneralClick = (e) => {
         console.log('click');
-        this.canvas.discardActiveObject();
-        this.canvas.requestRenderAll();
-        this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
+            this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
         
     }
-    handleNullCanvasClick = (e) => {
+    handleGeneralClick2 = (e) => {
         console.log('click2');
         if(this.canvas.getActiveObject() === null) {
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN);
         }
-        e.stopPropagation();
-        console.log("props stopped");
+        else{
+            e.stopPropagation();
+            console.log("props stopped");
+        }
     }
 
     handleOpenAddMenu = event => {
@@ -660,6 +660,7 @@ class LiveScreenEditorView extends Component {
                 this.state.selectedItem.set({
                     width: groupWidth
                 });
+                console.log(this.state.selectedItem.getObjects());
                 break;
             case 'numberOfClues':
                 var oldClueCount = this.state.selectedItem.numberOfClues;
@@ -732,8 +733,12 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                    this.canvas.setWidth(1000) ;  
-                    this.canvas.setHeight(1000);
+                this.canvas.setDimensions({
+                    width: 1,
+                    height: 1,
+                    },{
+                    cssOnly: true
+                    });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
