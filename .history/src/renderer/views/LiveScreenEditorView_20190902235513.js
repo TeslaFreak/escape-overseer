@@ -427,12 +427,16 @@ class LiveScreenEditorView extends Component {
         if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth < (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'height'})
-            this.updateAspectRatio(this.state.aspectRatio);
+            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
+                    });
         }
         else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'width'})
-            this.updateAspectRatio(this.state.aspectRatio);
+            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
+                    });
         }
     }
 
@@ -717,7 +721,36 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                this.updateAspectRatio(propertyValue);
+                    switch(propertyValue) {
+                        case '16:9':
+                            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                                aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
+                            });
+                            this.canvas.setWidth(AspectRatios.ratio16_9.width) ;  
+                            this.canvas.setHeight(AspectRatios.ratio16_9.height);
+                            break;
+                        case '4:3':
+                                this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio4_3.width/AspectRatios.ratio4_3.height} )`,
+                                aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio4_3.height/AspectRatios.ratio4_3.width : 1} )`
+                            });
+                            this.canvas.setWidth(AspectRatios.ratio4_3.width) ;  
+                            this.canvas.setHeight(AspectRatios.ratio4_3.height);
+                            break;
+                        case '1:1':
+                                this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio1_1.width/AspectRatios.ratio1_1.height} )`,
+                                aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio1_1.height/AspectRatios.ratio1_1.width : 1} )`
+                            });
+                            this.canvas.setWidth(AspectRatios.ratio1_1.width) ;  
+                            this.canvas.setHeight(AspectRatios.ratio1_1.height);
+                            break;
+                    }
+
+                    this.canvas.setDimensions({
+                        width: '100%',
+                        height: '100%'
+                      },{
+                        cssOnly: true
+                      });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -960,37 +993,10 @@ class LiveScreenEditorView extends Component {
         this.handleOpenAddMenu();
     }
 
-    updateAspectRatio = (ratio) => {
-        this.setState({aspectRatio: ratio});
-        switch(ratio) {
-            case '16:9':
-                this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                    aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                });
-                this.canvas.setWidth(AspectRatios.ratio16_9.width) ;  
-                this.canvas.setHeight(AspectRatios.ratio16_9.height);
-                break;
-            case '4:3':
-                    this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio4_3.width/AspectRatios.ratio4_3.height} )`,
-                    aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio4_3.height/AspectRatios.ratio4_3.width : 1} )`
-                });
-                this.canvas.setWidth(AspectRatios.ratio4_3.width) ;  
-                this.canvas.setHeight(AspectRatios.ratio4_3.height);
-                break;
-            case '1:1':
-                    this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio1_1.width/AspectRatios.ratio1_1.height} )`,
-                    aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio1_1.height/AspectRatios.ratio1_1.width : 1} )`
-                });
-                this.canvas.setWidth(AspectRatios.ratio1_1.width) ;  
-                this.canvas.setHeight(AspectRatios.ratio1_1.height);
-                break;
-        }
-        this.canvas.setDimensions({
-            width: '100%',
-            height: '100%'
-            },{
-            cssOnly: true
-            });
+    updateAspectRatio = () => {
+        this.setState({ aspectWidth:`calc(${containerWidth} * ${aspectWidthRatio} )`,
+                        aspectHeight: `calc(${containerWidth} * ${aspectHeightRatio} )`
+        });
     }
 
     render() {

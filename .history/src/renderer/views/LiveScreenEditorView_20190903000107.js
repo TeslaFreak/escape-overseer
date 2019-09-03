@@ -427,12 +427,16 @@ class LiveScreenEditorView extends Component {
         if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth < (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'height'})
-            this.updateAspectRatio(this.state.aspectRatio);
+            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
+                    });
         }
         else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'width'})
-            this.updateAspectRatio(this.state.aspectRatio);
+            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
+                    });
         }
     }
 
@@ -717,7 +721,9 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
+                    
                 this.updateAspectRatio(propertyValue);
+                
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -961,7 +967,6 @@ class LiveScreenEditorView extends Component {
     }
 
     updateAspectRatio = (ratio) => {
-        this.setState({aspectRatio: ratio});
         switch(ratio) {
             case '16:9':
                 this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,

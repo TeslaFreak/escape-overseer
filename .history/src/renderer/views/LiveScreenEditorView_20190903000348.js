@@ -961,7 +961,6 @@ class LiveScreenEditorView extends Component {
     }
 
     updateAspectRatio = (ratio) => {
-        this.setState({aspectRatio: ratio});
         switch(ratio) {
             case '16:9':
                 this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
