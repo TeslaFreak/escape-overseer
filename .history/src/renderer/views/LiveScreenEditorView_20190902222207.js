@@ -220,7 +220,6 @@ class LiveScreenEditorView extends Component {
 
     componentDidMount() {
         var oldCanvas = document.getElementById('mainCanvas');
-        window.addEventListener("resize", this.updateDimensions);
         fabric.Object.prototype.getZIndex = function() {
             return this.canvas ? this.canvas.getObjects().indexOf(this) : 0;
         }
@@ -418,26 +417,6 @@ class LiveScreenEditorView extends Component {
         editorContainer.addEventListener("keydown", this.handleKeyPress, false);
         editorContainer.addEventListener("click", this.handleOutsideCanvasClick, false);
         mainCanvas.addEventListener("click", this.handleNullCanvasClick, false);
-    }
-
-    updateDimensions = () => {
-        let editorContainer = document.getElementById('canvasInteractionLayer');
-        let canvasContainer = document.getElementById('aspectPanel');
-        console.log('width:' + ((canvasContainer.clientWidth+140)/editorContainer.clientWidth) + 'height:' + (canvasContainer.clientHeight+200)/editorContainer.clientHeight);
-        if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth < (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
-            console.log('flipped');
-            this.setState({aspectDominantDimension:'height'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
-        }
-        else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
-            console.log('flipped');
-            this.setState({aspectDominantDimension:'width'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
-        }
     }
 
     handleKeyPress = (e) => {
@@ -722,7 +701,7 @@ class LiveScreenEditorView extends Component {
                 break;
             case 'aspectRatio':
                     
-                    this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
+                    this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width} )`,
                         aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
                     });
                     this.canvas.setWidth(1920) ;  

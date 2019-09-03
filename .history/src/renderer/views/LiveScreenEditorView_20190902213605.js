@@ -201,6 +201,40 @@ const styles = theme => ({
 
 });
 
+const defaultCanvasOption = {
+    preserveObjectStacking: true,
+    width: '100%',
+    height: '100%',
+    selection: true,
+    defaultCursor: 'default',
+    backgroundColor: '#fff',
+};
+
+const defaultWorkareaOption = {
+    width: 600,
+    height: 400,
+    workareaWidth: 600,
+    workareaHeight: 400,
+    lockScalingX: true,
+    lockScalingY: true,
+    scaleX: 1,
+    scaleY: 1,
+    backgroundColor: '#fff',
+    hasBorders: false,
+    hasControls: false,
+    selectable: false,
+    lockMovementX: true,
+    lockMovementY: true,
+    hoverCursor: 'default',
+    name: '',
+    id: 'workarea',
+    type: 'image',
+    layout: 'fixed', // fixed, responsive, fullscreen
+    link: {},
+    tooltip: {
+        enabled: false,
+    },
+};
 
 
 class LiveScreenEditorView extends Component {
@@ -208,8 +242,7 @@ class LiveScreenEditorView extends Component {
     constructor(props) {
         super(props);
         this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO, 
-            aspectRatio: "16:9", aspectWidth: `calc(${containerWidth} * ${aspectWidthRatio} )`, aspectHeight: `calc(${containerWidth} * ${aspectHeightRatio} )`,
-            aspectDominantDimension: 'width'};
+            aspectRatio: "16:9", aspectWidth: `calc(${containerWidth} * ${aspectWidthRatio} )`, aspectHeight: `calc(${containerWidth} * ${aspectHeightRatio} )`};
         this.objects = [];
         this.db = new PouchDB('kittens');
     }
@@ -220,7 +253,6 @@ class LiveScreenEditorView extends Component {
 
     componentDidMount() {
         var oldCanvas = document.getElementById('mainCanvas');
-        window.addEventListener("resize", this.updateDimensions);
         fabric.Object.prototype.getZIndex = function() {
             return this.canvas ? this.canvas.getObjects().indexOf(this) : 0;
         }
@@ -418,26 +450,6 @@ class LiveScreenEditorView extends Component {
         editorContainer.addEventListener("keydown", this.handleKeyPress, false);
         editorContainer.addEventListener("click", this.handleOutsideCanvasClick, false);
         mainCanvas.addEventListener("click", this.handleNullCanvasClick, false);
-    }
-
-    updateDimensions = () => {
-        let editorContainer = document.getElementById('canvasInteractionLayer');
-        let canvasContainer = document.getElementById('aspectPanel');
-        console.log('width:' + ((canvasContainer.clientWidth+140)/editorContainer.clientWidth) + 'height:' + (canvasContainer.clientHeight+200)/editorContainer.clientHeight);
-        if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth < (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
-            console.log('flipped');
-            this.setState({aspectDominantDimension:'height'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
-        }
-        else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
-            console.log('flipped');
-            this.setState({aspectDominantDimension:'width'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
-        }
     }
 
     handleKeyPress = (e) => {
@@ -721,18 +733,8 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                    
-                    this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
-                    this.canvas.setWidth(1920) ;  
-                    this.canvas.setHeight(1080);
-                    this.canvas.setDimensions({
-                        width: '100%',
-                        height: '100%'
-                      },{
-                        cssOnly: true
-                      });
+                    this.canvas.setWidth(1000) ;  
+                    this.canvas.setHeight(1000);
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -988,9 +990,9 @@ class LiveScreenEditorView extends Component {
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='center' className={classes.editingBackground}>
-                    <Grid item id='aspectPanel' style={{
-                                                            width: this.state.aspectWidth,
-                                                            height: this.state.aspectHeight,
+                    <Grid item id='aspectPanel' styles={{
+                                                            width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
+                                                            height: `calc(${containerWidth} * ${aspectHeightRatio} )`,
                                                             margin: '100px 70px',
                                                         }}>
                         <canvas id= 'mainCanvas'>

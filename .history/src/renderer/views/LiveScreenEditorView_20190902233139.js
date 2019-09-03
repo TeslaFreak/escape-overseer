@@ -423,20 +423,14 @@ class LiveScreenEditorView extends Component {
     updateDimensions = () => {
         let editorContainer = document.getElementById('canvasInteractionLayer');
         let canvasContainer = document.getElementById('aspectPanel');
-        console.log('width:' + ((canvasContainer.clientWidth+140)/editorContainer.clientWidth) + 'height:' + (canvasContainer.clientHeight+200)/editorContainer.clientHeight);
-        if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth < (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
+        console.log('width:' + (canvasContainer.clientWidth/editorContainer.clientWidth) + 'height:' + canvasContainer.clientHeight/editorContainer.clientHeight);
+        if(this.state.aspectDominantDimension=='width' && canvasContainer.clientWidth/editorContainer.clientWidth < canvasContainer.clientHeight/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'height'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
         }
-        else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/editorContainer.clientWidth > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
+        else if(this.state.aspectDominantDimension=='height' && canvasContainer.clientWidth/editorContainer.clientWidth > canvasContainer.clientHeight/editorContainer.clientHeight) {
             console.log('flipped');
             this.setState({aspectDominantDimension:'width'})
-            this.setState({ aspectWidth:`calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? 1 : AspectRatios.ratio16_9.width/AspectRatios.ratio16_9.height} )`,
-                        aspectHeight: `calc(${this.state.aspectDominantDimension=='width' ? containerWidth : containerHeight} * ${this.state.aspectDominantDimension=='width' ? AspectRatios.ratio16_9.height/AspectRatios.ratio16_9.width : 1} )`
-                    });
         }
     }
 
