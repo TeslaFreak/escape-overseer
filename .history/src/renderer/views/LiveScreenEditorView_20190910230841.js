@@ -241,86 +241,15 @@ class LiveScreenEditorView extends Component {
                 }
         }
 
-        fabric.RawText = fabric.util.createClass(fabric.IText, {
-            type: 'rawText',
-             /**
-             * Properties which when set cause object to change dimensions
-             * @type Object
-             * @private
-             */
-            
-            initialize: function(element, options) {
-                options || (options = { });
-
-                this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('lockUniScaling', options.lockUniScaling || true);
-                this.set('lockScalingFlip', options.lockScalingFlip || true);
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                    lockUniScaling: this.get('lockUniScaling'),
-                    lockScalingFlip: this.get('lockScalingFlip'),
-                });
-            },
-        });
-
-        fabric.RawText.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.Timer(object.text, object);
-            newItem.on('modified', () => { 
-                var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.width = newItem.width * newItem.scaleX;
-                newItem.fontSize = (parseInt(newfontsize, 10));
-                newItem.height = newItem.height * newItem.scaleY;
-                newItem.scaleX = 1;
-                newItem.scaleY = 1;
-                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
-            });
-            newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
-            });
-            callback && callback(newItem);
-        }.bind(this);
-
         fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
-            type: 'clueTextbox',
+            type: 'cluetextbox',
              /**
              * Properties which when set cause object to change dimensions
              * @type Object
              * @private
              */
             _dimensionAffectingProps: fabric.IText.prototype._dimensionAffectingProps.slice(0),
-            
-            initialize: function(element, options) {
-                options || (options = { });
 
-                this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('editable', false);
-                this.set('lockUniScaling', false);
-                this.set('lockScalingFlip', true);
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                });
-            },
-            
             _renderTextCommon: function(ctx, method) {
                 ctx.save();
                 var lineHeights = 0, left = this._getLeftOffset(), top = this._getTopOffset(),
@@ -345,42 +274,14 @@ class LiveScreenEditorView extends Component {
               }
         });
 
-        fabric.ClueTextbox.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.ClueTextbox(object.text, object);
-            newItem.on('scaling',  () => {
-                var newHeight = newItem.height * newItem.scaleY;
-                newItem.set({
-                    width: newItem.width * newItem.scaleX,
-                    scaleX: 1,
-                });
-                newItem.initDimensions();
-                newItem.set({ height: newHeight, scaleY: 1 })
-                console.log(newItem);
-            });
-            newItem.on('modified',  () => { 
-                var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.set({
-                    width: newItem.width * newItem.scaleX,
-                    height: newItem.height * newItem.scaleY,
-                    scaleX: 1,
-                    scaleY: 1,
-                });
-            });
-            newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.CLUEDISPLAY);
-            });
-            callback && callback(newItem);
-        }.bind(this);
-
         fabric.FittableImage = fabric.util.createClass(fabric.Image, {
-            type: 'fittableImage',
+            type: 'fittableimage',
 
             initialize: function(element, options) {
                 options || (options = { });
 
                 this.callSuper('initialize', element, options);
                 this.set('fit', options.fit || 'none');
-                this.set('lockUniScaling', true)
             },
 
             toObject: function() {
@@ -390,35 +291,17 @@ class LiveScreenEditorView extends Component {
             },
         });
 
-        fabric.FittableImage.fromObject = function(object, callback, forceAsync) {
-        
-            console.log(object);
-            var imgObj = new Image();
-            imgObj.src = object.src;
-            imgObj.onload = function () {
-                var newItem = new fabric.FittableImage(imgObj, object);
-                newItem.on('modified', () => {
-                    this.updateSelectedItem(newItem, CanvasItemTypes.IMAGE);
-                });
-                newItem.on('selected', () => {
-                    this.updateSelectedItem(newItem, CanvasItemTypes.IMAGE);
-                });
-                callback && callback(newItem);
-            }.bind(this);
-        }.bind(this);
-
-        //TODO: limit one visual counter per screen cuz they break everything
         fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
-            type: 'visualCounter',
+            type: 'visualcounter',
 
             //get width of each icon, have property for space between them, set default spacing to width of icon
-            initialize: function(group, options, isAlreadyGrouped) {
+            initialize: function(group, options) {
                 options || (options = { });
-                this.callSuper('initialize', group, options, isAlreadyGrouped);
+                this.callSuper('initialize', group, options);
                 this.set('numberOfClues', 1);
                 this.set('iconSpacing', options.iconSpacing || 12);
                 this.set('iconSize', options.iconSize || 12);
-                this.set('usedStatus', 'unused');
+                this.set('usedStatus', options.usedStatus || 'unused');
                 this.set('unusedSource', options.unusedSource || 'assets/images/lock-solid.png');
                 this.set('usedSource', options.usedSource || 'assets/images/ex-solid.png');
                 this.set('lockUniScaling', options.lockUniScaling || true);
@@ -429,6 +312,7 @@ class LiveScreenEditorView extends Component {
                     numberOfClues: this.get('numberOfClues'),
                     iconSpacing: this.get('iconSpacing'),
                     iconSize: this.get('iconSize'),
+                    usedStatus: this.get('usedStatus'),
                     unusedSource: this.get('unusedSource'),
                     usedSource: this.get('usedSource'),
                     lockUniScaling: this.get('lockUniScaling'),
@@ -438,85 +322,47 @@ class LiveScreenEditorView extends Component {
 
         fabric.VisualCounter.fromObject = function(object, callback, forceAsync) {
             console.log("comoooon")
-            console.log(object);
-            fabric.util.enlivenObjects(object.objects, function (enlivenedObjects) {
-                var group = [], tmpObj = null;
-                tmpObj = enlivenedObjects[0].set({
-                    usedType: 'unused',
-                    visible: true
-                });
-                tmpObj.scaleToWidth(12);
-                group.push(tmpObj);
-                tmpObj = enlivenedObjects[1].set({
-                    usedType: 'used',
-                    visible: false
-                });
-                tmpObj.scaleToWidth(12);
-                group.push(tmpObj);
-                var newItem = new fabric.VisualCounter(group, object, true);
-                newItem.on('modified', () => {
-                    this.updateSelectedItem(newItem, CanvasItemTypes.VISUALCOUNTER);
-                });
-                newItem.on('selected', () => {
-                    this.updateSelectedItem(newItem, CanvasItemTypes.VISUALCOUNTER);
-                });
-                this.canvas.setActiveObject(newItem);
-                this.updateItemProperty('numberOfClues', object.numberOfClues);
+            let newItem = new fabric.VisualCounter(object.objects, object);
+            newItem.on('modified', () => {
                 this.updateSelectedItem(newItem, CanvasItemTypes.VISUALCOUNTER);
-                
-                callback && callback(newItem);
-            }.bind(this));
+            });
+            newItem.on('selected', () => {
+                this.updateSelectedItem(newItem, CanvasItemTypes.VISUALCOUNTER);
+            });
+            callback && callback(newItem);
         }.bind(this);
 
-        fabric.NumericCounter = fabric.util.createClass(fabric.IText, {
-            type: 'numericCounter',
-             /**
-             * Properties which when set cause object to change dimensions
-             * @type Object
-             * @private
-             */
-            
+        fabric.CounterImage = fabric.util.createClass(fabric.Image, {
+            type: 'counterimage',
+
             initialize: function(element, options) {
                 options || (options = { });
 
                 this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('lockUniScaling', true);
-                this.set('lockScalingFlip', true);
-                this.set('editable', false);
-                this.set('numberOfClues', options.numberOfClues || 3);
+            },
+
+            /**
+             * Creates an instance of fabric.Image from an URL string
+             * @static
+             * @param {String} url URL to create an image from
+             * @param {Function} [callback] Callback to invoke when image is created (newly created image is passed as a first argument)
+             * @param {Object} [imgOptions] Options object
+             */
+            fromURL: function(url, callback) {
+                let filetype = url.slice((url.lastIndexOf(".") - 1 >>> 0) + 2);
+                if (filetype === 'svg') {
+                    return fabric.loadSVGFromURL(url,callback);
+                }
+                else {
+                    return this.callSuper('fromURL', url, callback)
+                }
             },
 
             toObject: function() {
                 return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                    numberOfClues: this.get('numberOfClues'),
                 });
             },
         });
-
-        fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.NumericCounter(object.text, object);
-            newItem.on('modified', () => { 
-                var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.width = newItem.width * newItem.scaleX;
-                newItem.fontSize = (parseInt(newfontsize, 10));
-                newItem.height = newItem.height * newItem.scaleY;
-                newItem.scaleX = 1;
-                newItem.scaleY = 1;
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            callback && callback(newItem);
-        }.bind(this);
 
         fabric.Timer = fabric.util.createClass(fabric.IText, {
             type: 'timer',
@@ -843,7 +689,7 @@ class LiveScreenEditorView extends Component {
                 var oldClueCount = this.state.selectedItem.numberOfClues;
                 console.log('original:' + oldClueCount + ' new:' + propertyValue);
                 this.state.selectedItem.set(propertyName, propertyValue);
-                if (this.state.selectedItem.get('type') !== 'visualCounter') {
+                if (this.state.selectedItem.get('type') !== 'visualcounter') {
                     this.state.selectedItem.set("text", propertyValue);
                     break;
                 }
@@ -936,7 +782,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +809,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -980,7 +824,14 @@ class LiveScreenEditorView extends Component {
     createNewCanvasItem = (itemType, event) => {
         switch(itemType) {
             case CanvasItemTypes.TEXT:
-                var newItem = new fabric.RawText("Enter Text Here");
+                var newItem = new fabric.IText("Enter Text Here", {
+                    fontSize: 40,
+                    fontFamily: 'Roboto',
+                    lineHeight: 1,
+                    charSpacing: 10,
+                    lockUniScaling: true,
+                    lockScalingFlip: true,
+                });
                 newItem.on('modified', function() { 
                     var newfontsize = (newItem.fontSize * newItem.scaleX);
                     newItem.width = newItem.width * newItem.scaleX;
@@ -1059,7 +910,17 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 break;
             case CanvasItemTypes.NUMERICCOUNTER:
-                    var newItem = new fabric.NumericCounter("3");
+                    var newItem = new fabric.IText("3", {
+                        fontSize: 40,
+                        fontFamily: 'Roboto',
+                        numberOfClues: 3,
+                        countDirection: 'down',
+                        lineHeight: 1,
+                        charSpacing: 10,
+                        editable: false,
+                        lockUniScaling: true,
+                        lockScalingFlip: true,
+                    });
                     newItem.on('modified', function() { 
                         var newfontsize = (newItem.fontSize * newItem.scaleX);
                         newItem.width = newItem.width * newItem.scaleX;
@@ -1071,10 +932,23 @@ class LiveScreenEditorView extends Component {
                     }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
-                var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.",
-                {
+                var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
+                newItem.set({
+                    fontSize: 40,
+                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
-                })
+                    lineHeight: 1,
+                    charSpacing: 10,
+                    editable: false,
+                    lockUniScaling: false,
+                    lockScalingFlip: true,
+                });
+                newItem.setControlsVisibility({
+                    mt: false, // middle top disable
+                    mb: false, // midle bottom
+                    ml: false, // middle left
+                    mr: false, // middle right
+                });
                 newItem.on('scaling',  () => {
                     var newHeight = newItem.height * newItem.scaleY;
                     newItem.set({
@@ -1167,7 +1041,7 @@ class LiveScreenEditorView extends Component {
 
     loadJSON = async () => {
         this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function(doc) {
-            console.log(JSON.stringify(doc.canvasJSON))
+            console.log(doc.canvasJSON)
             this.canvas.loadFromJSON(doc.canvasJSON)
         }.bind(this)).catch(function (err) {
             console.log(err);

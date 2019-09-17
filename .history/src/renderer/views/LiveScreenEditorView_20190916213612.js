@@ -936,7 +936,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +963,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);

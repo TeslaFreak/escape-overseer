@@ -291,36 +291,14 @@ class LiveScreenEditorView extends Component {
         }.bind(this);
 
         fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
-            type: 'clueTextbox',
+            type: 'cluetextbox',
              /**
              * Properties which when set cause object to change dimensions
              * @type Object
              * @private
              */
             _dimensionAffectingProps: fabric.IText.prototype._dimensionAffectingProps.slice(0),
-            
-            initialize: function(element, options) {
-                options || (options = { });
 
-                this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('editable', false);
-                this.set('lockUniScaling', false);
-                this.set('lockScalingFlip', true);
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                });
-            },
-            
             _renderTextCommon: function(ctx, method) {
                 ctx.save();
                 var lineHeights = 0, left = this._getLeftOffset(), top = this._getTopOffset(),
@@ -346,25 +324,15 @@ class LiveScreenEditorView extends Component {
         });
 
         fabric.ClueTextbox.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.ClueTextbox(object.text, object);
-            newItem.on('scaling',  () => {
-                var newHeight = newItem.height * newItem.scaleY;
-                newItem.set({
-                    width: newItem.width * newItem.scaleX,
-                    scaleX: 1,
-                });
-                newItem.initDimensions();
-                newItem.set({ height: newHeight, scaleY: 1 })
-                console.log(newItem);
-            });
-            newItem.on('modified',  () => { 
+            let newItem = new fabric.Timer(object.text, object);
+            newItem.on('modified', () => { 
                 var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.set({
-                    width: newItem.width * newItem.scaleX,
-                    height: newItem.height * newItem.scaleY,
-                    scaleX: 1,
-                    scaleY: 1,
-                });
+                newItem.width = newItem.width * newItem.scaleX;
+                newItem.fontSize = (parseInt(newfontsize, 10));
+                newItem.height = newItem.height * newItem.scaleY;
+                newItem.scaleX = 1;
+                newItem.scaleY = 1;
+                this.updateSelectedItem(newItem, CanvasItemTypes.CLUEDISPLAY);
             });
             newItem.on('selected', () => { 
                 this.updateSelectedItem(newItem, CanvasItemTypes.CLUEDISPLAY);
@@ -466,56 +434,6 @@ class LiveScreenEditorView extends Component {
                 
                 callback && callback(newItem);
             }.bind(this));
-        }.bind(this);
-
-        fabric.NumericCounter = fabric.util.createClass(fabric.IText, {
-            type: 'numericCounter',
-             /**
-             * Properties which when set cause object to change dimensions
-             * @type Object
-             * @private
-             */
-            
-            initialize: function(element, options) {
-                options || (options = { });
-
-                this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('lockUniScaling', true);
-                this.set('lockScalingFlip', true);
-                this.set('editable', false);
-                this.set('numberOfClues', options.numberOfClues || 3);
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                    numberOfClues: this.get('numberOfClues'),
-                });
-            },
-        });
-
-        fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.NumericCounter(object.text, object);
-            newItem.on('modified', () => { 
-                var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.width = newItem.width * newItem.scaleX;
-                newItem.fontSize = (parseInt(newfontsize, 10));
-                newItem.height = newItem.height * newItem.scaleY;
-                newItem.scaleX = 1;
-                newItem.scaleY = 1;
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            callback && callback(newItem);
         }.bind(this);
 
         fabric.Timer = fabric.util.createClass(fabric.IText, {
@@ -936,7 +854,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +881,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -1059,7 +975,17 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 break;
             case CanvasItemTypes.NUMERICCOUNTER:
-                    var newItem = new fabric.NumericCounter("3");
+                    var newItem = new fabric.IText("3", {
+                        fontSize: 40,
+                        fontFamily: 'Roboto',
+                        numberOfClues: 3,
+                        countDirection: 'down',
+                        lineHeight: 1,
+                        charSpacing: 10,
+                        editable: false,
+                        lockUniScaling: true,
+                        lockScalingFlip: true,
+                    });
                     newItem.on('modified', function() { 
                         var newfontsize = (newItem.fontSize * newItem.scaleX);
                         newItem.width = newItem.width * newItem.scaleX;
@@ -1071,10 +997,17 @@ class LiveScreenEditorView extends Component {
                     }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
-                var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.",
-                {
+                var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.")
+                newItem.set({
+                    fontSize: 40,
+                    fontFamily: 'Roboto',
                     width: this.canvas.width - 40,
-                })
+                    lineHeight: 1,
+                    charSpacing: 10,
+                    editable: false,
+                    lockUniScaling: false,
+                    lockScalingFlip: true,
+                });
                 newItem.on('scaling',  () => {
                     var newHeight = newItem.height * newItem.scaleY;
                     newItem.set({

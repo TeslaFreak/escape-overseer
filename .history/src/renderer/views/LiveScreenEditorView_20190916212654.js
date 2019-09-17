@@ -936,7 +936,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +963,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -1059,7 +1057,7 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 break;
             case CanvasItemTypes.NUMERICCOUNTER:
-                    var newItem = new fabric.NumericCounter("3");
+                    var newItem = new fabric.IText("3");
                     newItem.on('modified', function() { 
                         var newfontsize = (newItem.fontSize * newItem.scaleX);
                         newItem.width = newItem.width * newItem.scaleX;

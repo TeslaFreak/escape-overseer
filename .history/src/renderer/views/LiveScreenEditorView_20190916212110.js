@@ -468,6 +468,16 @@ class LiveScreenEditorView extends Component {
             }.bind(this));
         }.bind(this);
 
+        newItem.on('modified', function() { 
+            var newfontsize = (newItem.fontSize * newItem.scaleX);
+            newItem.width = newItem.width * newItem.scaleX;
+            newItem.fontSize = (parseInt(newfontsize, 10));
+            newItem.height = newItem.height * newItem.scaleY;
+            newItem.scaleX = 1;
+            newItem.scaleY = 1;
+            this.updateSelectedItem(newItem, itemType);
+        }.bind(this));
+
         fabric.NumericCounter = fabric.util.createClass(fabric.IText, {
             type: 'numericCounter',
              /**
@@ -496,13 +506,13 @@ class LiveScreenEditorView extends Component {
                     fontFamily: this.get('fontFamily'),
                     lineHeight: this.get('lineHeight'),
                     charSpacing: this.get('charSpacing'),
-                    numberOfClues: this.get('numberOfClues'),
+                    lockUniScaling: this.get('numberOfClues'),
                 });
             },
         });
 
         fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.NumericCounter(object.text, object);
+            let newItem = new fabric.Timer(object.text, object);
             newItem.on('modified', () => { 
                 var newfontsize = (newItem.fontSize * newItem.scaleX);
                 newItem.width = newItem.width * newItem.scaleX;
@@ -510,10 +520,10 @@ class LiveScreenEditorView extends Component {
                 newItem.height = newItem.height * newItem.scaleY;
                 newItem.scaleX = 1;
                 newItem.scaleY = 1;
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
+                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
             });
             newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
+                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
             });
             callback && callback(newItem);
         }.bind(this);
@@ -936,7 +946,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +973,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -1059,7 +1067,17 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 break;
             case CanvasItemTypes.NUMERICCOUNTER:
-                    var newItem = new fabric.NumericCounter("3");
+                    var newItem = new fabric.IText("3", {
+                        fontSize: 40,
+                        fontFamily: 'Roboto',
+                        numberOfClues: 3,
+                        countDirection: 'down',
+                        lineHeight: 1,
+                        charSpacing: 10,
+                        editable: false,
+                        lockUniScaling: true,
+                        lockScalingFlip: true,
+                    });
                     newItem.on('modified', function() { 
                         var newfontsize = (newItem.fontSize * newItem.scaleX);
                         newItem.width = newItem.width * newItem.scaleX;

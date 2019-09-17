@@ -468,56 +468,6 @@ class LiveScreenEditorView extends Component {
             }.bind(this));
         }.bind(this);
 
-        fabric.NumericCounter = fabric.util.createClass(fabric.IText, {
-            type: 'numericCounter',
-             /**
-             * Properties which when set cause object to change dimensions
-             * @type Object
-             * @private
-             */
-            
-            initialize: function(element, options) {
-                options || (options = { });
-
-                this.callSuper('initialize', element, options);
-                this.set('fontSize', options.fontSize || 40);
-                this.set('fontFamily', options.fontFamily || 'Roboto');
-                this.set('lineHeight', options.lineHeight || 1);
-                this.set('charSpacing', options.charSpacing || 10);
-                this.set('lockUniScaling', true);
-                this.set('lockScalingFlip', true);
-                this.set('editable', false);
-                this.set('numberOfClues', options.numberOfClues || 3);
-            },
-
-            toObject: function() {
-                return fabric.util.object.extend(this.callSuper('toObject'), {
-                    fontSize: this.get('fontSize'),
-                    fontFamily: this.get('fontFamily'),
-                    lineHeight: this.get('lineHeight'),
-                    charSpacing: this.get('charSpacing'),
-                    numberOfClues: this.get('numberOfClues'),
-                });
-            },
-        });
-
-        fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-            let newItem = new fabric.NumericCounter(object.text, object);
-            newItem.on('modified', () => { 
-                var newfontsize = (newItem.fontSize * newItem.scaleX);
-                newItem.width = newItem.width * newItem.scaleX;
-                newItem.fontSize = (parseInt(newfontsize, 10));
-                newItem.height = newItem.height * newItem.scaleY;
-                newItem.scaleX = 1;
-                newItem.scaleY = 1;
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            newItem.on('selected', () => { 
-                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-            });
-            callback && callback(newItem);
-        }.bind(this);
-
         fabric.Timer = fabric.util.createClass(fabric.IText, {
             type: 'timer',
 
@@ -936,7 +886,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -964,7 +913,6 @@ class LiveScreenEditorView extends Component {
                                 this.state.selectedItem.insertAt(newItem,i);
                             }
                         }.bind(this));
-                        this.updateItemProperty('iconSpacing', this.state.selectedItem.iconSpacing);
                     }.bind(this);
                 }.bind(this);
                 reader.readAsDataURL(event.target.files[0]);
@@ -1059,7 +1007,17 @@ class LiveScreenEditorView extends Component {
                 }.bind(this));
                 break;
             case CanvasItemTypes.NUMERICCOUNTER:
-                    var newItem = new fabric.NumericCounter("3");
+                    var newItem = new fabric.IText("3", {
+                        fontSize: 40,
+                        fontFamily: 'Roboto',
+                        numberOfClues: 3,
+                        countDirection: 'down',
+                        lineHeight: 1,
+                        charSpacing: 10,
+                        editable: false,
+                        lockUniScaling: true,
+                        lockScalingFlip: true,
+                    });
                     newItem.on('modified', function() { 
                         var newfontsize = (newItem.fontSize * newItem.scaleX);
                         newItem.width = newItem.width * newItem.scaleX;
@@ -1075,6 +1033,12 @@ class LiveScreenEditorView extends Component {
                 {
                     width: this.canvas.width - 40,
                 })
+                newItem.setControlsVisibility({
+                    mt: false, // middle top disable
+                    mb: false, // midle bottom
+                    ml: false, // middle left
+                    mr: false, // middle right
+                });
                 newItem.on('scaling',  () => {
                     var newHeight = newItem.height * newItem.scaleY;
                     newItem.set({
