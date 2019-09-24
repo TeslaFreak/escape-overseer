@@ -13,7 +13,7 @@ import AddIcon from '@material-ui/icons/Add';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto';
 import StarIcon from '@material-ui/icons/Star';
-import LockIcon from '@material-ui/icons/Lock';
+import TimerIcon from '@material-ui/icons/Timer';
 import TextIcon from '@material-ui/icons/Title';
 import ColorIcon from '@material-ui/icons/ColorLens';
 import ClueIcon from '@material-ui/icons/Lock';
@@ -48,7 +48,6 @@ const styles = theme => ({
         backgroundPosition: 'top',
         boxSizing: 'border-box',
         borderRadius: '0',
-        backgroundColor: 'transparent',
         '&:hover': {
             opacity: 0.7,
             backgroundColor: 'transparent',
@@ -69,19 +68,15 @@ const styles = theme => ({
         borderRadius: '0',
         opacity: 1,
         backgroundColor: 'transparent',
-        '&:hover': {
-            opacity: 1,
-            backgroundColor: 'transparent',
-        },
     },
 
 });
 
-class CounterNavPanel extends Component {
+class ImageNavPanel extends Component {
 
     constructor(props) {
         super(props);
-        this.state={selectedEditPanelType: this.props.EditPanelTypes.COUNTER};
+        this.state={selectedEditPanelType: this.props.EditPanelTypes.IMAGE};
         this.objects = [];
         this.db = new PouchDB('kittens');
         
@@ -109,22 +104,22 @@ class CounterNavPanel extends Component {
         const { classes } = this.props;
         return(
             <React.Fragment>
-                <IconButton id="EditTimerButton" disableRipple 
-                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COUNTER ? classes.navPanelButtonSelected : classes.navPanelButton}
-                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COUNTER)}>
-                    <Grid container direction='column'>
+                <IconButton id="EditTypeButton" disableRipple 
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.IMAGE ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.IMAGE)}>
+                    <Grid container direction='column' >
                         <Grid item>
-                            <LockIcon/>
+                            <InsertPhotoIcon/>
                         </Grid>
                         <Grid item>
-                            Counter
+                            Image
                         </Grid>
                     </Grid>
                 </IconButton>
                 <IconButton id="EditColorButton" disableRipple 
                             className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
                             onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>
-                    <Grid container direction='column'>
+                    <Grid container direction='column' >
                         <Grid item>
                             <ColorIcon/>
                         </Grid>
@@ -138,4 +133,4 @@ class CounterNavPanel extends Component {
     }
 }
 
-export default  withStyles(styles)(CounterNavPanel)
+export default  withStyles(styles)(ImageNavPanel)

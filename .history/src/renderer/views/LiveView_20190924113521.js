@@ -339,10 +339,10 @@ class LiveScreen extends React.PureComponent {
         updateUsedStatus: function(newValues) {
             this.forEachObject(function(obj, i) {
                 if(i == 0 || i == 1) {
-                    obj.set({visible: (newValues[0] ? 'used' : 'unused') == obj.usedType})
+                    obj.set({visible: newValues[0] == obj.usedType})
                 }
                 else{
-                    obj.set({visible: (newValues[Math.floor(i/2)] ? 'used' : 'unused') == obj.usedType})
+                    obj.set({visible: newValues[Math.floor(i/2)] == obj.usedType})
                 }
             }.bind(this));
         }
@@ -365,7 +365,6 @@ class LiveScreen extends React.PureComponent {
             group.push(tmpObj);
             var newItem = new fabric.VisualCounter(group, object, true);
             newItem.updateNumerOfClues(object.numberOfClues, this);
-            this.clueCounter = newItem;
             newItem.set('selectable', false);
             
             callback && callback(newItem);
@@ -406,9 +405,12 @@ class LiveScreen extends React.PureComponent {
 
         updateNumerOfClues: function(newValue) {
             var oldClueCount = this.numberOfClues;
+                console.log('original:' + oldClueCount + ' new:' + newValue);
                 this.set('numberOfClues', newValue);
-                this.set("text", newValue);
-                return;
+                if (this.get('type') !== 'visualCounter') {
+                    this.set("text", newValue);
+                    return;
+                }
         }
     });
 
@@ -420,7 +422,6 @@ class LiveScreen extends React.PureComponent {
                 fontactive: function(familyName, fontDescription) {
                     let newItem = new fabric.NumericCounter(object.text, object);
                     newItem.set('selectable', false);
-                    this.clueCounter = newItem;
                     callback && callback(newItem);
                 }.bind(this), 
         });
@@ -462,7 +463,6 @@ class LiveScreen extends React.PureComponent {
             });
         },
 
-        //TODO: mix to show milliseconds correctly. Also test with all timer formats
         updateTimeDisplay: function(liveMinutes, liveSeconds) {
             if(liveMinutes <=0 && liveSeconds <= 0) {
                 this.set("text", "Game Over!");
@@ -645,14 +645,9 @@ class LiveScreen extends React.PureComponent {
       this.canvas.requestRenderAll();
     });
     electron.ipcRenderer.on('updateLiveViewClueCountDisplay', (event, usedStatus) => {
-        this.setState({usedStatus: usedStatus});
-        if(this.clueCounter.type == 'visualCounter') {
-            this.clueCounter.updateUsedStatus(usedStatus);
-        }
-        else {
-            this.clueCounter.updateNumerOfClues(usedStatus);
-        }
-        this.canvas.requestRenderAll();
+      this.setState({usedStatus: usedStatus});
+      this.clueCounter.updateUsedStatus(usedStatus);
+      this.canvas.requestRenderAll();
     });
     electron.ipcRenderer.on('roomSequence', (event, sequenceNodeId) => {
       this.playVideo();

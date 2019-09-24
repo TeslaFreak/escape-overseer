@@ -116,6 +116,8 @@ class ImageNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
+                {//TODO: make decision to remove or make it do something
+                }
                 <IconButton id="EditColorButton" disableRipple 
                             className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
                             onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>

@@ -462,7 +462,6 @@ class LiveScreen extends React.PureComponent {
             });
         },
 
-        //TODO: mix to show milliseconds correctly. Also test with all timer formats
         updateTimeDisplay: function(liveMinutes, liveSeconds) {
             if(liveMinutes <=0 && liveSeconds <= 0) {
                 this.set("text", "Game Over!");
@@ -645,14 +644,15 @@ class LiveScreen extends React.PureComponent {
       this.canvas.requestRenderAll();
     });
     electron.ipcRenderer.on('updateLiveViewClueCountDisplay', (event, usedStatus) => {
-        this.setState({usedStatus: usedStatus});
-        if(this.clueCounter.type == 'visualCounter') {
+      this.setState({usedStatus: usedStatus});
+      if(this.clueCounter.type = 'visualCounter') {
             this.clueCounter.updateUsedStatus(usedStatus);
-        }
-        else {
-            this.clueCounter.updateNumerOfClues(usedStatus);
-        }
-        this.canvas.requestRenderAll();
+      }
+      else {
+
+      }
+      
+      this.canvas.requestRenderAll();
     });
     electron.ipcRenderer.on('roomSequence', (event, sequenceNodeId) => {
       this.playVideo();

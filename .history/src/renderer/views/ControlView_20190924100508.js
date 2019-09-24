@@ -37,9 +37,10 @@ class ControlView extends Component {
   loadJSON = async () => {
     console.log("loading json")
     this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function(doc) {
+      console.log(doc.totalTime)
         this.setState({totalTime: doc.totalTime ? parseInt(doc.totalTime) : 60, 
                         numberOfClues: doc.numberOfClues ? parseInt(doc.numberOfClues) : 3,
-                        counterType: doc.counterType || null});
+                        counterType: doc.counterType || 'numericCounter'});
       }.bind(this)).catch(function (err) {
         console.log("control view error")
         console.log(err);
@@ -68,10 +69,7 @@ class ControlView extends Component {
             <TabContainer tabValue={this.props.tabValue} containerValue={0}>
                 <LiveViewControl selectedRoomId={this.props.selectedRoomId}/>
                 <TimerControl totalTime={this.state.totalTime}/>
-                {this.state.counterType == 'visualCounter' &&
-                <VisualClueCountControl numberOfClues={this.state.numberOfClues}/>}
-                {this.state.counterType == 'numericCounter' &&
-                <NumericClueCountControl numberOfClues={this.state.numberOfClues}/>}
+                <VisualClueCountControl numberOfClues={this.state.numberOfClues} counterType={this.state.counterType}/>
                 <ClueSelectControl selectedRoomId={this.props.selectedRoomId}/>
             </TabContainer>
             <TabContainer tabValue={this.props.tabValue} containerValue={1}>

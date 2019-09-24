@@ -37,9 +37,10 @@ class ControlView extends Component {
   loadJSON = async () => {
     console.log("loading json")
     this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function(doc) {
+      console.log(doc.counterType)
         this.setState({totalTime: doc.totalTime ? parseInt(doc.totalTime) : 60, 
                         numberOfClues: doc.numberOfClues ? parseInt(doc.numberOfClues) : 3,
-                        counterType: doc.counterType || null});
+                        counterType: doc.counterType || 'numericCounter'});
       }.bind(this)).catch(function (err) {
         console.log("control view error")
         console.log(err);

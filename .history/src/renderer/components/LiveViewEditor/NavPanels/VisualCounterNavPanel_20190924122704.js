@@ -110,8 +110,8 @@ class CounterNavPanel extends Component {
         return(
             <React.Fragment>
                 <IconButton id="EditCounterButton" disableRipple 
-                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COUNTER ? classes.navPanelButtonSelected : classes.navPanelButton}
-                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COUNTER)}>
+                            className={this.state.selectedEditPanelType == this.props.EditPanelTypes.VISUALCOUNTER ? classes.navPanelButtonSelected : classes.navPanelButton}
+                            onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.VISUALCOUNTER)}>
                     <Grid container direction='column'>
                         <Grid item>
                             <LockIcon/>
@@ -121,6 +121,8 @@ class CounterNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
+                {//TODO: make decision to remove or make it do something
+                }
                 <IconButton id="EditColorButton" disableRipple 
                             className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}
                             onClick={() => this.updateSelectedEditPanel(this.props.EditPanelTypes.COLOR)}>

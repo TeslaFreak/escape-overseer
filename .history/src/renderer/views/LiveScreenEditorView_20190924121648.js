@@ -1273,7 +1273,7 @@ class LiveScreenEditorView extends Component {
                     totalTime: this.canvas.getObjects('timer').length > 0 ? this.canvas.getObjects('timer')[0].totalTime : 60,
                     numberOfClues: (this.canvas.getObjects('visualCounter').length > 0 ? this.canvas.getObjects('visualCounter')[0].numberOfClues : 
                                     this.canvas.getObjects('numericCounter').length > 0 ? this.canvas.getObjects('numericCounter')[0].numberOfClues : 3),
-                    counterType: (this.canvas.getObjects('visualCounter').length > 0 ? 'visualCounter' : 
+                    counterType = (this.canvas.getObjects('visualCounter').length > 0 ? 'visualCounter' : 
                                     this.canvas.getObjects('numericCounter').length > 0 ? 'numericCounter' : null)
                 }).catch(function (err) {
                     console.log(err);
