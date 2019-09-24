@@ -119,12 +119,13 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.RawText(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
+                active: function () {
+                    this.canvas.requestRenderAll();
                 }.bind(this), 
         });
+        let newItem = new fabric.RawText(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
@@ -187,12 +188,13 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.ClueTextbox(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
+                active: function () {
+                    this.canvas.requestRenderAll();
                 }.bind(this), 
         });
+        let newItem = new fabric.ClueTextbox(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.FittableImage = fabric.util.createClass(fabric.Image, {
@@ -402,12 +404,13 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.NumericCounter(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
+                active: function () {
+                    this.canvas.requestRenderAll();
                 }.bind(this), 
         });
+        let newItem = new fabric.NumericCounter(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.Timer = fabric.util.createClass(fabric.IText, {
@@ -477,16 +480,31 @@ class LiveScreen extends React.PureComponent {
     });
 
     fabric.Timer.fromObject = function(object, callback, forceAsync) {
+        
+        console.log(object.fontFamily);
         WebFont.load({
             google: { 
-                    families: [object.fontFamily  || 'Roboto'] 
-                },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.Timer(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
-                }.bind(this), 
+                families: [object.fontFamily] 
+            },
+            loading: function () {
+                console.log('loading');
+            },
+            active: function () {
+                console.log('active');
+            },
+            inactive: function () {
+                console.log('inactive');
+            },
+            fontactive: function(familyName, fontDescription) {
+                console.log(familyName + ' active');
+                let newItem = new fabric.Timer(object.text, object);
+                newItem.set('selectable', false);
+                this.canvas.requestRenderAll();
+            }.bind(this),
         });
+        callback && callback(newItem);
+        
+        
     }.bind(this);
 
     this.canvas = new fabric.Canvas("mainCanvas", {

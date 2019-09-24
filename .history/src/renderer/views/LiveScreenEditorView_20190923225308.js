@@ -274,27 +274,20 @@ class LiveScreenEditorView extends Component {
         });
 
         fabric.RawText.fromObject = function(object, callback, forceAsync) {
-            WebFont.load({
-                google: { 
-                        families: [object.fontFamily  || 'Roboto'] 
-                    },
-                    fontactive: function(familyName, fontDescription) {
-                        let newItem = new fabric.RawText(object.text, object);
-                        newItem.on('modified', () => { 
-                            var newfontsize = (newItem.fontSize * newItem.scaleX);
-                            newItem.width = newItem.width * newItem.scaleX;
-                            newItem.fontSize = (parseInt(newfontsize, 10));
-                            newItem.height = newItem.height * newItem.scaleY;
-                            newItem.scaleX = 1;
-                            newItem.scaleY = 1;
-                            this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
-                        });
-                        newItem.on('selected', () => { 
-                            this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
-                        });
-                        callback && callback(newItem);
-                    }.bind(this), 
+            let newItem = new fabric.RawText(object.text, object);
+            newItem.on('modified', () => { 
+                var newfontsize = (newItem.fontSize * newItem.scaleX);
+                newItem.width = newItem.width * newItem.scaleX;
+                newItem.fontSize = (parseInt(newfontsize, 10));
+                newItem.height = newItem.height * newItem.scaleY;
+                newItem.scaleX = 1;
+                newItem.scaleY = 1;
+                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
             });
+            newItem.on('selected', () => { 
+                this.updateSelectedItem(newItem, CanvasItemTypes.TEXT);
+            });
+            callback && callback(newItem);
         }.bind(this);
 
         fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
@@ -353,37 +346,30 @@ class LiveScreenEditorView extends Component {
         });
 
         fabric.ClueTextbox.fromObject = function(object, callback, forceAsync) {
-            WebFont.load({
-                google: { 
-                        families: [object.fontFamily  || 'Roboto'] 
-                    },
-                    fontactive: function(familyName, fontDescription) {
-                        let newItem = new fabric.ClueTextbox(object.text, object);
-                        newItem.on('scaling',  () => {
-                            var newHeight = newItem.height * newItem.scaleY;
-                            newItem.set({
-                                width: newItem.width * newItem.scaleX,
-                                scaleX: 1,
-                            });
-                            newItem.initDimensions();
-                            newItem.set({ height: newHeight, scaleY: 1 })
-                            console.log(newItem);
-                        });
-                        newItem.on('modified',  () => { 
-                            var newfontsize = (newItem.fontSize * newItem.scaleX);
-                            newItem.set({
-                                width: newItem.width * newItem.scaleX,
-                                height: newItem.height * newItem.scaleY,
-                                scaleX: 1,
-                                scaleY: 1,
-                            });
-                        });
-                        newItem.on('selected', () => { 
-                            this.updateSelectedItem(newItem, CanvasItemTypes.CLUEDISPLAY);
-                        });
-                        callback && callback(newItem);
-                    }.bind(this), 
+            let newItem = new fabric.ClueTextbox(object.text, object);
+            newItem.on('scaling',  () => {
+                var newHeight = newItem.height * newItem.scaleY;
+                newItem.set({
+                    width: newItem.width * newItem.scaleX,
+                    scaleX: 1,
+                });
+                newItem.initDimensions();
+                newItem.set({ height: newHeight, scaleY: 1 })
+                console.log(newItem);
             });
+            newItem.on('modified',  () => { 
+                var newfontsize = (newItem.fontSize * newItem.scaleX);
+                newItem.set({
+                    width: newItem.width * newItem.scaleX,
+                    height: newItem.height * newItem.scaleY,
+                    scaleX: 1,
+                    scaleY: 1,
+                });
+            });
+            newItem.on('selected', () => { 
+                this.updateSelectedItem(newItem, CanvasItemTypes.CLUEDISPLAY);
+            });
+            callback && callback(newItem);
         }.bind(this);
 
         fabric.FittableImage = fabric.util.createClass(fabric.Image, {
@@ -529,27 +515,20 @@ class LiveScreenEditorView extends Component {
         });
 
         fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-            WebFont.load({
-                google: { 
-                        families: [object.fontFamily  || 'Roboto'] 
-                    },
-                    fontactive: function(familyName, fontDescription) {
-                        let newItem = new fabric.NumericCounter(object.text, object);
-                        newItem.on('modified', () => { 
-                            var newfontsize = (newItem.fontSize * newItem.scaleX);
-                            newItem.width = newItem.width * newItem.scaleX;
-                            newItem.fontSize = (parseInt(newfontsize, 10));
-                            newItem.height = newItem.height * newItem.scaleY;
-                            newItem.scaleX = 1;
-                            newItem.scaleY = 1;
-                            this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-                        });
-                        newItem.on('selected', () => { 
-                            this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
-                        });
-                        callback && callback(newItem);
-                    }.bind(this), 
+            let newItem = new fabric.NumericCounter(object.text, object);
+            newItem.on('modified', () => { 
+                var newfontsize = (newItem.fontSize * newItem.scaleX);
+                newItem.width = newItem.width * newItem.scaleX;
+                newItem.fontSize = (parseInt(newfontsize, 10));
+                newItem.height = newItem.height * newItem.scaleY;
+                newItem.scaleX = 1;
+                newItem.scaleY = 1;
+                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
             });
+            newItem.on('selected', () => { 
+                this.updateSelectedItem(newItem, CanvasItemTypes.NUMERICCOUNTER);
+            });
+            callback && callback(newItem);
         }.bind(this);
 
         fabric.Timer = fabric.util.createClass(fabric.IText, {

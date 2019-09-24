@@ -6,6 +6,7 @@ import ClueDisplay from '../components/ClueDisplay';
 import classNames from 'classnames';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import Box from 'grommet/components/Box';
+
 import Paper from '@material-ui/core/Paper';
 import Dialog from '@material-ui/core/Dialog';
 import { Grid } from '@material-ui/core';
@@ -115,16 +116,18 @@ class LiveScreen extends React.PureComponent {
     });
 
     fabric.RawText.fromObject = function(object, callback, forceAsync) {
+        let newItem = new fabric.RawText(object.text, object);
+        newItem.set('selectable', false);
         WebFont.load({
             google: { 
-                    families: [object.fontFamily || 'Roboto'] 
+                    families: [propertyValue] 
                 },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.RawText(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
+                active: function () {
+                    this.state.selectedItem.set(propertyName, propertyValue);
+                    this.canvas.requestRenderAll();
                 }.bind(this), 
-        });
+            });
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.ClueTextbox = fabric.util.createClass(fabric.Textbox, {
@@ -183,16 +186,9 @@ class LiveScreen extends React.PureComponent {
     });
 
     fabric.ClueTextbox.fromObject = function(object, callback, forceAsync) {
-        WebFont.load({
-            google: { 
-                    families: [object.fontFamily || 'Roboto'] 
-                },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.ClueTextbox(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
-                }.bind(this), 
-        });
+        let newItem = new fabric.ClueTextbox(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.FittableImage = fabric.util.createClass(fabric.Image, {
@@ -394,20 +390,48 @@ class LiveScreen extends React.PureComponent {
                     this.set("text", newValue);
                     return;
                 }
+                var groupWidth = (this.iconSpacing*(newValue))+(this.iconSize*newValue);
+                var groupHeight = (this.get('height'));
+                this.set({
+                    width: groupWidth,
+                });
+                if (oldClueCount < newValue) {
+                    for (let i = Number(oldClueCount)+1; i <= newValue; i++) { 
+                        fabric.Image.fromURL(this.unusedSource, function(object) {
+                            let tmpObj = object.set({ left: (this.iconSpacing+this.iconSize)*i,
+                                                        top: -(groupHeight/2),
+                                                        usedType: 'unused',
+                                                        visible: this.usedStatus == 'unused'});
+                            tmpObj.scaleToWidth(12);
+                            tmpObj.setCoords();
+                            this.insertAt(tmpObj,(i*2)-1);
+                        }.bind(this));
+                        fabric.Image.fromURL(this.usedSource, function(object) {
+                            let tmpObj = object.set({ left: (this.iconSpacing+this.iconSize)*i,
+                                                        top: -(groupHeight/2),
+                                                        usedType: 'used',
+                                                        visible: this.usedStatus == 'used'});
+                            tmpObj.scaleToWidth(12);
+                            tmpObj.setCoords();
+                            this.insertAt(tmpObj, i*2);
+                        }.bind(this));
+                    }
+                }
+                else {
+                    //note: items is zero indexed
+                    var items = this.getObjects();
+                    for (let i = oldClueCount; i >= newValue; i--) {
+                        this.remove(items[(i*2)]);
+                        this.remove(items[(i*2)+1]);
+                    }
+                }
         }
     });
 
     fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
-        WebFont.load({
-            google: { 
-                    families: [object.fontFamily || 'Roboto'] 
-                },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.NumericCounter(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
-                }.bind(this), 
-        });
+        let newItem = new fabric.NumericCounter(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     fabric.Timer = fabric.util.createClass(fabric.IText, {
@@ -477,16 +501,9 @@ class LiveScreen extends React.PureComponent {
     });
 
     fabric.Timer.fromObject = function(object, callback, forceAsync) {
-        WebFont.load({
-            google: { 
-                    families: [object.fontFamily  || 'Roboto'] 
-                },
-                fontactive: function(familyName, fontDescription) {
-                    let newItem = new fabric.Timer(object.text, object);
-                    newItem.set('selectable', false);
-                    callback && callback(newItem);
-                }.bind(this), 
-        });
+        let newItem = new fabric.Timer(object.text, object);
+        newItem.set('selectable', false);
+        callback && callback(newItem);
     }.bind(this);
 
     this.canvas = new fabric.Canvas("mainCanvas", {

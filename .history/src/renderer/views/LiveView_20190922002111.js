@@ -117,9 +117,9 @@ class LiveScreen extends React.PureComponent {
     fabric.RawText.fromObject = function(object, callback, forceAsync) {
         WebFont.load({
             google: { 
-                    families: [object.fontFamily || 'Roboto'] 
+                    families: [object.fontFamily] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.RawText(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
@@ -185,9 +185,9 @@ class LiveScreen extends React.PureComponent {
     fabric.ClueTextbox.fromObject = function(object, callback, forceAsync) {
         WebFont.load({
             google: { 
-                    families: [object.fontFamily || 'Roboto'] 
+                    families: [object.fontFamily] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.ClueTextbox(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
@@ -400,9 +400,9 @@ class LiveScreen extends React.PureComponent {
     fabric.NumericCounter.fromObject = function(object, callback, forceAsync) {
         WebFont.load({
             google: { 
-                    families: [object.fontFamily || 'Roboto'] 
+                    families: [object.fontFamily] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.NumericCounter(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
@@ -479,9 +479,9 @@ class LiveScreen extends React.PureComponent {
     fabric.Timer.fromObject = function(object, callback, forceAsync) {
         WebFont.load({
             google: { 
-                    families: [object.fontFamily  || 'Roboto'] 
+                    families: [object.fontFamily] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.Timer(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);

@@ -187,7 +187,7 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.ClueTextbox(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
@@ -402,7 +402,7 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.NumericCounter(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
@@ -481,7 +481,7 @@ class LiveScreen extends React.PureComponent {
             google: { 
                     families: [object.fontFamily  || 'Roboto'] 
                 },
-                fontactive: function(familyName, fontDescription) {
+                active: function () {
                     let newItem = new fabric.Timer(object.text, object);
                     newItem.set('selectable', false);
                     callback && callback(newItem);
