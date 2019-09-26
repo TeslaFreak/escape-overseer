@@ -22,7 +22,6 @@ class LiveViewControl extends React.Component{
     this.setState({liveViewOpen: !this.state.liveViewOpen});
   };
 
-  //TODO: fix open live screen button to correctly represent whether window is open
   render() {
     return (
         <Grid container direction='row' justify='center' alignItems='center' style={{padding:20}}>

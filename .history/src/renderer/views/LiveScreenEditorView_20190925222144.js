@@ -435,6 +435,7 @@ class LiveScreenEditorView extends Component {
             }.bind(this);
         }.bind(this);
 
+        //TODO: limit one visual counter per screen cuz they break everything
         fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
             type: 'visualCounter',
 
@@ -1130,10 +1131,6 @@ class LiveScreenEditorView extends Component {
                     }.bind(this));
                 break;
             case CanvasItemTypes.CLUEDISPLAY:
-                if(this.canvas.getObjects('clueTextbox').length != 0) {
-                    alert('Only one clue display allowed at a time. Remove the existing clue display and try again');
-                    return
-                }
                 var newItem = new fabric.ClueTextbox("Clue Text will appear here, with the same properties as this display text, bounded by this box... Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget mauris in eros efficitur sodales vel eu lectus. Curabitur dui felis, posuere non urna at, rhoncus efficitur ipsum.",
                 {
                     width: this.canvas.width - 40,
@@ -1288,7 +1285,6 @@ class LiveScreenEditorView extends Component {
         const { anchorEl } = this.state;
         const { classes } = this.props;
         //TODO: Fix canvas slide on open side menu
-        //TODO: Add place to upload intro videos
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='center' className={classes.editingBackground}>

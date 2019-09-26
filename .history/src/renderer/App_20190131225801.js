@@ -29,7 +29,6 @@ class App extends Component {
 
   changeRoom = (roomId) => {
     this.setState({ selectedRoomId:roomId });
-    //TODO: update live screen window with new room id
   }
 
   render() {

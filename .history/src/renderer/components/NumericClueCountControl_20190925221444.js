@@ -30,9 +30,8 @@ class NumericClueCountControl extends React.Component{
   //TODO: style the number input to make it bigger and look more natural on the page
   render() {
     return (
-      <Grid container direction='row' justify='center' alignItems='center'>
-            <Typography>Number of Clues:</Typography>
-            <TextField type="number" style={{marginLeft: 12, width: 40}}value={this.state.liveClueCount} onChange={(event) => this.handleChange(event, event.target.value)}/>
+      <Grid container direction='row' justify='center'>
+            <TextField type="number" value={this.state.liveClueCount} onChange={(event) => this.handleChange(event, event.target.value)}/>
       </Grid>
     );
   }

@@ -112,7 +112,6 @@ class RoomSelectionView extends Component {
         }.bind(this));
   }
   
-  //TODO: add menu options to each card to delete room and rename room
   render() {
     const { classes } = this.props;
     return (

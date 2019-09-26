@@ -32,7 +32,7 @@ class NumericClueCountControl extends React.Component{
     return (
       <Grid container direction='row' justify='center' alignItems='center'>
             <Typography>Number of Clues:</Typography>
-            <TextField type="number" style={{marginLeft: 12, width: 40}}value={this.state.liveClueCount} onChange={(event) => this.handleChange(event, event.target.value)}/>
+            <TextField type="number" style={{marginLeft: 12, width: 30}}value={this.state.liveClueCount} onChange={(event) => this.handleChange(event, event.target.value)}/>
       </Grid>
     );
   }

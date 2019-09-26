@@ -458,7 +458,7 @@ class LiveScreen extends React.PureComponent {
             });
         },
 
-        //TODO: fix to show milliseconds correctly. Also test with all timer formats
+        //TODO: mix to show milliseconds correctly. Also test with all timer formats
         updateTimeDisplay: function(liveMinutes, liveSeconds) {
             if(liveMinutes <=0 && liveSeconds <= 0) {
                 this.set("text", "Game Over!");

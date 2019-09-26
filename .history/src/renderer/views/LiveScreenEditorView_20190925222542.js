@@ -435,6 +435,7 @@ class LiveScreenEditorView extends Component {
             }.bind(this);
         }.bind(this);
 
+        //TODO: limit one visual counter per screen cuz they break everything
         fabric.VisualCounter = fabric.util.createClass(fabric.Group, {
             type: 'visualCounter',
 
@@ -1288,7 +1289,6 @@ class LiveScreenEditorView extends Component {
         const { anchorEl } = this.state;
         const { classes } = this.props;
         //TODO: Fix canvas slide on open side menu
-        //TODO: Add place to upload intro videos
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='center' className={classes.editingBackground}>
