@@ -102,6 +102,7 @@ const styles = theme => ({
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
         outlineColor: 'transparent',
+        overflow: 'hidden'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +118,22 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        overflow: 'hidden'
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
         width: `calc(100% - 280px - 80px)`,
+        overflow: 'hidden'
     },
     loadingMask: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: '100%',
+        width: `calc(100% - 280px - 80px)`,
+        top: '0px',
+        left: '0px',
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',

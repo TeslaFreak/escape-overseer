@@ -21,7 +21,6 @@ import PouchDB from 'pouchdb';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Dialog from '@material-ui/core/Dialog';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import FontPicker from 'font-picker-react';
 import ChromePicker from 'react-color';
 import Grid from '@material-ui/core/Grid';
@@ -55,7 +54,7 @@ const aspectRatio = 0.5625;
 const aspectRatio2 = 1;
 const aspectWidthRatio = 1;
 const aspectHeightRatio = aspectRatio;
-const containerWidth = `calc(100vw - 280px - 80px - 140px - 100px)`;
+const containerWidth = `calc(100vw - 280px - 80px - 140px - 70px)`;
 const containerHeight = `calc(100vh - ${appbarHeight}px - 200px)`;
 const aspectWidth = containerWidth * aspectWidthRatio;
 const aspectHeight = containerWidth * aspectHeightRatio;
@@ -101,7 +100,7 @@ const styles = theme => ({
     editorContainer: {
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent',
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +116,12 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: `calc(100% - 280px - 80px)`,
-    },
-    loadingMask: {
-        backgroundColor: '#ededed',
-        height: '100%',
-        width: '100%',
-        position: 'absolute',
-        zIndex: 2
+        width: `calc(100% - 280px - 80px)`
     },
     editPanel: {
         width: '280px',
@@ -217,8 +210,7 @@ class LiveScreenEditorView extends Component {
         super(props);
         this.state={fileInputRef: React.createRef(), anchorEl: null, selectedNavPanelType: NavPanelTypes.SCREEN, selectedEditPanelType: EditPanelTypes.ASPECTRATIO, 
             aspectRatio: "16:9", aspectWidth: `calc(${containerWidth} * ${aspectWidthRatio} )`, aspectHeight: `calc(${containerWidth} * ${aspectHeightRatio} )`,
-            aspectDominantDimension: 'width',
-            loading:true};
+            aspectDominantDimension: 'width'};
         this.objects = [];
         this.db = new PouchDB('kittens');
     }
@@ -230,7 +222,6 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        document.body.style.overflow = "hidden";
         var oldCanvas = document.getElementById('mainCanvas');
         
         fabric.Object.prototype.getZIndex = function() {
@@ -963,17 +954,12 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                this.setState({loading:true}, () => {
+                //TODO:[V1 Mandatory] loading mask on aspectRatio change
                 this.updateAspectRatio(propertyValue);
                 setTimeout(function(){
                     console.log('fired from aspect ratio change');
                     window.dispatchEvent(new Event('resize'));
                 }, 1);
-                setTimeout(function(){
-                    console.log('loading done');
-                    this.setState({loading:false});
-                }.bind(this), 500);
-            });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -1190,7 +1176,6 @@ class LiveScreenEditorView extends Component {
     }
 
     updateAspectRatio = (ratio) => {
-        
         if(ratio && ratio!='') {
             this.setState({aspectRatio: ratio});
         }
@@ -1226,6 +1211,8 @@ class LiveScreenEditorView extends Component {
             },{
             cssOnly: true
             });
+        
+        
     }
 
     updateDimensions = () => {
@@ -1236,13 +1223,13 @@ class LiveScreenEditorView extends Component {
             console.log('containers dont exist');
             return
         }
-        console.log('width:' + ((canvasContainer.clientWidth+140)/(editorContainer.clientWidth)) + 'height:' + (canvasContainer.clientHeight+200)/editorContainer.clientHeight);
-        if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/(editorContainer.clientWidth) < ((canvasContainer.clientHeight+200)/editorContainer.clientHeight)-0.01) {
+        console.log('width:' + ((canvasContainer.clientWidth+140)/(editorContainer.clientWidth+appNavDrawer.clientWidth)) + 'height:' + (canvasContainer.clientHeight+200)/editorContainer.clientHeight);
+        if(this.state.aspectDominantDimension=='width' && (canvasContainer.clientWidth+140)/(editorContainer.clientWidth+appNavDrawer.clientWidth) < ((canvasContainer.clientHeight+200)/editorContainer.clientHeight)-0.01) {
             console.log('flipped to height');
             this.setState({aspectDominantDimension:'height'})
             this.updateAspectRatio(this.state.aspectRatio);
         }
-        else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/(editorContainer.clientWidth) > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
+        else if(this.state.aspectDominantDimension=='height' && (canvasContainer.clientWidth+140)/(editorContainer.clientWidth+appNavDrawer.clientWidth) > (canvasContainer.clientHeight+200)/editorContainer.clientHeight) {
             console.log('flipped to width');
             this.setState({aspectDominantDimension:'width'})
             this.updateAspectRatio(this.state.aspectRatio);
@@ -1250,6 +1237,7 @@ class LiveScreenEditorView extends Component {
         
     }
 
+    //TODO:[V1 Mandatory] add loading mask till finished
     loadJSON = async () => {
         this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function(doc) {
             console.log(JSON.stringify(doc.canvasAspectRatio))
@@ -1260,16 +1248,13 @@ class LiveScreenEditorView extends Component {
             }, 1);
             this.canvas.loadFromJSON(doc.canvasJSON,
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN));
-            setTimeout(function(){
-                console.log('loading done');
-                this.setState({loading:false});
-            }.bind(this), 500);
         }.bind(this)).catch(function (err) {
             console.log(err);
         }.bind(this))
     };
 
-    //TODO:[V1 Mandatory] add actual save button or figure out best way to save (use interactive loading button).
+    //TODO:[V1 Mandatory] save aspect ratio information to canvas object. load in correct aspect ratio on load (use loading mask each time aspect ratio changes as well)
+    //TODO:[V1 Mandatory] add actual save button or figure out best way to save.
     saveJSON = async () => {
       let canvasJSON = this.canvas.toJSON();
       this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function (doc) {
@@ -1304,7 +1289,7 @@ class LiveScreenEditorView extends Component {
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;
-        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu. Its ugly now but better than it was. Need to be able to get sidebar size and set this dynamically
+        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu
         //TODO:[V1 Mandatory] Add place to upload intro videos
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
@@ -1312,13 +1297,10 @@ class LiveScreenEditorView extends Component {
                     <Grid item id='aspectPanel' style={{
                                                             width: this.state.aspectWidth,
                                                             height: this.state.aspectHeight,
-                                                            position: 'absolute',
+                                                            margin: '100px 70px',
                                                         }}>
                         <canvas id= 'mainCanvas'>
                         </canvas>
-                    </Grid>
-                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{display: this.state.loading ? 'flex' : 'none'}}>
-                        <CircularProgress />
                     </Grid>
                 </Grid>
                 <Grid item direction='column' id='EditPanel' className={classes.editPanel}>

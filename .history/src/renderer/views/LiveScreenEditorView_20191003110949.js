@@ -101,7 +101,7 @@ const styles = theme => ({
     editorContainer: {
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent',
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +117,17 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: `calc(100% - 280px - 80px)`,
+        width: `calc(100% - 280px - 80px)`
     },
     loadingMask: {
         backgroundColor: '#ededed',
-        height: '100%',
-        width: '100%',
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',
@@ -230,7 +229,6 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        document.body.style.overflow = "hidden";
         var oldCanvas = document.getElementById('mainCanvas');
         
         fabric.Object.prototype.getZIndex = function() {
@@ -1317,7 +1315,9 @@ class LiveScreenEditorView extends Component {
                         <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>
-                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{display: this.state.loading ? 'flex' : 'none'}}>
+                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{width: this.state.aspectWidth,
+                                                            height: this.state.aspectHeight,
+                                                            display: this.state.loading ? 'flex' : 'none'}}>
                         <CircularProgress />
                     </Grid>
                 </Grid>

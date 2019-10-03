@@ -101,7 +101,7 @@ const styles = theme => ({
     editorContainer: {
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent',
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +117,18 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: `calc(100% - 280px - 80px)`,
+        width: `calc(100% - 280px - 80px)`
     },
     loadingMask: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: '100%',
-        position: 'absolute',
-        zIndex: 2
+        width: `calc(100% - 280px - 80px)`,
+        zIndex: 1300
     },
     editPanel: {
         width: '280px',
@@ -230,7 +230,6 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        document.body.style.overflow = "hidden";
         var oldCanvas = document.getElementById('mainCanvas');
         
         fabric.Object.prototype.getZIndex = function() {
@@ -963,17 +962,12 @@ class LiveScreenEditorView extends Component {
                 });
                 break;
             case 'aspectRatio':
-                this.setState({loading:true}, () => {
+                //TODO:[V1 Mandatory] loading mask on aspectRatio change
                 this.updateAspectRatio(propertyValue);
                 setTimeout(function(){
                     console.log('fired from aspect ratio change');
                     window.dispatchEvent(new Event('resize'));
                 }, 1);
-                setTimeout(function(){
-                    console.log('loading done');
-                    this.setState({loading:false});
-                }.bind(this), 500);
-            });
                 break;
             case 'changeUnusedSrc':
                 //let filetype = propertyValue.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
@@ -1190,7 +1184,6 @@ class LiveScreenEditorView extends Component {
     }
 
     updateAspectRatio = (ratio) => {
-        
         if(ratio && ratio!='') {
             this.setState({aspectRatio: ratio});
         }
@@ -1226,6 +1219,8 @@ class LiveScreenEditorView extends Component {
             },{
             cssOnly: true
             });
+        
+        
     }
 
     updateDimensions = () => {
@@ -1250,6 +1245,7 @@ class LiveScreenEditorView extends Component {
         
     }
 
+    //TODO:[V1 Mandatory] add loading mask till finished
     loadJSON = async () => {
         this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function(doc) {
             console.log(JSON.stringify(doc.canvasAspectRatio))
@@ -1260,15 +1256,12 @@ class LiveScreenEditorView extends Component {
             }, 1);
             this.canvas.loadFromJSON(doc.canvasJSON,
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN));
-            setTimeout(function(){
-                console.log('loading done');
-                this.setState({loading:false});
-            }.bind(this), 500);
         }.bind(this)).catch(function (err) {
             console.log(err);
         }.bind(this))
     };
 
+    //TODO:[V1 Mandatory] save aspect ratio information to canvas object. load in correct aspect ratio on load (use loading mask each time aspect ratio changes as well)
     //TODO:[V1 Mandatory] add actual save button or figure out best way to save (use interactive loading button).
     saveJSON = async () => {
       let canvasJSON = this.canvas.toJSON();
@@ -1304,7 +1297,7 @@ class LiveScreenEditorView extends Component {
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;
-        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu. Its ugly now but better than it was. Need to be able to get sidebar size and set this dynamically
+        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu
         //TODO:[V1 Mandatory] Add place to upload intro videos
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
@@ -1312,12 +1305,13 @@ class LiveScreenEditorView extends Component {
                     <Grid item id='aspectPanel' style={{
                                                             width: this.state.aspectWidth,
                                                             height: this.state.aspectHeight,
-                                                            position: 'absolute',
+                                                            margin: '100px 70px',
+                                                            visibility: this.state.loading ? 'collapse' : 'visible'
                                                         }}>
                         <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>
-                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{display: this.state.loading ? 'flex' : 'none'}}>
+                    <Grid item id='LoadingMask' className={classes.loadingMask} style={{visibility: this.state.loading ? 'visible' : 'collapse'}}>
                         <CircularProgress />
                     </Grid>
                 </Grid>

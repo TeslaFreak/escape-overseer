@@ -128,7 +128,7 @@ const styles = theme => ({
         height: '100%',
         width: '100%',
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',

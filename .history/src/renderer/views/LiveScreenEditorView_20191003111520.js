@@ -101,7 +101,7 @@ const styles = theme => ({
     editorContainer: {
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent',
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +117,20 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: `calc(100% - 280px - 80px)`,
+        width: `calc(100% - 280px - 80px)`
     },
     loadingMask: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: '100%',
+        width: `calc(100% - 280px - 80px)`,
+        overflow: 'hidden',
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',
@@ -230,7 +232,6 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        document.body.style.overflow = "hidden";
         var oldCanvas = document.getElementById('mainCanvas');
         
         fabric.Object.prototype.getZIndex = function() {
@@ -1262,7 +1263,7 @@ class LiveScreenEditorView extends Component {
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN));
             setTimeout(function(){
                 console.log('loading done');
-                this.setState({loading:false});
+                //this.setState({loading:false});
             }.bind(this), 500);
         }.bind(this)).catch(function (err) {
             console.log(err);
@@ -1317,7 +1318,7 @@ class LiveScreenEditorView extends Component {
                         <canvas id= 'mainCanvas'>
                         </canvas>
                     </Grid>
-                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{display: this.state.loading ? 'flex' : 'none'}}>
+                    <Grid item justify='center' alignItems='center' id='loadingMask' className={classes.loadingMask} style={{display: this.state.loading ? 'inline' : 'none'}}>
                         <CircularProgress />
                     </Grid>
                 </Grid>

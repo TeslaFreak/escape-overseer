@@ -101,7 +101,7 @@ const styles = theme => ({
     editorContainer: {
         width: '100%',
         height: `calc(100vh - ${appbarHeight}px)`,
-        outlineColor: 'transparent',
+        outlineColor: 'transparent'
     },
     centeredAspectPanel: {
         width: `calc(${containerWidth} * ${aspectWidthRatio} )`,
@@ -117,18 +117,19 @@ const styles = theme => ({
         backgroundColor: '#fff',
         height: '100%',
         width: '100%',
+        
     },
     editingBackground: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: `calc(100% - 280px - 80px)`,
+        width: `calc(100% - 280px - 80px)`
     },
     loadingMask: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: '100%',
+        width: `calc(100% - 280px - 80px)`,
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',
@@ -230,7 +231,6 @@ class LiveScreenEditorView extends Component {
     }
 
     componentDidMount() {
-        document.body.style.overflow = "hidden";
         var oldCanvas = document.getElementById('mainCanvas');
         
         fabric.Object.prototype.getZIndex = function() {
@@ -1304,7 +1304,7 @@ class LiveScreenEditorView extends Component {
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;
-        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu. Its ugly now but better than it was. Need to be able to get sidebar size and set this dynamically
+        //TODO:[V1.1 Preferable] Fix canvas slide on open side menu
         //TODO:[V1 Mandatory] Add place to upload intro videos
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>

@@ -126,9 +126,9 @@ const styles = theme => ({
     loadingMask: {
         backgroundColor: '#ededed',
         height: '100%',
-        width: '100%',
+        width: 'auto',
         position: 'absolute',
-        zIndex: 2
+        zIndex: 5
     },
     editPanel: {
         width: '280px',
