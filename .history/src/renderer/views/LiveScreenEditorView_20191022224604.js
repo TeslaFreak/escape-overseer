@@ -1413,9 +1413,9 @@ class LiveScreenEditorView extends Component {
                 console.log('fired from loadJSON');
                 window.dispatchEvent(new Event('resize'));
             }, 1);
-            this.canvas.loadFromJSON(freshCanvasJSON,
+            this.canvas.loadFromJSON(doc.freshCanvasJSON,
             this.updateSelectedItem(null, CanvasItemTypes.SCREEN));
-            this.setState({savedVideoName: 'N/A'});
+            this.setState({savedVideoName: doc.videoName || 'N/A'});
             setTimeout(function(){
                 console.log('loading done');
                 this.setState({loading:false});
@@ -1430,6 +1430,7 @@ class LiveScreenEditorView extends Component {
         this.setState({saving: true}, ()=>{
             this.saveImage();
         let canvasJSON = this.canvas.toJSON();
+        console.log(JSON.stringify(canvasJSON));
         this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function (doc) {
             doc.canvasJSON=canvasJSON;
             doc.canvasAspectRatio=this.state.aspectRatio;
@@ -1465,14 +1466,6 @@ class LiveScreenEditorView extends Component {
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    setTimeout(() => {
-                        console.log('save complete')
-                        this.setState({saving:false,saveCompleted:true});
-                        setTimeout(() => {
-                            console.log('reset button state')
-                            this.setState({saving:false,saveCompleted:false});
-                          }, 1500); 
-                      }, 500);    
                 }
             }.bind(this));
         });

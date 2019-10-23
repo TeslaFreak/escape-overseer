@@ -44,8 +44,8 @@ class LiveViewControl extends React.Component{
     }
   };
 
-  //TODO:[V1.1 prefered] add warning on changing rooms if live view is open
-  //TODO: fix plz
+  //TODO:[V1 Mandatory] add warning on page exit when game is in progress. If just changing rooms, throw warning only. 
+  //if completely leaving control view, close live view and have that in the warning to user
   render() {
     electron.ipcRenderer.on('liveViewClosedManually', (event) => {
         this.setState({liveViewOpen:false})

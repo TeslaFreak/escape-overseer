@@ -1291,9 +1291,6 @@ class LiveScreenEditorView extends Component {
 
     saveImage = () => {
         var file = this.canvas.getObjects('fittableImage').length > 0 ? this.canvas.getObjects('fittableImage')[0] : null;
-        if(file === null) {
-            return;
-        }
         var dataURL = file.toDataURL();
         var blob = this.dataURItoBlob(dataURL);
         this.db.get(this.props.selectedRoomId + '\\backgroundImg').then(function (doc) {
@@ -1408,18 +1405,7 @@ class LiveScreenEditorView extends Component {
                 this.setState({loading:false});
             }.bind(this), 400);
         }.bind(this)).catch(function (err) {
-            let freshCanvasJSON = '{"version":"2.7.0","objects":[],"background":"#fff"}';
-            setTimeout(function(){
-                console.log('fired from loadJSON');
-                window.dispatchEvent(new Event('resize'));
-            }, 1);
-            this.canvas.loadFromJSON(freshCanvasJSON,
-            this.updateSelectedItem(null, CanvasItemTypes.SCREEN));
-            this.setState({savedVideoName: 'N/A'});
-            setTimeout(function(){
-                console.log('loading done');
-                this.setState({loading:false});
-            }.bind(this), 400);
+            //TODO:[V1 Mandatory] create fresh canvas if one does not exist
             console.log(err);
         }.bind(this))
     };
@@ -1430,6 +1416,7 @@ class LiveScreenEditorView extends Component {
         this.setState({saving: true}, ()=>{
             this.saveImage();
         let canvasJSON = this.canvas.toJSON();
+        console.log(canvasJSON);
         this.db.get(this.props.selectedRoomId + '\\liveScreen').then(function (doc) {
             doc.canvasJSON=canvasJSON;
             doc.canvasAspectRatio=this.state.aspectRatio;
@@ -1465,14 +1452,6 @@ class LiveScreenEditorView extends Component {
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    setTimeout(() => {
-                        console.log('save complete')
-                        this.setState({saving:false,saveCompleted:true});
-                        setTimeout(() => {
-                            console.log('reset button state')
-                            this.setState({saving:false,saveCompleted:false});
-                          }, 1500); 
-                      }, 500);    
                 }
             }.bind(this));
         });

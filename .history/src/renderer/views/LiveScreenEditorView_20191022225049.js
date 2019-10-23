@@ -1465,14 +1465,6 @@ class LiveScreenEditorView extends Component {
                     }).catch(function (err) {
                         console.log(err);
                     });
-                    setTimeout(() => {
-                        console.log('save complete')
-                        this.setState({saving:false,saveCompleted:true});
-                        setTimeout(() => {
-                            console.log('reset button state')
-                            this.setState({saving:false,saveCompleted:false});
-                          }, 1500); 
-                      }, 500);    
                 }
             }.bind(this));
         });

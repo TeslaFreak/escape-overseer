@@ -45,7 +45,6 @@ class LiveViewControl extends React.Component{
   };
 
   //TODO:[V1.1 prefered] add warning on changing rooms if live view is open
-  //TODO: fix plz
   render() {
     electron.ipcRenderer.on('liveViewClosedManually', (event) => {
         this.setState({liveViewOpen:false})
