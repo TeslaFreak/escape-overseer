@@ -11,16 +11,19 @@ const url = require('url');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null;
 let liveWindow = null;
+let videoWindow = null;
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
-ipcMain.on("toggleLiveViewOpen", (event, args) => {
+ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
     if (liveWindow == null) {
-        liveWindow = new BrowserWindow({width: 800, height: 600});
-        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?live"
+        liveWindow = new BrowserWindow({width: 800, height: 600, show: false});
+        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/live"
         liveWindow.loadURL(startUrl);
-        liveWindow.webContents.openDevTools();
+        //liveWindow.webContents.openDevTools();
         liveWindow.setMenu(null);
         liveWindow.once('ready-to-show', () => {
-            liveWindow.show()
+            liveWindow.webContents.send('updateSelectedRoomId', selectedRoomId);
+            liveWindow.show();
         })
         liveWindow.on('closed', () => {
             liveWindow = null;
@@ -30,6 +33,12 @@ ipcMain.on("toggleLiveViewOpen", (event, args) => {
         liveWindow.close();
     }
     
+});
+
+ipcMain.on("roomSequence", (event, sequenceNodeId) => {
+    if(liveWindow != null) {
+        liveWindow.webContents.send('roomSequence', sequenceNodeId);
+    }
 });
 
 ipcMain.on("toggleLiveViewFullScreen", (event, args) => {
@@ -56,19 +65,27 @@ ipcMain.on('updateLiveViewClueCountDisplay', (event, clue1Used, clue2Used, clue3
     }
 });
 
+ipcMain.on('playVideoFullscreen', (event) => {
+    if (videoWindow == null) {
+        playFullscreenVideo();
+    }
+});
+
+
+
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600});
 
     // and load the index.html of the app.
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000?control"
+    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/control"
     mainWindow.loadURL(startUrl);
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
       })
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     // Emitted when the window is closed.
     mainWindow.on('closed', function () {
@@ -76,6 +93,29 @@ function createWindow() {
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null
+    })
+}
+
+function playFullscreenVideo() {
+    // Create the browser window.
+    videoWindow = new BrowserWindow({fullscreen: true, frame: false});
+
+    // and load the index.html of the app.
+    const url = "http://localhost:3000/fullscreenvideo"
+    videoWindow.loadURL(url);
+    videoWindow.once('ready-to-show', () => {
+        videoWindow.show()
+      })
+
+    // Open the DevTools.
+    //videoWindow.webContents.openDevTools();
+
+    // Emitted when the window is closed.
+    videoWindow.on('closed', function () {
+        // Dereference the window object, usually you would store windows
+        // in an array if your app supports multi windows, this is the time
+        // when you should delete the corresponding element.
+        videoWindow = null
     })
 }
 

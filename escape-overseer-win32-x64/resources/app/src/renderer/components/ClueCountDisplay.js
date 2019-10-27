@@ -1,26 +1,50 @@
-import React, { Component } from 'react';
-import LockIcon from 'grommet/components/icons/base/Lock';
-import ClearIcon from 'grommet/components/icons/base/Clear';
-import Box from 'grommet/components/Box';
-import Button from 'grommet/components/Button';
+import React, { Component, Children } from 'react';
+import LockIcon from '@material-ui/icons/Lock';
+import ClearIcon from '@material-ui/icons/Clear';
+import { Grid } from '@material-ui/core';
+import PouchDB from 'pouchdb';
+import { black } from 'material-ui/styles/colors';
 const electron = window.require('electron');
 
 class ClueCountDisplay extends React.Component{
   constructor(props) {
     super(props);
+    this.state={activeColor:black};
+    this.db = new PouchDB('kittens');
+  }
+
+  componentDidMount() {
+    if(this.props.liveScreen || this.props.preview)
+      this.setTextColor();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.selectedRoomId != this.props.selectedRoomId) {
+        this.setTextColor();
+    }
+  }
+
+  setTextColor() {
+    this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
+      this.setState({activeColor: doc.color});
+      console.log(doc.color);
+    }.bind(this)).catch(function (err) {
+      console.log(err);
+    })
   }
 
   getIconFromStatus = (isUsed) => {
-    return isUsed? <ClearIcon size='xlarge'/> : <LockIcon size='xlarge'/>;
+    return isUsed ? <ClearIcon className='ClueIcon' style={{color:this.props.preview?this.props.activeColor:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/> 
+                  : <LockIcon className='ClueIcon' style={{color:this.props.preview?this.props.activeColor:this.state.activeColor, width:this.props.liveScreen?180:120, height:'100%'}}/>;
   }
 
   render() {
     return (
-      <Box margin = 'medium' direction='row' justify='center'>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue1Used)}</Box>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue2Used)}</Box>
-        <Box margin = 'small'>{this.getIconFromStatus(this.props.clue3Used)}</Box>
-      </Box>
+      <Grid container direction='row' justify='center' alignItems='flex-start'>
+        <Grid item >{this.getIconFromStatus(this.props.clue1Used)}</Grid>
+        <Grid item >{this.getIconFromStatus(this.props.clue2Used)}</Grid>
+        <Grid item >{this.getIconFromStatus(this.props.clue3Used)}</Grid>
+      </Grid>
     );
   }
 }
