@@ -85,7 +85,7 @@ export default function SignIn() {
 	"username": "astoostratentreeregglats",
 	"password": "a36ccca9742c97ae7eaafafd30cd5c8249f64872"
 }
-  let db = PouchDataManager.remoteDB;
+    let db = PouchDataManager.localDB;
 
   const handleLoginAttempt = (e) => {
       console.log(db)

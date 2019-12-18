@@ -69,27 +69,16 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('none');
 
-  var userCredentials = {
-    "apikey": "PlBAe8WJdCegOw_-IK8uW4z7EIyjQFbz9lMTVL47RZ-0",
-    "host": "https://d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix.cloudantnosqldb.appdomain.cloud",
-    "iam_apikey_description": "Auto-generated for key e640a234-c2b2-44a5-8976-848c28553796",
-    "iam_apikey_name": "EO-credentials-1",
-    "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-    "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/be4505c39b6546968854990483294a9d::serviceid:ServiceId-4925cb6e-81e6-484b-baa8-7c7e7baa8623",
-    "password": "f5d938cf6fd7518c297d084e9bf9898a4f36bd857fab032ab0ce25dcfc518e4d",
-    "port": 443,
-    "url": "https://d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix:f5d938cf6fd7518c297d084e9bf9898a4f36bd857fab032ab0ce25dcfc518e4d@d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix.cloudantnosqldb.appdomain.cloud",
-    "username": "d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix"
-  };
+  
   var dbapikey = {
 	"username": "astoostratentreeregglats",
 	"password": "a36ccca9742c97ae7eaafafd30cd5c8249f64872"
 }
-  let db = PouchDataManager.remoteDB;
+    let db = new PouchDB(userCredentials.host + '/es-cloudant-db-1',  {
+        auth: dbapikey
+    });
 
   const handleLoginAttempt = (e) => {
-      console.log(db)
-    //uncomment to skip login
     //electron.ipcRenderer.send("proceedToApp");
     e.preventDefault();
     //if(navigator.onLine) {

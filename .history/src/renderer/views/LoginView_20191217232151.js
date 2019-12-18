@@ -85,10 +85,11 @@ export default function SignIn() {
 	"username": "astoostratentreeregglats",
 	"password": "a36ccca9742c97ae7eaafafd30cd5c8249f64872"
 }
-  let db = PouchDataManager.remoteDB;
+    let db = new PouchDB(userCredentials.host + '/es-cloudant-db-1',  {
+        auth: dbapikey
+    });
 
   const handleLoginAttempt = (e) => {
-      console.log(db)
     //uncomment to skip login
     //electron.ipcRenderer.send("proceedToApp");
     e.preventDefault();

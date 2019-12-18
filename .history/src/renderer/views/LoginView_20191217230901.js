@@ -30,11 +30,7 @@ function Copyright() {
 }
 
 const useStyles = makeStyles(theme => ({
-  '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
+  
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
@@ -81,15 +77,16 @@ export default function SignIn() {
     "url": "https://d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix:f5d938cf6fd7518c297d084e9bf9898a4f36bd857fab032ab0ce25dcfc518e4d@d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix.cloudantnosqldb.appdomain.cloud",
     "username": "d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix"
   };
+  
   var dbapikey = {
 	"username": "astoostratentreeregglats",
 	"password": "a36ccca9742c97ae7eaafafd30cd5c8249f64872"
 }
-  let db = PouchDataManager.remoteDB;
+    let db = new PouchDB(userCredentials.host + '/es-cloudant-db-1',  {
+        auth: dbapikey
+    });
 
   const handleLoginAttempt = (e) => {
-      console.log(db)
-    //uncomment to skip login
     //electron.ipcRenderer.send("proceedToApp");
     e.preventDefault();
     //if(navigator.onLine) {
