@@ -33,7 +33,6 @@ class PouchDataManager {
             });
         }
      
-        //if(navigator.onLine) {
         this.localDB.sync(this.remoteDB, {
             live: true,
             retry: true

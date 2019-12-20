@@ -151,15 +151,25 @@ async function hasActiveSubscription(customerSubscriptionId) {
         chargebee.configure({site : "escape-overseer-test", 
             api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
 
-        try{
-            const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
-            let subscription = result.subscription;
-            return (subscription.status == 'active' || subscription.status == 'in_trial');
-        } catch(error) {
-            console.log('error from chargebee: ');
-            console.log(error);
-            return false;
-        }
+            try {
+                let response = await chargebee.subscription.retrieve(customerSubscriptionId);
+                let json = await response.json();
+                console.log('response: ' + json);
+                if(error){
+                    //handle error
+                    console.log('error in try block: ' + error);
+                    return false;
+                }
+                let subscription = result.subscription;
+                console.log(subscription.status);
+                let customer = result.customer;
+                let card = result.card;
+                return (subscription.status == 'active' || subscription.status == 'in_trial');
+            }
+            catch(error) {
+                console.log('error in catch block: ' + error);
+                return false;
+            }
 }
 
 function playFullscreenVideo() {

@@ -112,8 +112,7 @@ export default function SignIn() {
 
   electron.ipcRenderer.on('verifySubscriptionResponse', (event, approved, errorMessage) => {
     if(approved) {
-        console.log('sub approval status: ' + approved);
-        //electron.ipcRenderer.send("proceedToApp");
+        electron.ipcRenderer.send("proceedToApp");
     }
     else{
         setError(errorMessage);

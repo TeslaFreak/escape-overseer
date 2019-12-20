@@ -42,8 +42,8 @@ ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
     
 });
 
-ipcMain.on("verifySubscription", async (event, customerSubscriptionId) => {
-    let accepted = await hasActiveSubscription(customerSubscriptionId);
+ipcMain.on("verifySubscription", (event, customerSubscriptionId) => {
+    let accepted = hasActiveSubscription(customerSubscriptionId);
     console.log('accepted: ' + accepted)
     loginWindow.webContents.send('verifySubscriptionResponse', accepted, (accepted ? '' : 'This account does not have an active subscription'));         
 });
@@ -148,18 +148,24 @@ function createLoginWindow() {
 }
 
 async function hasActiveSubscription(customerSubscriptionId) {
+
+    let error, response;
         chargebee.configure({site : "escape-overseer-test", 
             api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
 
-        try{
-            const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
+        await chargebee.subscription.retrieve(customerSubscriptionId).request(function(error,result) {
+            if(error){
+                //handle error
+                console.log(error);
+                return false;
+            }
+            console.log(result);
             let subscription = result.subscription;
+            console.log(subscription.status);
+            let customer = result.customer;
+            let card = result.card;
             return (subscription.status == 'active' || subscription.status == 'in_trial');
-        } catch(error) {
-            console.log('error from chargebee: ');
-            console.log(error);
-            return false;
-        }
+        });
 }
 
 function playFullscreenVideo() {

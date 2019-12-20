@@ -152,12 +152,23 @@ async function hasActiveSubscription(customerSubscriptionId) {
             api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
 
         try{
-            const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
-            let subscription = result.subscription;
-            return (subscription.status == 'active' || subscription.status == 'in_trial');
+            await chargebee.subscription.retrieve(customerSubscriptionId).request(function(error,result) {
+                if(error){
+                    //handle error
+                    console.log('error in request block: ');
+                    console.log(error);
+                    return false;
+                } else {
+                    console.log('result: ' + result);
+                    let subscription = result.subscription;
+                    console.log(subscription.status);
+                    let customer = result.customer;
+                    let card = result.card;
+                    return (subscription.status == 'active' || subscription.status == 'in_trial');
+                }
+            });
         } catch(error) {
-            console.log('error from chargebee: ');
-            console.log(error);
+            console.log('error in catch block: ' + error);
             return false;
         }
 }

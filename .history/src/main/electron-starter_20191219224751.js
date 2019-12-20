@@ -3,6 +3,7 @@ const chargebee = require("chargebee");
 const { ipcMain } = require('electron');
 // Module to control application life.
 const app = electron.app;
+
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
@@ -14,6 +15,7 @@ let mainWindow = null;
 let loginWindow = null;
 let liveWindow = null;
 let videoWindow = null;
+
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
 ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
@@ -40,16 +42,15 @@ ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
     
 });
 
-ipcMain.on("submitLogin", (event, username, password) => {
-    if(loginWindow != null) {
-        if(username != '' && password != '') {
-            loginWindow.close();
-            createAppWindow();
-        }
-        else {
-            loginWindow.webContents.send('loginFailure', 'Bad username or password');
-        }
-    }
+ipcMain.on("verifySubscription", async (event, customerSubscriptionId) => {
+    let accepted = await hasActiveSubscription(customerSubscriptionId);
+    console.log('accepted: ' + accepted)
+    loginWindow.webContents.send('verifySubscriptionResponse', accepted, (accepted ? '' : 'This account does not have an active subscription'));         
+});
+
+ipcMain.on("proceedToApp", (event) => {
+    loginWindow.close();
+    createAppWindow();       
 });
 
 ipcMain.on("roomSequence", (event, sequenceNodeId) => {
@@ -97,6 +98,10 @@ ipcMain.on('playVideoFullscreen', (event) => {
 
 
 function createAppWindow() {
+    //if window is already open, return
+    if(mainWindow != null) {
+        return;
+    }
     // Create the browser window.
     mainWindow = new BrowserWindow({width: 800, height: 600});
 
@@ -140,6 +145,30 @@ function createLoginWindow() {
         // when you should delete the corresponding element.
         loginWindow = null
     })
+}
+
+async function hasActiveSubscription(customerSubscriptionId) {
+        chargebee.configure({site : "escape-overseer-test", 
+            api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
+
+            try {
+                let response = await chargebee.subscription.retrieve(customerSubscriptionId);
+                console.log('response: ' + response);
+                if(error){
+                    //handle error
+                    console.log('error in try block: ' + error);
+                    return false;
+                }
+                let subscription = result.subscription;
+                console.log(subscription.status);
+                let customer = result.customer;
+                let card = result.card;
+                return (subscription.status == 'active' || subscription.status == 'in_trial');
+            }
+            catch(error) {
+                console.log('error in catch block: ' + error);
+                return false;
+            }
 }
 
 function playFullscreenVideo() {
