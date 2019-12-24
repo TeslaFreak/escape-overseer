@@ -12,6 +12,7 @@ import FullscreenVideo from './views/FullscreenVideoView';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {EOTheme, EODarkTheme} from './EscapeOverseerTheme';
 import RoomSelectionView from './views/RoomSelectionView';
+import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron');
 
 class App extends Component {

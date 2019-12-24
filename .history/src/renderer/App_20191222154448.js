@@ -36,6 +36,15 @@ class App extends Component {
     this.setState({ selectedRoomId:roomId });
   }
 
+  electron.ipcRenderer.on('storeAuthToken', (event, approved, errorMessage) => {
+    if(approved) {
+        console.log('sub approval status: ' + approved);
+        electron.ipcRenderer.send("proceedToApp");
+    }
+    else{
+        setError(errorMessage);
+    }
+  });
 
   //TODO:[V1 Mandatory] remove access to all V1 nonessential features, such as reports, metrics, and old editor screen.
   // Disable or delete where applicable and continue work on new branch for future releases
@@ -43,8 +52,8 @@ class App extends Component {
   //TODO:[V1 Mandatory] move light theme switch somewhere else and make sure everything works in both themes
   //Look into some sort of environment variables so I dont have to pass this stuff around
   render() {
-
     return (
+
       <MuiThemeProvider theme={this.state.theme=='light' ? EOTheme : EODarkTheme}>
         <Switch>
           <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>

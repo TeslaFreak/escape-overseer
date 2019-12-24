@@ -117,8 +117,8 @@ export default function SignIn() {
                 db.get('_local/' + username + ':authToken').then(function(doc) {
                     console.log(doc.token);
                     console.log(Math.floor(Date.now() / 1000));
-                    if(doc.token.expirationTimestamp > Math.floor(Date.now() / 1000)) {
-                        electron.ipcRenderer.send("proceedToApp");
+                    if(doc.token.expirationTimestamp > Date.now()) {
+                        //electron.ipcRenderer.send("proceedToApp");
                     } else {
                         setError('Your current offline session has expired. Please connect to the internet to renew your authentication')
                     }
@@ -157,7 +157,7 @@ export default function SignIn() {
                     token: token
                   }).then(() => {
                       console.log('token saved succeccfully');
-                      electron.ipcRenderer.send("proceedToApp");
+                      //electron.ipcRenderer.send("proceedToApp");
                     }).catch((err) => {
                           console.log('token failed to save');
                           console.log(err);
@@ -170,7 +170,7 @@ export default function SignIn() {
                     token: token
                   }).then(() => {
                       console.log('token saved succeccfully');
-                      electron.ipcRenderer.send("proceedToApp");
+                      //electron.ipcRenderer.send("proceedToApp");
                     }).catch((err) => {
                           console.log('token failed to save');
                           console.log(err);

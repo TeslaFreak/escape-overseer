@@ -85,7 +85,7 @@ export default function SignIn() {
 	"username": "astoostratentreeregglats",
 	"password": "a36ccca9742c97ae7eaafafd30cd5c8249f64872"
 }
-  let db = PouchDataManager.localDB;
+  let db = PouchDataManager.getDatabase();
 
   const handleLoginAttempt = (e) => {
     //uncomment to skip login
@@ -93,7 +93,7 @@ export default function SignIn() {
     e.preventDefault();
     if(navigator.onLine) {
         console.log('network status: online')
-        db.get(username + ':userCredentials').then(function(doc) {
+        db.get('demouser:userCredentials').then(function(doc) {
             if(doc.username == username && doc.password == password) {
                 electron.ipcRenderer.send("verifySubscription", doc.customerSubscriptionId);
             }
@@ -102,7 +102,7 @@ export default function SignIn() {
             }
           }.bind(this)).catch(function (err) {
             if(err.name == 'not_found') {
-                setError('Invalid username or password. Please use the link below to create an account if you have not already')
+                setError('An account was not found with that username. Please use the link below to create an account if you have not already')
             } else {
                 console.log("database connection error")
                 console.log(err);
@@ -112,78 +112,25 @@ export default function SignIn() {
     }
     else {
         console.log('network status: offline')
-        db.get(username + ':userCredentials').then(function(credentialDoc) {
-            if(credentialDoc.username == username && credentialDoc.password == password) {
-                db.get('_local/' + username + ':authToken').then(function(doc) {
-                    console.log(doc.token);
-                    console.log(Math.floor(Date.now() / 1000));
-                    if(doc.token.expirationTimestamp > Math.floor(Date.now() / 1000)) {
-                        electron.ipcRenderer.send("proceedToApp");
-                    } else {
-                        setError('Your current offline session has expired. Please connect to the internet to renew your authentication')
-                    }
-                }.bind(this)).catch(function(err) {
-                    if(err.name == 'not_found') {
-                        setError('An online connection is required to verify your account at this time. Please connect to the internet and try again')
-                    }
-                }.bind(this))
-            }
-            else{
-                setError('Invalid username or password');
-            }
-          }.bind(this)).catch(function (err) {
+        db.get('_local/authToken').then(function(doc) {
+            let token = doc.token;
+        }.bind(this)).catch(function(err) {
             if(err.name == 'not_found') {
-                setError('Invalid username or password. Please use the link below to create an account if you have not already')
-            } else {
-                console.log("database connection error")
-                console.log(err);
-                setError(err.reason);
+                setError('An online connection is required to verify your account at this time. Please connect to the internet and try again')
             }
-          }.bind(this))
-
+        }.bind(this))
     }
   }
 
-  electron.ipcRenderer.once('verifySubscriptionResponse', (event, token, errorMessage) => {
-    if(token) {
-        console.log('prepping to store');
-        console.log(token);
-        console.log('sub approval status: ' + token ? 'true' : 'false');
-
-        db.get('_local/' + username + ':authToken').then(function (doc) {
-            db.remove(doc).then(function () {
-                db.put({
-                    _id: '_local/' + username + ':authToken',
-                    token: token
-                  }).then(() => {
-                      console.log('token saved succeccfully');
-                      electron.ipcRenderer.send("proceedToApp");
-                    }).catch((err) => {
-                          console.log('token failed to save');
-                          console.log(err);
-                      });
-            }.bind(this));
-        }.bind(this)).catch(function(err) {
-            if(err.name == 'not_found') {
-                db.put({
-                    _id: '_local/' + username + ':authToken',
-                    token: token
-                  }).then(() => {
-                      console.log('token saved succeccfully');
-                      electron.ipcRenderer.send("proceedToApp");
-                    }).catch((err) => {
-                          console.log('token failed to save');
-                          console.log(err);
-                      });
-            }
-        }.bind(this));
-        
+  electron.ipcRenderer.on('verifySubscriptionResponse', (event, approved, errorMessage) => {
+    if(approved) {
+        console.log('sub approval status: ' + approved);
+        electron.ipcRenderer.send("proceedToApp");
     }
     else{
         setError(errorMessage);
     }
   });
-
 
   return (
     <Container component="main" maxWidth="xs">

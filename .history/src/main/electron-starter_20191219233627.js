@@ -43,9 +43,9 @@ ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
 });
 
 ipcMain.on("verifySubscription", async (event, customerSubscriptionId) => {
-    //let accepted = await hasActiveSubscription(customerSubscriptionId);
-    let token = await updateAuthToken(customerSubscriptionId);
-    loginWindow.webContents.send('verifySubscriptionResponse', token, (token ? '' : 'This account does not have an active subscription'));         
+    let accepted = await hasActiveSubscription(customerSubscriptionId);
+    console.log('accepted: ' + accepted)
+    loginWindow.webContents.send('verifySubscriptionResponse', accepted, (accepted ? '' : 'This account does not have an active subscription'));         
 });
 
 ipcMain.on("proceedToApp", (event) => {
@@ -168,37 +168,13 @@ async function getSubscriptionExpirationDate(customerSubscriptionId) {
     chargebee.configure({site : "escape-overseer-test", 
         api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
 
+        //TODO: on successful login, generate auth token with expiration date for end of subscription period
+        //TODO: if offline, check for token first, otherwise return false with message hinting to go online for first time login
     try{
         const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
         let subscription = result.subscription;
         console.log(subscription.current_term_end)
-        return subscription.current_term_end;
-    } catch(error) {
-        console.log('error from chargebee: ');
-        console.log(error);
-        return false;
-    }
-}
-
-async function updateAuthToken(customerSubscriptionId) {
-    chargebee.configure({site : "escape-overseer-test", 
-        api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
-    try{
-        const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
-        console.log(result.subscription);
-        if (result.subscription.status == 'active' || result.subscription.status == 'in_trial') {
-            let freshToken = {
-                status: result.subscription.status,
-                expirationTimestamp: result.subscription.status == 'active' ? result.subscription.current_term_end : result.subscription.trial_end
-            }
-            console.log(freshToken);
-            return freshToken
-        } else {
-            //dont update token, the user was not authenticated
-            return false;
-        }
-        
-        return true
+        return (subscription.status == 'active' || subscription.status == 'in_trial');
     } catch(error) {
         console.log('error from chargebee: ');
         console.log(error);

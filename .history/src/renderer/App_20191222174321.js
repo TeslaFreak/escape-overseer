@@ -12,6 +12,7 @@ import FullscreenVideo from './views/FullscreenVideoView';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import {EOTheme, EODarkTheme} from './EscapeOverseerTheme';
 import RoomSelectionView from './views/RoomSelectionView';
+import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron');
 
 class App extends Component {
@@ -43,6 +44,34 @@ class App extends Component {
   //TODO:[V1 Mandatory] move light theme switch somewhere else and make sure everything works in both themes
   //Look into some sort of environment variables so I dont have to pass this stuff around
   render() {
+    electron.ipcRenderer.on('storeAuthToken', (event, token) => {
+        let db = PouchDataManager.localDB;
+        db.put({
+            _id: '_local/authToken',
+            token: token
+          });
+    });
+
+    electron.ipcRenderer.on('getAuthToken', (event, token) => {
+        let db = PouchDataManager.localDB;
+        db.get('_local/authToken').then(function(doc) {
+            electron.ipcRenderer.send("getAuthToken-reply", doc.token);
+          }.bind(this)).catch(function (err) {
+            console.log("database connection error")
+            console.log(err);
+          }.bind(this))
+    });
+
+    // Renderer process
+ipcRenderer.invoke('some-name', someArgument).then((result) => {
+    // ...
+  })
+  
+  // Main process
+  ipcMain.handle('some-name', async (event, someArgument) => {
+    const result = await doSomeWork(someArgument)
+    return result
+  })
 
     return (
       <MuiThemeProvider theme={this.state.theme=='light' ? EOTheme : EODarkTheme}>

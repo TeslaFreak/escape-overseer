@@ -43,9 +43,12 @@ ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
 });
 
 ipcMain.on("verifySubscription", async (event, customerSubscriptionId) => {
-    //let accepted = await hasActiveSubscription(customerSubscriptionId);
-    let token = await updateAuthToken(customerSubscriptionId);
-    loginWindow.webContents.send('verifySubscriptionResponse', token, (token ? '' : 'This account does not have an active subscription'));         
+    let accepted = await hasActiveSubscription(customerSubscriptionId);
+    if(accepted) {
+        await updateAuthToken(customerSubscriptionId);
+    }
+    console.log('accepted: ' + accepted)
+    loginWindow.webContents.send('verifySubscriptionResponse', accepted, (accepted ? '' : 'This account does not have an active subscription'));         
 });
 
 ipcMain.on("proceedToApp", (event) => {
