@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
-import PouchDB from 'pouchdb';
+import PouchDataManager from '../PouchDataManager';
 
 class FullscreenVideo extends Component {
 
     constructor(props) {
         super(props);
         this.state={playVideo:true};
-        this.db = new PouchDB('kittens');
+        this.db = PouchDataManager.localDB;
     }
 
     componentDidMount() {

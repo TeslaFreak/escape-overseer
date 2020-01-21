@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import PouchDB from 'pouchdb';
+import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron')
 var WebFont = window.require('webfontloader');
 
 class Timer extends React.Component{
   constructor(props) {
     super(props);
-    this.db = new PouchDB('kittens');
+    this.db = PouchDataManager.localDB;
   }
 
   componentDidMount() {
@@ -36,7 +36,7 @@ class Timer extends React.Component{
   }
 
   setFont() {
-    this.db.get(this.props.selectedRoomId + '\\liveViewFont').then(function(doc) {
+    this.db.get(electron.remote.getGlobal('customerEmail') + '\\' + this.props.selectedRoomId + '\\liveViewFont').then(function(doc) {
       WebFont.load({
         google: { 
                families: [doc.font] 
@@ -49,7 +49,7 @@ class Timer extends React.Component{
   }
 
   setTextColor() {
-    this.db.get(this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
+    this.db.get(electron.remote.getGlobal('customerEmail') + '\\' + this.props.selectedRoomId + '\\liveViewTextColor').then(function(doc) {
       document.getElementById('Timedisplay').style.color = doc.color;
       console.log(doc.color);
     }).catch(function (err) {
