@@ -1,10 +1,10 @@
-import PouchDB from 'pouchdb';
+import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron')
 
 class Clue {
   constructor(props) {
     super(props)
-    this.db = new PouchDB('kittens');
+    this.db = PouchDataManager.localDB;
     this.db.get(props.id);
   }
 

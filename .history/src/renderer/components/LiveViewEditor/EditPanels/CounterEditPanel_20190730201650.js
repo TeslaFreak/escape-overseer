@@ -3,7 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Slider from '@material-ui/lab/Slider';
-import PouchDB from 'pouchdb';
+import PouchDataManager from '../PouchDataManager';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import classNames from 'classnames';
 import Dialog from '@material-ui/core/Dialog';
@@ -139,7 +139,7 @@ class ClueCountEditPanel extends Component {
         this.state={iconSize: (parseInt(this.props.selectedItem.getScaledWidth()**(1/1.7), 10)-(this.props.selectedItem.iconSpacing*this.props.selectedItem.numberOfClues-1))/this.props.selectedItem.numberOfClues,
                     iconSpacing: parseInt(this.props.selectedItem.iconSpacing**(1/2.2), 10)};
         this.objects = [];
-        this.db = new PouchDB('kittens');
+        this.db = PouchDataManager.localDB;
         
     }
 

@@ -12,7 +12,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import PouchDB from 'pouchdb';
+import PouchDataManager from '../PouchDataManager';
 import Paper from '@material-ui/core/Paper';
 import { Grid } from '@material-ui/core';
 const electron = window.require('electron')
