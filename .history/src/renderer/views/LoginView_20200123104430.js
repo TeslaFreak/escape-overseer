@@ -17,7 +17,7 @@ import Container from '@material-ui/core/Container';
 import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron')
 
-//TODO [V1 Mandatory] have copyright link upon correct site in new window.
+//TODO: V1 Mandatory: have copyright link upon correct site in new window.
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">

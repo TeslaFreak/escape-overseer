@@ -17,7 +17,7 @@ import Container from '@material-ui/core/Container';
 import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron')
 
-//TODO [V1 Mandatory] have copyright link upon correct site in new window.
+//TODO: V1 Mandatory: have copyright link upon correct site in new window.
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -235,7 +235,7 @@ export default function SignIn() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {//TODO [V1.1 preferred] add remember password logic
+          {//TODO: V1.1 preferred: add remember password logic
           /*<FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"

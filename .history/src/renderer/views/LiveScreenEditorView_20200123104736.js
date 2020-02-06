@@ -1487,7 +1487,7 @@ class LiveScreenEditorView extends Component {
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;
-        //TODO [V1.1 Preferable] Fix canvas slide on open side menu. Its ugly now but better than it was. Need to be able to get sidebar size and set this dynamically
+        //TODO: [V1.1 Preferable] Fix canvas slide on open side menu. Its ugly now but better than it was. Need to be able to get sidebar size and set this dynamically
         return(
             <Grid id='editorContainer' container direction='row' justify='flex-end' alignItems='stretch' spacing={0} className={classes.editorContainer}>
                 <Grid item container direction='column' id='canvasInteractionLayer' justify='center' alignItems='center' className={classes.editingBackground}>
