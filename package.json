@@ -2,9 +2,14 @@
   "name": "escape-overseer",
   "version": "0.1.0",
   "private": true,
+  "author": "Chris Allmon",
+  "description": "Escape Overseer Room Controller",
   "devDependencies": {
-    "electron": "^7.1.3",
-    "electron-prebuilt-compile": "^3.0.0",
+    "babel-plugin-transform-async-to-generator": "^6.24.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "electron-forge": "^5.2.4",
+    "electron-prebuilt-compile": "4.0.0",
     "foreman": "^2.0.0",
     "react-scripts": "0.8.5"
   },
@@ -14,8 +19,8 @@
     "@material-ui/lab": "^4.0.0-alpha.14",
     "chargebee": "^2.5.5",
     "custom-electron-titlebar": "^3.2.1",
-    "electron-builder": "^21.2.0",
-    "electron-packager": "^12.1.2",
+    "electron-compile": "^6.4.4",
+    "electron-squirrel-startup": "^1.0.0",
     "fabric": "^2.7.0",
     "font-picker-react": "^2.0.5",
     "frameless-titlebar": "^1.0.8",
@@ -42,10 +47,44 @@
   },
   "main": "src/main/electron-starter.js",
   "scripts": {
-    "strtelectron": "electron .",
-    "start": "react-scripts start",
+    "reactstart": "react-scripts start",
+    "start": "electron-forge start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "config": {
+    "forge": {
+      "make_targets": {
+        "win32": [
+          "squirrel"
+        ],
+        "darwin": [
+          "zip"
+        ],
+        "linux": [
+          "deb",
+          "rpm"
+        ]
+      },
+      "electronPackagerConfig": {
+        "packageManager": "yarn"
+      },
+      "electronWinstallerConfig": {
+        "name": "escape_overseer"
+      },
+      "electronInstallerDebian": {},
+      "electronInstallerRedhat": {},
+      "github_repository": {
+        "owner": "",
+        "name": ""
+      },
+      "windowsStoreConfig": {
+        "packageName": "",
+        "name": "escapeoverseer"
+      }
+    }
   }
 }
