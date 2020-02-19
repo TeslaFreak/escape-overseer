@@ -3,10 +3,12 @@ const chargebee = require("chargebee");
 const { ipcMain, Menu, Tray } = require('electron');
 // Module to control application life.
 const app = electron.app;
+if(require('electron-squirrel-startup')) app.quit();
 
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
+const isDev = require('electron-is-dev')
 const url = require('url');
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -24,8 +26,14 @@ app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 ipcMain.on("toggleLiveViewOpen", (event, selectedRoomId, args) => {
     if (liveWindow == null) {
         liveWindow = new BrowserWindow({width: 800, height: 600, show: false});
-        const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/live"
-        liveWindow.loadURL(startUrl);
+        const startUrl = isDev ? "http://localhost:3000#/live" : `${path.join(__dirname, '../../build/index.html')}`
+        let liveUrl = url.format({
+            pathname: startUrl,
+            hash: '/live',
+            protocol: 'file',
+            slashes: true,
+        })
+        liveWindow.loadURL(isDev ? startUrl : liveUrl);
         //liveWindow.webContents.openDevTools();
         liveWindow.setMenu(null);
         liveWindow.once('ready-to-show', () => {
@@ -135,8 +143,14 @@ function createAppWindow() {
                                 });
 
     // and load the index.html of the app.
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/control"
-    mainWindow.loadURL(startUrl);
+    const startUrl = isDev ? "http://localhost:3000#/control" : `${path.join(__dirname, '../../build/index.html')}`
+    let mainUrl = url.format({
+        pathname: startUrl,
+        hash: '/control',
+        protocol: 'file',
+        slashes: true,
+    })
+    mainWindow.loadURL(isDev ? startUrl : mainUrl);
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
       })
@@ -163,11 +177,12 @@ function createAppWindow() {
 
 function createLoginWindow() {
     // Create the browser window.
+    
     loginWindow = new BrowserWindow({width: 475,
                                      height: 750,
                                      resizable: true, 
                                      title: "Escape Overseer",
-                                     icon:'public/assets/images/icons/eye64.ico',
+                                     icon: path.join(__dirname, '../../public/assets/images/icons/eye64.ico'),
                                      // Remove the window frame from windows applications
                                      frame: false,
                                      // Hide the titlebar from MacOS applications while keeping the stop lights
@@ -175,15 +190,18 @@ function createLoginWindow() {
                                     });
 
     // and load the index.html of the app.
-    const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/login"
-    loginWindow.loadURL(startUrl);
+    //const startUrl = process.env.ELECTRON_START_URL || "http://localhost:3000/login"
+    const startUrl = isDev ? "http://localhost:3000#/login" : `${path.join(__dirname, '../../build/index.html')}`
+    let loginUrl = url.format({
+        pathname: startUrl,
+        hash: '/login',
+        protocol: 'file',
+        slashes: true,
+    })
+    loginWindow.loadURL(isDev ? startUrl : loginUrl);
     loginWindow.once('ready-to-show', () => {
         loginWindow.show()
       })
-
-    // Open the DevTools.
-    //loginWindow.webContents.openDevTools();
-
     // Emitted when the window is closed.
     loginWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
@@ -273,6 +291,23 @@ function playFullscreenVideo() {
     })
 }
 
+//TODO: prevent the app from opening a second instance if one is already running
+/*
+var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
+    // Someone tried to run a second instance, we should focus our window
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+    return true;
+  });
+  
+  if (shouldQuit) {
+    app.quit();
+    return;
+  }
+  */
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -293,7 +328,7 @@ app.on('ready', function() {
     ]);
 
     if(tray == null) {
-        tray = new Tray('public/assets/images/icons/eye64.ico');
+        tray = new Tray(path.join(__dirname, '../../public/assets/images/icons/eye64.ico'));
         // Call this again for Linux because we modified the context menu
         tray.setContextMenu(contextMenu)
     }

@@ -1484,6 +1484,7 @@ class LiveScreenEditorView extends Component {
         });
     };
 
+    //TODO Fix bug where font doesnt load until item is updated. affects all text items
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;

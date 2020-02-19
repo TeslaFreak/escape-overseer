@@ -7,15 +7,10 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 var nodeFetch = require('node-fetch');
 var nodeFetch__default = _interopDefault(nodeFetch);
 var fetchCookie = _interopDefault(require('fetch-cookie'));
+var abortController = _interopDefault(require('abort-controller'));
 
 var fetch = fetchCookie(nodeFetch__default);
 
-/* We can fake the abort, the http adapter keeps track
-   of ignoring the result */
-function AbortController() {
-  return {abort: function () {}};
-}
-
 exports.Headers = nodeFetch.Headers;
+exports.AbortController = abortController;
 exports.fetch = fetch;
-exports.AbortController = AbortController;

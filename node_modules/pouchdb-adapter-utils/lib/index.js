@@ -79,7 +79,7 @@ var dataWords = toObject([
 ]);
 
 function parseRevisionInfo(rev) {
-  if (!/^\d+-./.test(rev)) {
+  if (!/^\d+-/.test(rev)) {
     return pouchdbErrors.createError(pouchdbErrors.INVALID_REV);
   }
   var idx = rev.indexOf('-');

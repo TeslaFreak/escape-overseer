@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, HashRouter } from 'react-router-dom'
 import LoginView from './views/LoginView';
 import SignUpView from './views/SignUpView';
 import LiveView from './views/LiveView';
@@ -28,15 +28,15 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    if(location.pathname != '/live') {
+    if(location.hash != '#/live') {
         let customTaskbar = new customTitlebar.Titlebar({
             backgroundColor: customTitlebar.Color.fromHex('#171F23'),
             titleHorizontalAlignment:"left",
-            icon:'/favicon.png',
+            icon:'./favicon.png',
             overflow: false,
             menu: null,
         });
-        if(location.pathname == '/login' || location.pathname == '/signup') {
+        if(location.hash == '#/login' || location.hash == '#/signup') {
             //const menu = new Menu();
             //customTaskbar.updateMenu(menu)
         }
@@ -60,21 +60,23 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={this.state.theme=='light' ? EOTheme : EODarkTheme}>
-        <Switch>
-          <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>
-          <Route path='/login' component={() => <MuiThemeProvider theme={EOTheme}><LoginView/></MuiThemeProvider>} />
-          <Route path='/signup' component={() => <MuiThemeProvider theme={EOTheme}><SignUpView/></MuiThemeProvider>} />
-          <Route path='/fullscreenvideo' component={FullscreenVideo}/>
-          <MainOverlay toggleTheme={this.toggleTheme} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoomId={this.state.selectedRoomId} changeTab={this.changeTab}/>} >
+        <HashRouter>
             <Switch>
-              <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} />} />
-              <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} />} />
-              <Route path='/metrics' component={MetricsView}/>
-              <Route path='/settings' component={SettingsView}/>
-              <Redirect from='/' to='/control'/>
+            <Route path='/live' component={() => <MuiThemeProvider theme={EOTheme}><LiveView/></MuiThemeProvider>}/>
+            <Route path='/login' component={() => <MuiThemeProvider theme={EOTheme}><LoginView/></MuiThemeProvider>} />
+            <Route path='/signup' component={() => <MuiThemeProvider theme={EOTheme}><SignUpView/></MuiThemeProvider>} />
+            <Route path='/fullscreenvideo' component={FullscreenVideo}/>
+            <MainOverlay toggleTheme={this.toggleTheme} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} headerContent={<HeaderRouter tabValue={this.state.tabValue} selectedRoomId={this.state.selectedRoomId} changeTab={this.changeTab}/>} >
+                <Switch>
+                <Route path='/control' render={(props) => <ControlView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} />} />
+                <Route path='/roomconfig' render={(props) => <RoomConfigView {...props} tabValue={this.state.tabValue} changeTab={this.changeTab} selectedRoomId={this.state.selectedRoomId} changeRoom={this.changeRoom} />} />
+                <Route path='/metrics' component={MetricsView}/>
+                <Route path='/settings' component={SettingsView}/>
+                <Redirect from='/' to='/login'/>
+                </Switch>
+            </MainOverlay>
             </Switch>
-          </MainOverlay>
-        </Switch>
+        </HashRouter>
       </MuiThemeProvider>
     );
   }

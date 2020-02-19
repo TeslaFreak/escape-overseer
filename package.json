@@ -1,5 +1,6 @@
 {
-  "name": "escape-overseer",
+  "name": "EscapeOverseer",
+  "homepage": "./",
   "version": "0.1.0",
   "private": true,
   "author": "Chris Allmon",
@@ -20,6 +21,7 @@
     "chargebee": "^2.5.5",
     "custom-electron-titlebar": "^3.2.1",
     "electron-compile": "^6.4.4",
+    "electron-is-dev": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "fabric": "^2.7.0",
     "font-picker-react": "^2.0.5",
@@ -70,7 +72,9 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "yarn"
+        "packageManager": "yarn",
+        "icon": "src/eye64.ico",
+        "noMsi": false
       },
       "electronWinstallerConfig": {
         "name": "escape_overseer"
