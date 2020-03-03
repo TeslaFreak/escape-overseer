@@ -1296,8 +1296,13 @@ class LiveScreenEditorView extends Component {
         if(file === null) {
             return;
         }
-        var dataURL = file.toDataURL();
-        var blob = this.dataURItoBlob(dataURL);
+        console.log(file.src.split(',').pop());
+        //console.log("file has a size of " + file.src.split(',').pop().length + " Bytes");
+        //var dataURL = file.toDataURL();
+        var imageSrc = file.src.split(',').pop();
+        //console.log("dataURL has a size of " + dataURL.length + " Bytes");
+        //var blob = this.dataURItoBlob(dataURL);
+        console.log("imageSrc has a size of " + imageSrc.length + " Bytes");
         this.db.get(electron.remote.getGlobal('customerEmail') + '/' + this.props.selectedRoomId + '/backgroundImg').then(function (doc) {
             this.db.remove(doc).then(function () {
                 this.db.put({
@@ -1305,8 +1310,9 @@ class LiveScreenEditorView extends Component {
                     customerId: electron.remote.getGlobal('customerId'),
                     _attachments: {
                         'backgroundImgFile': {
-                        type: blob.type,
-                        data: blob
+                        content_type: imageSrc.type,
+                        type: imageSrc.type,
+                        data: imageSrc
                       }
                     }
                   }).then(function() {
@@ -1322,8 +1328,9 @@ class LiveScreenEditorView extends Component {
                     customerId: electron.remote.getGlobal('customerId'),
                     _attachments: {
                         'backgroundImgFile': {
-                        type: blob.type,
-                        data: blob
+                        content_type: imageSrc.type,
+                        type: imageSrc.type,
+                        data: imageSrc
                   }
                 }
               }).then(function() {
@@ -1428,6 +1435,8 @@ class LiveScreenEditorView extends Component {
         }.bind(this))
     };
 
+    //TODO: Fix massive JSON size for pouch sync
+    //TODO: Limit image size uploaded, different limits for background img and icon imgs
     //TODO:[V1.1 Preferable] add center snap lines to canvas
     //TODO:[V1.1 Mandatory] make save button prettier. Add top bar and put it there. Bar will allow for undo and redo buttons down the road.
     saveJSON = async () => {
@@ -1437,6 +1446,7 @@ class LiveScreenEditorView extends Component {
         this.db.get(electron.remote.getGlobal('customerEmail') + '/' + this.props.selectedRoomId + '/liveScreen').then(function (doc) {
             doc.customerId = electron.remote.getGlobal('customerId');
             doc.canvasJSON=canvasJSON;
+            console.log("cavas has a size of " + JSON.stringify(canvasJSON).length + " Bytes");
             doc.canvasAspectRatio=this.state.aspectRatio;
             doc.totalTime = this.canvas.getObjects('timer').length > 0 ? this.canvas.getObjects('timer')[0].totalTime : 60;
             doc.numberOfClues = this.canvas.getObjects('visualCounter').length > 0 ? this.canvas.getObjects('visualCounter')[0].numberOfClues : 

@@ -16,7 +16,7 @@ class PouchDataManager {
             PouchDataManager.instance = this;
         }
         if (this.localDB == null) {
-            this.localDB = new PouchDB('localdb');
+            this.localDB = new PouchDB('localdb', {auto_compaction: true});
         }
         if (this.remoteDB == null) {
             this.remoteDB = new PouchDB(dbapikey.host + '/eo-cloudant-db-1',  {
@@ -24,17 +24,26 @@ class PouchDataManager {
             });
         }
      
-        //if(navigator.onLine) {
-            /*this.remoteDB.put(
-                {
-                    _id: '_design/mydesign',
-                    filters: {
-                        customerFilter: function (doc, req) {
-                        return doc.userId === req.query.userId;
-                      }.toString()
-                    }
-                  }
-            )*/
+        this.localDB.get('_design/mydesign').then(function (doc) {
+            console.log('design doc exists');
+        }.bind(this)).catch(function(err) {
+            if(err.name=="not_found") {
+                this.localDB.put(
+                    {
+                        _id: '_design/mydesign',
+                        filters: {
+                            customerFilter: function (doc, req) {
+                            return doc.userId === req.query.userId;
+                          }.toString()
+                        }
+                      }
+                )
+            }
+            else {
+                console.log(err);
+            }
+        }.bind(this));
+            
         this.localDB.sync(this.remoteDB, {
             live: true,
             retry: true,

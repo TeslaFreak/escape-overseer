@@ -156,7 +156,7 @@ function createAppWindow() {
       })
 
     // Open the DevTools.
-    //mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
     
     mainWindow.on('close', function (event) {
         if(!app.isQuiting){
@@ -202,6 +202,10 @@ function createLoginWindow() {
     loginWindow.once('ready-to-show', () => {
         loginWindow.show()
       })
+
+      // Open the DevTools.
+      loginWindow.webContents.openDevTools();
+    
     // Emitted when the window is closed.
     loginWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
@@ -212,8 +216,8 @@ function createLoginWindow() {
 }
 
 async function hasActiveSubscription(customerSubscriptionId) {
-        chargebee.configure({site : "escape-overseer-test", 
-            api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
+        chargebee.configure({site : "escape-overseer", 
+            api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
 
         try{
             const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
@@ -227,8 +231,8 @@ async function hasActiveSubscription(customerSubscriptionId) {
 }
 
 async function getSubscriptionExpirationDate(customerSubscriptionId) {
-    chargebee.configure({site : "escape-overseer-test", 
-        api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
+    chargebee.configure({site : "escape-overseer", 
+        api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
 
     try{
         const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
@@ -243,8 +247,8 @@ async function getSubscriptionExpirationDate(customerSubscriptionId) {
 }
 
 async function updateAuthToken(customerSubscriptionId) {
-    chargebee.configure({site : "escape-overseer-test", 
-        api_key : "test_TCwzWlKEcumk4Jdu96DZ4qZUFACR0HAPl"});
+    chargebee.configure({site : "escape-overseer", 
+        api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
     try{
         const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
         console.log(result);
