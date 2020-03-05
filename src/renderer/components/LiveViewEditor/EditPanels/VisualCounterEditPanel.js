@@ -219,7 +219,7 @@ class VisualCounterEditPanel extends Component {
         console.log("upload has a size of " + e.target.files[0].size + " Bytes");
         var FileSize = e.target.files[0].size / 1024; // in KB
         if (FileSize > 25) {
-            alert('File size too big. Please convert your image to less than 25KB and try again');
+            alert('File size too big. Icons must be 25KB or less');
             return false;
         } else {
             return true;
