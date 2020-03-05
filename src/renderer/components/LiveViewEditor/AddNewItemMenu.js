@@ -109,6 +109,22 @@ class AddNewItemMenu extends Component {
         }
     };
 
+    handleAddImage = e => {
+        if (this.ValidateSize(e)) {
+            this.props.createNewCanvasItem(this.props.CanvasItemTypes.IMAGE, e)
+        }
+    }
+
+    ValidateSize = (e) => {
+        console.log("upload has a size of " + e.target.files[0].size + " Bytes");
+        var FileSize = e.target.files[0].size / 1024; // in KB
+        if (FileSize > 300) {
+            alert('File size too big. Please convert your image to less than 300KB and try again');
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     //because material popups are fucking stupid and will
     //fire a background click no matter where you click on screen.
@@ -142,7 +158,7 @@ class AddNewItemMenu extends Component {
                         id="image-input"
                         multiple
                         type="file"
-                        onChange={(e) => this.props.createNewCanvasItem(CanvasItemTypes.IMAGE, e)}
+                        onChange={(e) => this.handleAddImage(e)}
                         ref={(ref) => this.fileInputRef = ref}
                         />
                     <label htmlFor="image-input">

@@ -22,7 +22,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <ExternalLink color="inherit">
+      <ExternalLink color="inherit" href='https://www.escapeoverseer.com'>
         Escape Overseer
       </ExternalLink>{' '}
       {new Date().getFullYear()}

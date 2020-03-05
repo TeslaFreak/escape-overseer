@@ -198,6 +198,9 @@ class VisualCounterEditPanel extends Component {
                 break;
             case 'changeUnusedSrc':
             case 'changeUsedSrc':
+                if (!this.ValidateSize(value)) {
+                    return;
+                }
                 displayValue = value.target.result;
                 break;
             case 'numberOfClues':
@@ -210,6 +213,17 @@ class VisualCounterEditPanel extends Component {
         }
         this.setState({[propertyName]: displayValue});
         this.props.updateItemProperty(propertyName, roundedValue);
+    }
+
+    ValidateSize = (e) => {
+        console.log("upload has a size of " + e.target.files[0].size + " Bytes");
+        var FileSize = e.target.files[0].size / 1024; // in KB
+        if (FileSize > 25) {
+            alert('File size too big. Please convert your image to less than 25KB and try again');
+            return false;
+        } else {
+            return true;
+        }
     }
 
     render() {
