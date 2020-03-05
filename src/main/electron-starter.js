@@ -156,7 +156,9 @@ function createAppWindow() {
       })
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    if(isDev) {
+        mainWindow.webContents.openDevTools();
+    }
     
     mainWindow.on('close', function (event) {
         if(!app.isQuiting){
@@ -203,8 +205,10 @@ function createLoginWindow() {
         loginWindow.show()
       })
 
-      // Open the DevTools.
-      loginWindow.webContents.openDevTools();
+    // Open the DevTools.
+    if(isDev) {
+        loginWindow.webContents.openDevTools();
+    }
     
     // Emitted when the window is closed.
     loginWindow.on('closed', function () {
