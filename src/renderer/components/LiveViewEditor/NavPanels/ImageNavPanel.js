@@ -114,7 +114,7 @@ class ImageNavPanel extends Component {
                         </Grid>
                     </Grid>
                 </IconButton>
-                {//TODO:[V1.1 Preferable] Allow Upload of SVGs and enable this color edit section
+                {//TODO:[V1.1 Preferable] Allow Upload of SVGs and enable this color edit section (note: this may be fixed now and able to use from fabricJS)
                 /*
                 <IconButton id="EditColorButton" disableRipple 
                             className={this.state.selectedEditPanelType == this.props.EditPanelTypes.COLOR ? classes.navPanelButtonSelected : classes.navPanelButton}

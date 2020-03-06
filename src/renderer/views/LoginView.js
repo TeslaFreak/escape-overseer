@@ -17,12 +17,15 @@ import Container from '@material-ui/core/Container';
 import PouchDataManager from '../PouchDataManager';
 const electron = window.require('electron')
 
-//TODO [V1 Mandatory] have copyright link upon correct site in new window.
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <ExternalLink color="inherit" href='https://www.escapeoverseer.com'>
+      <ExternalLink color="inherit" onClick={(e) => {
+            e.preventDefault();
+            electron.shell.openExternal("https://www.escapeoverseer.com")
+        }}
+        href="">
         Escape Overseer
       </ExternalLink>{' '}
       {new Date().getFullYear()}

@@ -1435,8 +1435,7 @@ class LiveScreenEditorView extends Component {
         }.bind(this))
     };
 
-    //TODO: Fix massive JSON size for pouch sync
-    //TODO: Limit image size uploaded, different limits for background img and icon imgs
+    //TODO:[V1.1 Preferable] Find more elegant solution to image size limits. try reducing image quality on upload maybe.
     //TODO:[V1.1 Preferable] add center snap lines to canvas
     //TODO:[V1.1 Mandatory] make save button prettier. Add top bar and put it there. Bar will allow for undo and redo buttons down the road.
     saveJSON = async () => {
@@ -1494,7 +1493,7 @@ class LiveScreenEditorView extends Component {
         });
     };
 
-    //TODO Fix bug where font doesnt load until item is updated. affects all text items
+    //TODO [V1.1 Mandatory] Fix bug where font doesnt load until item is updated. affects all text items
     render() {
         const { anchorEl } = this.state;
         const { classes } = this.props;

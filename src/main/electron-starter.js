@@ -299,7 +299,7 @@ function playFullscreenVideo() {
     })
 }
 
-//TODO: prevent the app from opening a second instance if one is already running
+//TODO: [V1.1 Preferable] prevent the app from opening a second instance if one is already running
 /*
 var shouldQuit = app.makeSingleInstance(function(commandLine, workingDirectory) {
     // Someone tried to run a second instance, we should focus our window

@@ -56,7 +56,6 @@ class App extends Component {
   }
 
   //TODO get autoupdater working
-  //TODO get db sync working
   render() {
     return (
       <MuiThemeProvider theme={this.state.theme=='light' ? EOTheme : EODarkTheme}>

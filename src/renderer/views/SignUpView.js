@@ -24,9 +24,13 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <ExternalLink color="inherit" href='https://www.escapeoverseer.com'>
+            <ExternalLink color="inherit" onClick={(e) => {
+                e.preventDefault();
+                electron.shell.openExternal("https://www.escapeoverseer.com")
+            }}
+            href="">
                 Escape Overseer
-      </ExternalLink>{' '}
+        </ExternalLink>{' '}
             {new Date().getFullYear()}
             {'.'}
         </Typography>
