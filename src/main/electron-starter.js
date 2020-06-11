@@ -62,7 +62,7 @@ ipcMain.on("verifySubscription", async (event, userProfile) => {
         global.customerEmail = userProfile.email;
         global.customerId = userProfile.customerId;
     }
-    loginWindow.webContents.send('verifySubscriptionResponse', token, (token ? '' : 'This account does not have an active subscription'));         
+    loginWindow.webContents.send('verifySubscriptionResponse', token, (token ? '' : 'This account does not have an active subscription. Please check that your subscription has not expired'));         
 });
 
 ipcMain.on("proceedToApp", (event) => {

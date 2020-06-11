@@ -253,9 +253,9 @@ export default function SignUp() {
                     <Container component="main" maxWidth="xs" className={classes.paper}>
                         <Avatar className={classes.successAvatar}>
                             <CheckIcon />
-                        </Avatar>
+                        </Avatar> //TODO: add link to subscription
                         <Typography component="h1" variant="h5">
-                            Success! Your account has been created!
+                            Success! Your account has been created! If you have not already, please follow the link below to begin your free 30 day trial!
                         </Typography>
                         <Button
                             fullWidth

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -115,7 +115,8 @@ export default function SignIn() {
             console.log(data);
         }
         else if (data.customerId == false) {
-            setError('No subscription found')
+            //TODO: open link to subscription site
+            setError('This account does not have an active subscription. Start your free 30 day trial ')
         }
         else {
             console.log("id: ");
@@ -211,6 +212,14 @@ export default function SignIn() {
         <form className={classes.form} noValidate>
         <Typography className={classes.error} style={{visibility:error == 'none' ? 'hidden' : ''}}>
           {error}
+            {error.includes('free 30 day trial') && 
+            <ExternalLink color="inherit" onClick={(e) => {
+                        e.preventDefault();
+                        electron.shell.openExternal("https://escape-overseer.chargebee.com/hosted_pages/plans/standard")
+                    }}
+                    href="">
+                    HERE
+            </ExternalLink>}
         </Typography>
           <TextField
             variant="outlined"
