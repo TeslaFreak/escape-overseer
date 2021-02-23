@@ -26,8 +26,6 @@ var WebFont = window.require('webfontloader');
 const electron = window.require('electron');
 const uuidv4 = require('uuid/v4');
 
-//google fonts API Key: AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E
-
 const styles = theme => ({
     editPanelSubsectionHeader: {
         color: '#dce0e3',
@@ -194,7 +192,7 @@ class TypeEditPanel extends Component {
                 <Typography id="FontFaceHeader" className={classes.editPanelSubsectionHeader}>Font Family</Typography>
                 <Grid item id='FontFacePicker' className={classes.fontPicker}>
                     <FontPicker
-                        apiKey="AIzaSyDipkbeiVIwQoDKHnvmFCFQ1EoFW1_jw9E"
+                        apiKey=env.googlefontsapikey
                         activeFont={this.state.fontFamily}
                         options={{limit:100}}
                         onChange={(nextFont) => this.handleChange(null, nextFont.family, 'fontFamily')}
