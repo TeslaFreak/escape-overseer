@@ -8,9 +8,9 @@ class PouchDataManager {
         this.customerId = electron.remote.getGlobal('customerId');
         
         const dbapikey = {
-            "host": "https://d0bbef17-7084-4e8a-8e9f-fbca21cb076a-bluemix.cloudantnosqldb.appdomain.cloud",
-            "username": "iningleaturoubjoympledar",
-            "password": "974307266de0f874c65b6d54f7bf89697ba2b043"
+            "host": env.cloudanthosturl,
+            "username": env.cloudantusername,
+            "password": env.cloudantpw
         }; 
         if (PouchDataManager.instance == null) {
             PouchDataManager.instance = this;
