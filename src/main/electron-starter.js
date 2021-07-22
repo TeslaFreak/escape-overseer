@@ -221,7 +221,7 @@ function createLoginWindow() {
 
 async function hasActiveSubscription(customerSubscriptionId) {
         chargebee.configure({site : "escape-overseer", 
-            api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
+            api_key : config.chargebee_api_key});
 
         try{
             const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
@@ -236,7 +236,7 @@ async function hasActiveSubscription(customerSubscriptionId) {
 
 async function getSubscriptionExpirationDate(customerSubscriptionId) {
     chargebee.configure({site : "escape-overseer", 
-        api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
+        api_key : config.chargebee_api_key});
 
     try{
         const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
@@ -252,7 +252,7 @@ async function getSubscriptionExpirationDate(customerSubscriptionId) {
 
 async function updateAuthToken(customerSubscriptionId) {
     chargebee.configure({site : "escape-overseer", 
-        api_key : "live_W4WbUcd1l5rBdg715X3I03BP5Mo2BGD67"});
+        api_key : config.chargebee_api_key});
     try{
         const result = await chargebee.subscription.retrieve(customerSubscriptionId).request();
         console.log(result);
