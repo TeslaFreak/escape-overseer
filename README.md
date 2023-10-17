@@ -1,9 +1,9 @@
-#DEPRECATED
-##### Escape Overseer has in the process of being rewritten in NextJS, this is the old version.
-
 ##### Escape room timer and control software. Customizable timer screen can be put on TV/monitor in room and controlled remotely by employees.
 
-##### UPDATE: This project is no longer being supported as of Feb. 2021
+## DEPRECATED
+#### Escape Overseer has in the process of being rewritten in NextJS, this is the old version.
+#### UPDATE: This project is no longer being supported as of Feb. 2021
+
 ## Features
 ### Customizable In-Room Timer Screen: 
 Capable of pausing the timer at any time as well as adjusting the game time on the fly if necessary by quickly adding/subtracting minutes from the current game time. The screen itself is customizable with a background image of your choosing, and adjustable text color and font 
