@@ -2848,7 +2848,7 @@ cssesc@^3.0.0:
 "cssnano@>=2.6.1 <4", cssnano@^3.3.2:
   version "3.10.0"
   resolved "https://registry.yarnpkg.com/cssnano/-/cssnano-3.10.0.tgz#4f38f6cea2b9b17fa01490f23f1dc68ea65c1c38"
-  integrity sha1-Tzj2zqK5sX+gFJDyPx3GjqZcHDg=
+  integrity sha512-0o0IMQE0Ezo4b41Yrm8U6Rp9/Ag81vNXY1gZMnT1XhO4DpjEf2utKERqWJbOoz3g1Wdc1d3QSta/cIuJ1wSTEg==
   dependencies:
     autoprefixer "^6.3.1"
     decamelize "^1.1.2"
@@ -3591,7 +3591,7 @@ electron-compile@*, electron-compile@^6.4.4:
 electron-compilers@*:
   version "5.9.0"
   resolved "https://registry.yarnpkg.com/electron-compilers/-/electron-compilers-5.9.0.tgz#953dc14e24fb15b37d5e90de2c39d753f3f8140e"
-  integrity sha1-lT3BTiT7FbN9XpDeLDnXU/P4FA4=
+  integrity sha512-rY2Agw9GJKp9/BEK03HGhwLg+/ROPXue3MTgmvqtnz4Y3lgafpggvd/Y+TH/U8nER98gggPJhAVYvnWDOYepjQ==
   dependencies:
     "@paulcbetts/mime-types" "^2.1.10"
     "@paulcbetts/vueify" "9.4.3"
@@ -6714,9 +6714,9 @@ js-tokens@^3.0.2:
   integrity sha1-mGbfOVECEw449/mWvOtlRDIJwls=
 
 js-yaml@3.x, js-yaml@^3.10.0, js-yaml@^3.4.3, js-yaml@^3.5.1, js-yaml@^3.7.0:
-  version "3.13.1"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
-  integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
+  version "3.14.2"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.2.tgz#77485ce1dd7f33c061fd1b16ecea23b55fcb04b0"
+  integrity sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
@@ -6724,7 +6724,7 @@ js-yaml@3.x, js-yaml@^3.10.0, js-yaml@^3.4.3, js-yaml@^3.5.1, js-yaml@^3.7.0:
 js-yaml@~3.7.0:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.7.0.tgz#5c967ddd837a9bfdca5f2de84253abe8a1c03b80"
-  integrity sha1-XJZ93YN6m/3KXy3oQlOr6KHAO4A=
+  integrity sha512-eIlkGty7HGmntbV6P/ZlAsoncFLGsNoM27lkTzS+oneY/EiNhj+geqD9ezg/ip+SW6Var0BJU2JtV0vEUZpWVQ==
   dependencies:
     argparse "^1.0.7"
     esprima "^2.6.0"
